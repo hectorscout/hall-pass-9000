@@ -69,3 +69,13 @@ export function useUser(): User {
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
+
+export function getRequiredEnvVariable(name: string): string {
+  const envVar = process.env[name];
+
+  if (!envVar) {
+    throw new Error("Missing required env variable " + name);
+  }
+
+  return envVar;
+}
