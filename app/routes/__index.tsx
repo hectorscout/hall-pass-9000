@@ -30,7 +30,7 @@ export default function HallMonitorPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <Header email={user.email} />
+      <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
       <main className="flex h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-100 pl-10">
           <Link to="">Home</Link>
