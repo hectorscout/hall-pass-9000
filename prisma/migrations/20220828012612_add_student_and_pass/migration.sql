@@ -15,7 +15,7 @@ DROP TABLE "Password";
 PRAGMA foreign_keys=on;
 
 -- CreateTable
-CREATE TABLE "Student" (
+CREATE TABLE IF NOT EXISTS "Student" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE "Student" (
 );
 
 -- CreateTable
-CREATE TABLE "Pass" (
+CREATE TABLE IF NOT EXISTS "Pass" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "startAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "endAt" DATETIME,
@@ -41,7 +41,7 @@ CREATE TABLE "Pass" (
 
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
-CREATE TABLE "new_User" (
+CREATE TABLE IF NOT EXISTS "new_User" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "externalId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
