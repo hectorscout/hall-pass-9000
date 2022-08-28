@@ -9,9 +9,9 @@ generator client {
 
 model User {
   id            String @id @default(cuid())
-  externalId    String @unique
+  externalId    String @unique @default(cuid())
   email         String
-  displayName   String
+  displayName   String @default("")
   profileImgUrl String?
 
   createdAt DateTime @default(now())
