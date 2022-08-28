@@ -2,7 +2,7 @@ import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getStudents } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
 import { Header } from "~/components/header";
 import styles from "~/components/hal9000/hal9000.css";

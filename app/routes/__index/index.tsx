@@ -1,4 +1,5 @@
-import { ActionFunction, json, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { endHallPass, getOpenHallPasses } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
 import { Form, useLoaderData } from "@remix-run/react";
@@ -33,7 +34,7 @@ export default function HallMonitorIndexPage() {
       <Form method="post">
         {openPasses.length
           ? openPasses.map((openPass, index) => (
-              <div>
+              <div key={openPass.id}>
                 <div>
                   {`${openPass.student.firstName} has been out there for ${elapsedTimes[index]}.`}
                 </div>

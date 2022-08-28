@@ -1,9 +1,8 @@
 import {
-  ActionFunction,
   json,
-  LoaderFunction,
   redirect,
 } from "@remix-run/node";
+import type {ActionFunction, LoaderFunction} from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import {
   createStudent,

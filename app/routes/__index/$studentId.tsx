@@ -1,4 +1,5 @@
-import { ActionFunction, json, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import {
   createHallPass,
@@ -7,7 +8,7 @@ import {
   getStudent,
 } from "~/models/hall-pass.server";
 import invariant from "tiny-invariant";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 
 export const loader = async ({ params, request }: LoaderArgs) => {

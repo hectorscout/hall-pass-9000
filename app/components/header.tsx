@@ -32,6 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ profileImgUrl, username }) => {
               <img
                 className="ml-10 inline-block h-10 w-10 rounded-full"
                 src={profileImgUrl}
+                alt={username}
               />
             ) : null}
           </div>
