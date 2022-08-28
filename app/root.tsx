@@ -14,7 +14,15 @@ import { getUser } from "./utils/session.server";
 import { getEnv } from "~/env.server";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    {
+      rel: "icon",
+      href: "/favicon.png",
+      type: "image/png",
+    }
+
+  ];
 };
 
 export const meta: MetaFunction = () => ({
