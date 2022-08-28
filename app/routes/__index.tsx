@@ -5,10 +5,10 @@ import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
 import { Header } from "~/components/header";
 import styles from "~/components/hal9000/hal9000.css";
-import { UseDataFunctionReturn } from "@remix-run/react/dist/components";
+// import { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { StudentList } from "~/components/studentList";
 
-export type RootLoaderData = UseDataFunctionReturn<typeof loader>;
+export type RootLoaderData = {'students': Awaited<ReturnType<typeof getStudents>>};
 export type SerializedStudents = RootLoaderData["students"];
 
 export const links = () => {
@@ -22,10 +22,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ students });
 };
 
-const linkStyles = "ml-10";
-
 export default function HallMonitorPage() {
-  const { students } = useLoaderData<typeof loader>();
+  const { students } = useLoaderData() as RootLoaderData;
   const user = useUser();
 
   return (
