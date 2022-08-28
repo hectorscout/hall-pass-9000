@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { SerializedStudents } from "~/routes/__index";
+// import { SerializedStudents } from "~/routes/__index";
 import { getStudents } from "~/models/hall-pass.server";
 interface HeaderProps {
   students: Awaited<ReturnType<typeof getStudents>>;

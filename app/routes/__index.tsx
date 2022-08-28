@@ -1,4 +1,5 @@
-import { json, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { getStudents } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
 import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
@@ -15,15 +16,15 @@ export const links = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
   const students = await getStudents({ userId });
 
-  return json({ students });
+  return json<RootLoaderData>({ students });
 };
 
 export default function HallMonitorPage() {
-  const { students } = useLoaderData() as RootLoaderData;
+  const { students } = useLoaderData();
   const user = useUser();
 
   return (
