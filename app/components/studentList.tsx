@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
-import { SerializedStudetns } from "~/routes/hall_monitor";
+import { SerializedStudents } from "~/routes/__index";
 interface HeaderProps {
-  students: SerializedStudetns;
+  students: SerializedStudents;
 }
 export const StudentList: React.FC<HeaderProps> = ({ students }) => {
   return (
