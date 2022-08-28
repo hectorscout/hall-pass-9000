@@ -6,7 +6,7 @@ import { getUserById } from "~/models/user.server";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
-const { getSession : getSessionInternal, destroySession, ...localSessionStorage } = createCookieSessionStorage({
+const localSessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
     httpOnly: true,
@@ -23,13 +23,13 @@ type CommitSession = typeof localSessionStorage.commitSession;
 const commitSession: CommitSession = (session, options) =>
   localSessionStorage.commitSession(session, {...options, expires: new Date(Date.now() + 60_000 * 60 * 24 * 31 * 365)});
 
-export const sessionStorage = {getSession: getSessionInternal(), commitSession, destroySession};
+export const sessionStorage = { ...localSessionStorage, commitSession };
 
 const USER_SESSION_KEY = "user";
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
-  return getSessionInternal(cookie);
+  return sessionStorage.getSession(cookie);
 }
 
 export async function getUserId(
@@ -99,7 +99,7 @@ export async function logout(request: Request) {
   const session = await getSession(request);
   return redirect("/login", {
     headers: {
-      "Set-Cookie": await destroySession(session),
+      "Set-Cookie": await sessionStorage.destroySession(session),
     },
   });
 }
