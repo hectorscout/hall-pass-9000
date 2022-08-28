@@ -35,9 +35,11 @@
     "@remix-run/serve": "^1.7.0",
     "@remix-run/server-runtime": "^1.7.0",
     "bcryptjs": "^2.4.3",
+    "date-fns": "^2.29.2",
     "isbot": "^3.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "remix-auth-google": "^1.1.0",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
