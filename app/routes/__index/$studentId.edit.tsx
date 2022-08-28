@@ -38,10 +38,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 type ActionData =
   | {
-  firstName: null | string;
-  lastName: null | string;
-  period: null | string;
-}
+      firstName: null | string;
+      lastName: null | string;
+      period: null | string;
+    }
   | undefined;
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -71,7 +71,13 @@ export const action: ActionFunction = async ({ params, request }) => {
   }
 
   if (params.studentId === "new") {
-    const newStudent = await createStudent({ userId, firstName, lastName, period, notes });
+    const newStudent = await createStudent({
+      userId,
+      firstName,
+      lastName,
+      period,
+      notes,
+    });
     return redirect(`/${newStudent.id}`);
   } else {
     const student = await updateStudent({
@@ -84,7 +90,6 @@ export const action: ActionFunction = async ({ params, request }) => {
     });
     return redirect(`/${student.id}`);
   }
-
 };
 
 const inputClassName =

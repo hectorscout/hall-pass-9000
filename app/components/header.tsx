@@ -28,7 +28,12 @@ export const Header: React.FC<HeaderProps> = ({ profileImgUrl, username }) => {
                 Logout {username}
               </button>
             </Form>
-            {profileImgUrl ? <img className="inline-block h-10 w-10 rounded-full ml-10" src={profileImgUrl} /> : null}
+            {profileImgUrl ? (
+              <img
+                className="ml-10 inline-block h-10 w-10 rounded-full"
+                src={profileImgUrl}
+              />
+            ) : null}
           </div>
           {/*<div className="ml-10 flex shrink-0 items-center space-x-4">*/}
           {/*  {}*/}

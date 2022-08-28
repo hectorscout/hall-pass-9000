@@ -1,8 +1,4 @@
-import {
-  ActionFunction,
-  json,
-  LoaderArgs,
-} from "@remix-run/node";
+import { ActionFunction, json, LoaderArgs } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import {
   createHallPass,

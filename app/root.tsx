@@ -6,7 +6,8 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration, useLoaderData
+  ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -20,8 +21,7 @@ export const links: LinksFunction = () => {
       rel: "icon",
       href: "/favicon.png",
       type: "image/png",
-    }
-
+    },
   ];
 };
 
@@ -39,7 +39,7 @@ type LoaderData = {
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
-    ENV: getEnv()
+    ENV: getEnv(),
   });
 }
 

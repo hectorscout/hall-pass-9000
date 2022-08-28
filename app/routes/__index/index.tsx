@@ -33,15 +33,15 @@ export default function HallMonitorIndexPage() {
       <Form method="post">
         {openPasses.length
           ? openPasses.map((openPass, index) => (
-            <div>
               <div>
-                {`${openPass.student.firstName} has been out there for ${elapsedTimes[index]}.`}
+                <div>
+                  {`${openPass.student.firstName} has been out there for ${elapsedTimes[index]}.`}
+                </div>
+                <button name="passId" type="submit" value={openPass.id}>
+                  Back Inside
+                </button>
               </div>
-              <button name="passId" type="submit" value={openPass.id}>
-                Back Inside
-              </button>
-            </div>
-          ))
+            ))
           : "The pod bay doors are closed (nobody is out there)."}
       </Form>
       <div>

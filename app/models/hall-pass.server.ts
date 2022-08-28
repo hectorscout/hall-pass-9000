@@ -2,11 +2,11 @@ import type { Student, User, Pass } from "@prisma/client";
 import { prisma } from "~/utils/db.server";
 
 export function getStudent({
-                             id,
-                             userId
-                           }: Pick<Student, "id"> & { userId: User["id"] }) {
+  id,
+  userId,
+}: Pick<Student, "id"> & { userId: User["id"] }) {
   return prisma.student.findFirst({
-    where: { id, userId }
+    where: { id, userId },
   });
 }
 
@@ -17,19 +17,19 @@ export function getStudents({ userId }: { userId: User["id"] }) {
       firstName: true,
       lastName: true,
       period: true,
-      createdAt: true
+      createdAt: true,
     },
-    where: { userId }
+    where: { userId },
   });
 }
 
 export function createStudent({
-                                firstName,
-                                lastName,
-                                period,
-                                notes,
-                                userId
-                              }: Pick<Student, "firstName" | "lastName" | "period" | "notes"> & {
+  firstName,
+  lastName,
+  period,
+  notes,
+  userId,
+}: Pick<Student, "firstName" | "lastName" | "period" | "notes"> & {
   userId: User["id"];
 }) {
   return prisma.student.create({
@@ -40,21 +40,21 @@ export function createStudent({
       notes,
       user: {
         connect: {
-          id: userId
-        }
-      }
-    }
+          id: userId,
+        },
+      },
+    },
   });
 }
 
 export function updateStudent({
-                                id,
-                                firstName,
-                                lastName,
-                                period,
-                                notes,
-                                userId
-                              }: Pick<Student, "id" | "firstName" | "lastName" | "period" | "notes"> & {
+  id,
+  firstName,
+  lastName,
+  period,
+  notes,
+  userId,
+}: Pick<Student, "id" | "firstName" | "lastName" | "period" | "notes"> & {
   userId: User["id"];
 }) {
   return prisma.student.update({
@@ -63,47 +63,47 @@ export function updateStudent({
       firstName,
       lastName,
       period,
-      notes
-    }
+      notes,
+    },
   });
 }
 
 export function deleteStudent({
-                                id,
-                                userId
-                              }: Pick<Student, "id"> & { userId: User["id"] }) {
+  id,
+  userId,
+}: Pick<Student, "id"> & { userId: User["id"] }) {
   return prisma.student.deleteMany({
-    where: { id, userId }
+    where: { id, userId },
   });
 }
 
 export function createHallPass({
-                                 studentId,
-                                 userId,
-                                 reason
-                               }: Pick<Pass, "studentId" | "reason"> & { userId: User["id"] }) {
+  studentId,
+  userId,
+  reason,
+}: Pick<Pass, "studentId" | "reason"> & { userId: User["id"] }) {
   return prisma.pass.create({
     data: {
       reason,
       student: {
-        connect: { id: studentId }
+        connect: { id: studentId },
       },
       user: {
-        connect: { id: userId }
-      }
-    }
+        connect: { id: userId },
+      },
+    },
   });
 }
 
 export function endHallPass({
-                              id,
-                              endAt
-                            }: Pick<Pass, "id"> & { endAt?: Date }) {
+  id,
+  endAt,
+}: Pick<Pass, "id"> & { endAt?: Date }) {
   return prisma.pass.update({
     where: { id },
     data: {
-      endAt: endAt ?? new Date()
-    }
+      endAt: endAt ?? new Date(),
+    },
   });
 }
 
@@ -113,9 +113,9 @@ export function getHallPassesForStudent(studentId: Student["id"]) {
       id: true,
       startAt: true,
       endAt: true,
-      reason: true
+      reason: true,
     },
-    where: { studentId }
+    where: { studentId },
   });
 }
 
@@ -124,8 +124,8 @@ export function getOpenHallPasses(userId: User["id"]) {
     where: { userId, endAt: null },
     include: {
       student: {
-        select: { firstName: true }
-      }
-    }
+        select: { firstName: true },
+      },
+    },
   });
 }

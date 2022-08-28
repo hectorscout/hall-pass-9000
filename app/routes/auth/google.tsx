@@ -5,5 +5,7 @@ import { authenticator } from "~/utils/auth.server";
 export let loader: LoaderFunction = () => redirect("/login");
 
 export let action: ActionFunction = ({ request }) => {
-  return authenticator.authenticate("google", request, {successRedirect: "/"});
+  return authenticator.authenticate("google", request, {
+    successRedirect: "/",
+  });
 };

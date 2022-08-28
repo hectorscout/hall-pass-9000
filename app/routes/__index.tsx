@@ -9,7 +9,9 @@ import styles from "~/components/hal9000/hal9000.css";
 // import { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { StudentList } from "~/components/studentList";
 
-export type RootLoaderData = {'students': Awaited<ReturnType<typeof getStudents>>};
+export type RootLoaderData = {
+  students: Awaited<ReturnType<typeof getStudents>>;
+};
 export type SerializedStudents = RootLoaderData["students"];
 
 export const links = () => {
