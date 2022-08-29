@@ -6,11 +6,11 @@ import { getUserById } from "~/models/user.server";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
-const localSessionStorage = createCookieSessionStorage({
+export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
     httpOnly: true,
-    maxAge: 60 * 24 * 30, // 30 days
+    // maxAge: 60 * 24 * 30, // 30 days // without this, it should expire on tab close
     path: "/",
     sameSite: "lax",
     secrets: [process.env.SESSION_SECRET],
@@ -18,12 +18,13 @@ const localSessionStorage = createCookieSessionStorage({
   },
 });
 
-type CommitSession = typeof localSessionStorage.commitSession;
+// Pulled from hi-user-im-dad, but shouldn't need it
+// type CommitSession = typeof localSessionStorage.commitSession;
 
-const commitSession: CommitSession = (session, options) =>
-  localSessionStorage.commitSession(session, {...options, expires: new Date(Date.now() + 60_000 * 60 * 24 * 31 * 365)});
+// const commitSession: CommitSession = (session, options) =>
+//   localSessionStorage.commitSession(session, {...options, expires: new Date(Date.now() + 60_000 * 60 * 24 * 31 * 365)});
 
-export const sessionStorage = { ...localSessionStorage, commitSession };
+// export const sessionStorage = { ...localSessionStorage, commitSession };
 
 const USER_SESSION_KEY = "user";
 
