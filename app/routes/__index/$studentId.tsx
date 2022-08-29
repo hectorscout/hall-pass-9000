@@ -86,23 +86,22 @@ export default function StudentDetailsRoute() {
             Jettison Student Into The Cold Uncaring Void Of Space
           </button>
         </div>
-        <label htmlFor="reason">Reason:</label>
-        <br />
-        <div className="flex gap-2">
-          <textarea
-            id="reason"
-            rows={1}
-            name="reason"
-            className={`${inputClassName} font-mono`}
-          />
-        </div>
+        {/*/!*<label htmlFor="reason">Reason:</label>*!/*/}
+        {/*/!*<br />*!/*/}
+        {/*/!*<div className="flex gap-2">*!/*/}
+        {/*/!*  <textarea*!/*/}
+        {/*// id="reason" // rows={1}*/}
+        {/*// name="reason" // className={`${inputClassName} font-mono`}*/}
+        {/*/!*  />*!/*/}
+        {/*/!*</div>*!/*/}
         <div className="mt-10">
-          <h2 className="text-5xl">Space Walk Log:</h2>
+          <h2 className="mb-5 text-5xl">Space Walk Log:</h2>
           <div className="mt-1 grid grid-cols-4">
-            <div>Start</div>
-            <div>End</div>
-            <div>Duration</div>
+            <div className="text-2xl">Start</div>
+            <div className="text-2xl">End</div>
+            <div className="text-2xl">Duration</div>
             <div></div>
+            <hr className="col-span-4 mb-2" />
             {passes.map((pass, index) => {
               const { duration, status } = elapsedTimes[index] ?? {
                 duration: undefined,
