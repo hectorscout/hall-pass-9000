@@ -104,11 +104,25 @@ export default function StudentDetailsRoute() {
             <div>Duration</div>
             <div></div>
             {passes.map((pass, index) => {
+              const { duration, status } = elapsedTimes[index] ?? {
+                duration: undefined,
+                status: "good",
+              };
+              const textColor =
+                status === "error"
+                  ? "text-red-600"
+                  : status === "warning"
+                  ? "text-orange-500"
+                  : undefined;
               return (
                 <React.Fragment key={pass.id}>
-                  <div>{`${formatDateTime(pass.startAt)}`}</div>
-                  <div>{`${formatDateTime(pass.endAt)}`}</div>
-                  <div>{`${elapsedTimes[index]}`}</div>
+                  <div className={textColor}>{`${formatDateTime(
+                    pass.startAt
+                  )}`}</div>
+                  <div className={textColor}>{`${formatDateTime(
+                    pass.endAt
+                  )}`}</div>
+                  <div className={textColor}>{duration}</div>
                   <div>
                     {!pass.endAt ? (
                       <button

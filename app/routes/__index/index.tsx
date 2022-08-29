@@ -33,16 +33,29 @@ export default function HallMonitorIndexPage() {
     <div>
       <Form method="post">
         {openPasses.length
-          ? openPasses.map((openPass, index) => (
-              <div key={openPass.id}>
-                <div>
-                  {`${openPass.student.firstName} has been out there for ${elapsedTimes[index]}.`}
+          ? openPasses.map((openPass, index) => {
+              const { duration, status } = elapsedTimes[index] ?? {
+                duration: undefined,
+                status: "good",
+              };
+              const textColor =
+                status === "error"
+                  ? "text-red-600"
+                  : status === "warning"
+                  ? "text-orange-500"
+                  : undefined;
+
+              return (
+                <div key={openPass.id}>
+                  <div className={textColor}>
+                    {`${openPass.student.firstName} has been out there for ${duration}.`}
+                  </div>
+                  <button name="passId" type="submit" value={openPass.id}>
+                    Back Inside
+                  </button>
                 </div>
-                <button name="passId" type="submit" value={openPass.id}>
-                  Back Inside
-                </button>
-              </div>
-            ))
+              );
+            })
           : "The pod bay doors are closed (nobody is out there)."}
       </Form>
       <div>
