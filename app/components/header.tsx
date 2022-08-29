@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ profileImgUrl, username }) => {
   return (
-    <header className="border-primary-600 border-b-4 bg-gray-800">
+    <header className="border-primary-600 bg-gray-800">
       <nav className="px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex w-full items-center justify-between py-6">
           <div className="flex items-center">
@@ -32,6 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ profileImgUrl, username }) => {
               <img
                 className="ml-10 inline-block h-10 w-10 rounded-full"
                 src={profileImgUrl}
+                alt={username}
               />
             ) : null}
           </div>

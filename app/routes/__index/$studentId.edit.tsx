@@ -1,9 +1,5 @@
-import {
-  ActionFunction,
-  json,
-  LoaderFunction,
-  redirect,
-} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import {
   createStudent,
@@ -105,6 +101,8 @@ export default function EditStudentRoute() {
   // const isDeleting = transition.submission?.formData.get("intent") === "delete";
   const isNewStudent = !student;
 
+  const periods = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
+
   return (
     <Form method="post" key={student?.id}>
       <p>
@@ -141,17 +139,22 @@ export default function EditStudentRoute() {
           {errors?.period ? (
             <em className="text-red-600">{errors.period}</em>
           ) : null}
-          <input
-            type="text"
+          <select
             name="period"
-            className={inputClassName}
             defaultValue={student?.period ?? ""}
-          />
+            className={inputClassName}
+          >
+            {periods.map((period) => (
+              <option value={period} key={period}>
+                {period}
+              </option>
+            ))}
+          </select>
         </label>
       </p>
       <p>
         <label htmlFor="notes">
-          notes:{" "}
+          Notes:{" "}
           {errors?.notes ? (
             <em className="text-red-600">{errors.notes}</em>
           ) : null}
