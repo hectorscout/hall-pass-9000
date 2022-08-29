@@ -10,6 +10,8 @@ import {
 import invariant from "tiny-invariant";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
+import { format } from "date-fns";
+import React from "react";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -53,48 +55,76 @@ export default function StudentDetailsRoute() {
       end: pass.endAt ? new Date(pass.endAt) : undefined,
     }))
   );
+  const formatDateTime = (dateTimeStr: string | null) => {
+    if (!dateTimeStr) return "N/A";
+    return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
+  };
 
   return (
-    <div>
-      <div>{`${student?.firstName} ${student?.lastName}`}</div>
-      <div>{student?.period}</div>
+    <div className="flex flex-1 flex-col px-10">
+      <div className="flex py-10">
+        <h1 className="flex-1 text-center text-6xl font-extrabold">
+          <span className="block uppercase text-red-500 drop-shadow-md">{`${student?.firstName} ${student?.lastName}`}</span>
+          <span>({student.period})</span>
+        </h1>
+        <div>
+          <Link to="edit" className="justify-end">
+            <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
+              Edit
+            </button>
+          </Link>
+        </div>
+      </div>
       <Form method="post">
+        <div className="flex flex-1 justify-center">
+          <button
+            type="submit"
+            name="passId"
+            value="newPass"
+            className="justify-center rounded bg-red-500 py-12 px-14 text-3xl text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
+          >
+            Jettison Student Into The Cold Uncaring Void Of Space
+          </button>
+        </div>
         <label htmlFor="reason">Reason:</label>
         <br />
-        <textarea
-          id="reason"
-          rows={5}
-          name="reason"
-          className={`${inputClassName} font-mono`}
-        />
-        <button
-          type="submit"
-          name="passId"
-          value="newPass"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
-        >
-          Start Hall Pass
-        </button>
-        <Link to="edit">
-          <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
-            Edit
-          </button>
-        </Link>
-        <div>
-          {" "}
-          Passes:
-          {passes.map((pass, index) => {
-            return (
-              <div key={pass.id}>
-                <div>{`${pass.startAt} - ${pass.reason} - ${pass.endAt} - elapsed: ${elapsedTimes[index]}`}</div>
-                {!pass.endAt ? (
-                  <button name="passId" type="submit" value={pass.id}>
-                    end pass
-                  </button>
-                ) : null}
-              </div>
-            );
-          })}
+        <div className="flex gap-2">
+          <textarea
+            id="reason"
+            rows={1}
+            name="reason"
+            className={`${inputClassName} font-mono`}
+          />
+        </div>
+        <div className="mt-10">
+          <h2 className="text-5xl">Space Walk Log:</h2>
+          <div className="mt-1 grid grid-cols-4">
+            <div>Start</div>
+            <div>End</div>
+            <div>Duration</div>
+            <div></div>
+            {passes.map((pass, index) => {
+              return (
+                <React.Fragment key={pass.id}>
+                  <div>{`${formatDateTime(pass.startAt)}`}</div>
+                  <div>{`${formatDateTime(pass.endAt)}`}</div>
+                  <div>{`${elapsedTimes[index]}`}</div>
+                  <div>
+                    {!pass.endAt ? (
+                      <button
+                        name="passId"
+                        type="submit"
+                        value={pass.id}
+                        className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
+                      >
+                        End Space Walk
+                      </button>
+                    ) : null}
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
         </div>
       </Form>
     </div>

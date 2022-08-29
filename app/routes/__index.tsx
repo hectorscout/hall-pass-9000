@@ -41,9 +41,7 @@ export default function HallMonitorPage() {
           Students:
           <StudentList students={students} />
         </div>
-        <div>
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
     </div>
   );
