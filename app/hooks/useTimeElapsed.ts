@@ -9,7 +9,7 @@ export type DurationStatus = "good" | "warning" | "error";
 export const useTimeElapsed = (
   intervals: (Partial<Interval> & Pick<Interval, "start">)[]
 ) => {
-  const getDurationStatus = (duration: Duration) => {
+  const getDurationStatus = (duration: Duration): DurationStatus => {
     const { years, months, weeks, days, hours, minutes } = duration;
     if (
       years ||
@@ -28,6 +28,7 @@ export const useTimeElapsed = (
   const hasOpen = intervals.some((interval) => !interval.end);
   const createDurations = (): {
     duration: Duration;
+    formattedDuration: string;
     status: DurationStatus;
   }[] => {
     return intervals.map(({ start, end }) => {
@@ -37,6 +38,7 @@ export const useTimeElapsed = (
       });
       return {
         duration,
+        formattedDuration: formatDuration(duration),
         status: getDurationStatus(duration),
       };
     });
@@ -49,17 +51,14 @@ export const useTimeElapsed = (
       setElapsedDurations(createDurations());
     };
 
-    const interval = hasOpen ? setInterval(tick, 1000) : null;
+    // TODO: figure out how to make this work
+    // const interval = hasOpen ? setInterval(tick, 1000) : null;
+    const interval = setInterval(tick, 1000);
 
     return () => {
       if (interval) clearInterval(interval);
     };
   });
 
-  return elapsedDurations.map(({ duration, status }) => {
-    return {
-      duration: formatDuration(duration),
-      status,
-    };
-  });
+  return elapsedDurations;
 };

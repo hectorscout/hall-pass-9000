@@ -143,7 +143,7 @@ export default function StudentDetailsRoute() {
             <div className="text-2xl">Duration</div>
             <hr className="col-span-3 mb-2" />
             {passes.map((pass, index) => {
-              const { duration, status } = elapsedTimes[index] ?? {
+              const { formattedDuration, status } = elapsedTimes[index] ?? {
                 duration: undefined,
                 status: "good",
               };
@@ -151,7 +151,7 @@ export default function StudentDetailsRoute() {
                 status === "error"
                   ? "text-red-600"
                   : status === "warning"
-                  ? "text-orange-500"
+                  ? "text-yellow-500"
                   : undefined;
               return (
                 <React.Fragment key={pass.id}>
@@ -161,7 +161,7 @@ export default function StudentDetailsRoute() {
                   <div className={textColor}>{`${formatDateTime(
                     pass.endAt
                   )}`}</div>
-                  <div className={textColor}>{duration}</div>
+                  <div className={textColor}>{formattedDuration}</div>
                 </React.Fragment>
               );
             })}

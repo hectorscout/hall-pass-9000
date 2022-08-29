@@ -125,7 +125,7 @@ export function getOpenHallPasses(userId: User["id"]) {
     where: { userId, endAt: null },
     include: {
       student: {
-        select: { firstName: true },
+        select: { firstName: true, lastName: true },
       },
     },
   });
