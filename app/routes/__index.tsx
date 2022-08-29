@@ -2,7 +2,7 @@ import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getStudents } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
 import { Header } from "~/components/header";
 import styles from "~/components/hal9000/hal9000.css";
@@ -34,16 +34,17 @@ export default function HallMonitorPage() {
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
       <main className="flex h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-100 pl-10">
-          <Link to="">Home</Link>
-          <br />
-          <Link to="new/edit">+ New Student</Link>
-          <hr />
-          Students:
-          <StudentList students={students} />
+          <h2 className="my-5 text-3xl">
+            <Link to="">Home</Link>
+          </h2>
+          <h2 className="text-2xl">
+            <Link to="new/edit">+ New Student</Link>
+          </h2>
+          <div className="mt-10">
+            <StudentList students={students} />
+          </div>
         </div>
-        <div>
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
     </div>
   );

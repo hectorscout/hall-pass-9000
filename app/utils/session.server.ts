@@ -10,12 +10,21 @@ export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
     httpOnly: true,
+    // maxAge: 60 * 24 * 30, // 30 days // without this, it should expire on tab close
     path: "/",
     sameSite: "lax",
     secrets: [process.env.SESSION_SECRET],
     secure: process.env.NODE_ENV === "production",
   },
 });
+
+// Pulled from hi-user-im-dad, but shouldn't need it
+// type CommitSession = typeof localSessionStorage.commitSession;
+
+// const commitSession: CommitSession = (session, options) =>
+//   localSessionStorage.commitSession(session, {...options, expires: new Date(Date.now() + 60_000 * 60 * 24 * 31 * 365)});
+
+// export const sessionStorage = { ...localSessionStorage, commitSession };
 
 const USER_SESSION_KEY = "user";
 
@@ -63,29 +72,29 @@ export async function requireUser(request: Request) {
   throw await logout(request);
 }
 
-export async function createUserSession({
-  request,
-  userId,
-  remember,
-  redirectTo,
-}: {
-  request: Request;
-  userId: string;
-  remember: boolean;
-  redirectTo: string;
-}) {
-  const session = await getSession(request);
-  session.set(USER_SESSION_KEY, userId);
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: remember
-          ? 60 * 60 * 24 * 7 // 7 days
-          : undefined,
-      }),
-    },
-  });
-}
+// export async function createUserSession({
+//   request,
+//   userId,
+//   remember,
+//   redirectTo,
+// }: {
+//   request: Request;
+//   userId: string;
+//   remember: boolean;
+//   redirectTo: string;
+// }) {
+//   const session = await getSession(request);
+//   session.set(USER_SESSION_KEY, userId);
+//   return redirect(redirectTo, {
+//     headers: {
+//       "Set-Cookie": await sessionStorage.commitSession(session, {
+//         maxAge: remember
+//           ? 60 * 60 * 24 * 7 // 7 days
+//           : undefined,
+//       }),
+//     },
+//   });
+// }
 
 export async function logout(request: Request) {
   const session = await getSession(request);

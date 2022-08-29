@@ -20,6 +20,7 @@ export function getStudents({ userId }: { userId: User["id"] }) {
       createdAt: true,
     },
     where: { userId },
+    orderBy: { firstName: "asc" },
   });
 }
 
@@ -124,7 +125,7 @@ export function getOpenHallPasses(userId: User["id"]) {
     where: { userId, endAt: null },
     include: {
       student: {
-        select: { firstName: true },
+        select: { firstName: true, lastName: true },
       },
     },
   });
