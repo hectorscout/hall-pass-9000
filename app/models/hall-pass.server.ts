@@ -20,6 +20,7 @@ export function getStudents({ userId }: { userId: User["id"] }) {
       createdAt: true,
     },
     where: { userId },
+    orderBy: { firstName: "asc" },
   });
 }
 

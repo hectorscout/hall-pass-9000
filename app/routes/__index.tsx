@@ -34,12 +34,15 @@ export default function HallMonitorPage() {
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
       <main className="flex h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-100 pl-10">
-          <Link to="">Home</Link>
-          <br />
-          <Link to="new/edit">+ New Student</Link>
-          <hr />
-          Students:
-          <StudentList students={students} />
+          <h2 className="my-5 text-3xl">
+            <Link to="">Home</Link>
+          </h2>
+          <h2 className="text-2xl">
+            <Link to="new/edit">+ New Student</Link>
+          </h2>
+          <div className="mt-10">
+            <StudentList students={students} />
+          </div>
         </div>
         <Outlet />
       </main>
