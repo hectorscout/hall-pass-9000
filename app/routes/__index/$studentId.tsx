@@ -10,7 +10,7 @@ import {
 import invariant from "tiny-invariant";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
-import { format } from "date-fns";
+import { add, format, formatDuration, intervalToDuration } from "date-fns";
 import React from "react";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -23,8 +23,26 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   const passes = await getHallPassesForStudent(params.studentId);
+  const openPass = passes.find((pass) => !pass.endAt);
 
-  return json({ student, passes });
+  const now = new Date();
+  const nowPlusTotalDuration = passes.reduce((total, pass) => {
+    return add(
+      total,
+      intervalToDuration({
+        start: new Date(pass.startAt),
+        end: pass.endAt ? new Date(pass.endAt) : now,
+      })
+    );
+  }, now);
+  const totalDuration = formatDuration(
+    intervalToDuration({
+      start: now,
+      end: nowPlusTotalDuration,
+    })
+  );
+
+  return json({ openPass, passes, student, totalDuration });
 };
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -48,13 +66,15 @@ const inputClassName =
   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
 
 export default function StudentDetailsRoute() {
-  const { student, passes } = useLoaderData<typeof loader>();
+  const { openPass, passes, student, totalDuration } =
+    useLoaderData<typeof loader>();
   const elapsedTimes = useTimeElapsed(
     passes.map((pass) => ({
       start: new Date(pass.startAt),
       end: pass.endAt ? new Date(pass.endAt) : undefined,
     }))
   );
+
   const formatDateTime = (dateTimeStr: string | null) => {
     if (!dateTimeStr) return "N/A";
     return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
@@ -77,14 +97,25 @@ export default function StudentDetailsRoute() {
       </div>
       <Form method="post">
         <div className="flex flex-1 justify-center">
-          <button
-            type="submit"
-            name="passId"
-            value="newPass"
-            className="justify-center rounded bg-red-500 py-12 px-14 text-3xl text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
-          >
-            Jettison Student Into The Cold Uncaring Void Of Space
-          </button>
+          {openPass ? (
+            <button
+              type="submit"
+              name="passId"
+              value={openPass.id}
+              className="justify-center rounded bg-red-500 py-12 px-14 text-3xl text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
+            >
+              Return Student From The Cold Uncaring Void Of Space
+            </button>
+          ) : (
+            <button
+              type="submit"
+              name="passId"
+              value="newPass"
+              className="justify-center rounded bg-green-500 py-12 px-14 text-3xl text-white hover:bg-green-600 focus:bg-green-400 disabled:bg-green-300"
+            >
+              Jettison Student Into The Cold Uncaring Void Of Space
+            </button>
+          )}
         </div>
         {/*/!*<label htmlFor="reason">Reason:</label>*!/*/}
         {/*/!*<br />*!/*/}
@@ -95,13 +126,22 @@ export default function StudentDetailsRoute() {
         {/*/!*  />*!/*/}
         {/*/!*</div>*!/*/}
         <div className="mt-10">
-          <h2 className="mb-5 text-5xl">Space Walk Log:</h2>
-          <div className="mt-1 grid grid-cols-4">
+          <h2 className="mb-5">
+            <span className="text-5xl">Space Walk Log:</span>
+            {passes.length ? (
+              <>
+                <span className="ml-10">{`${passes.length} walk${
+                  passes.length > 1 ? "s" : ""
+                }`}</span>
+                <span className="ml-10">{totalDuration}</span>
+              </>
+            ) : null}
+          </h2>
+          <div className="mt-1 grid grid-cols-3">
             <div className="text-2xl">Start</div>
             <div className="text-2xl">End</div>
             <div className="text-2xl">Duration</div>
-            <div></div>
-            <hr className="col-span-4 mb-2" />
+            <hr className="col-span-3 mb-2" />
             {passes.map((pass, index) => {
               const { duration, status } = elapsedTimes[index] ?? {
                 duration: undefined,
@@ -122,18 +162,6 @@ export default function StudentDetailsRoute() {
                     pass.endAt
                   )}`}</div>
                   <div className={textColor}>{duration}</div>
-                  <div>
-                    {!pass.endAt ? (
-                      <button
-                        name="passId"
-                        type="submit"
-                        value={pass.id}
-                        className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
-                      >
-                        End Space Walk
-                      </button>
-                    ) : null}
-                  </div>
                 </React.Fragment>
               );
             })}
