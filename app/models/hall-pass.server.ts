@@ -78,6 +78,18 @@ export function deleteStudent({
   });
 }
 
+export function getHallPass({
+  id,
+  userId,
+}: Pick<Pass, "id"> & { userId: User["id"] }) {
+  return prisma.pass.findFirst({
+    where: {
+      id,
+      userId,
+    },
+  });
+}
+
 export function createHallPass({
   studentId,
   userId,
@@ -127,6 +139,20 @@ export function getOpenHallPasses(userId: User["id"]) {
       student: {
         select: { firstName: true, lastName: true },
       },
+    },
+  });
+}
+
+export function updateHallPass({
+  id,
+  endAt,
+  reason,
+}: Pick<Pass, "id" | "endAt" | "reason">) {
+  return prisma.pass.update({
+    where: { id },
+    data: {
+      endAt: endAt,
+      reason,
     },
   });
 }
