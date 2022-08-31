@@ -88,10 +88,14 @@ export default function PassDetailsRoute() {
       <div className="text-4xl text-gray-900">
         {duration.hours ? (
           <>
-            <label>
+            <label className="font-mono text-4xl text-gray-900">
+              {(duration.hours ?? 0) < 10 ? "0" : null}
               <input
-                className="relative w-16 appearance-none border-none bg-gray-500 p-1 font-mono text-4xl text-gray-900 outline-none"
+                className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  (duration.hours ?? 0) < 10 ? "w-14" : "w-20"
+                }`}
                 type="number"
+                min={duration.days === 0 ? "0" : undefined}
                 value={duration.hours}
                 onChange={({ target: { value } }) =>
                   updateDuration({ hours: parseInt(value) })
@@ -101,10 +105,14 @@ export default function PassDetailsRoute() {
             :
           </>
         ) : null}
-        <label>
+        <label className="font-mono text-4xl text-gray-900">
+          {(duration.minutes ?? 0) < 10 ? "0" : null}
           <input
-            className="relative w-16 appearance-none border-none bg-gray-500 p-1 font-mono text-4xl text-gray-900 outline-none"
+            className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+              (duration.minutes ?? 0) < 10 ? "w-14" : "w-20"
+            }`}
             type="number"
+            min={duration.hours === 0 ? "0" : undefined}
             value={duration.minutes}
             onChange={({ target: { value } }) =>
               updateDuration({ minutes: parseInt(value) })
@@ -112,10 +120,14 @@ export default function PassDetailsRoute() {
           />
         </label>
         :
-        <label>
+        <label className="font-mono text-4xl text-gray-900">
+          {(duration.seconds ?? 0) < 10 ? "0" : null}
           <input
-            className="relative w-20 appearance-none border-none bg-gray-500 p-1 font-mono text-4xl text-gray-900 outline-none"
+            className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+              (duration.seconds ?? 0) < 10 ? "w-14" : "w-20"
+            }`}
             type="number"
+            min={duration.minutes === 0 ? "0" : undefined}
             value={duration.seconds}
             onChange={({ target: { value } }) =>
               updateDuration({ seconds: parseInt(value) })
