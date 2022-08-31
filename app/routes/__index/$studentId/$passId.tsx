@@ -8,9 +8,9 @@ import { requireUserId } from "~/utils/session.server";
 import invariant from "tiny-invariant";
 import { getHallPass, updateHallPass } from "~/models/hall-pass.server";
 import { Form, useLoaderData } from "@remix-run/react";
-import { formatDateTime } from "~/utils/utils";
+import { formatDate, formatDateTime, formatTime } from "~/utils/utils";
 import { useEffect, useState } from "react";
-import { add, intervalToDuration } from "date-fns";
+import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -29,6 +29,11 @@ export const action: ActionFunction = async ({ params, request }) => {
   invariant(params.passId, "params.passId is required");
   invariant(params.studentId, "params.studentId is required");
   const formData = await request.formData();
+
+  const intent = formData.get("intent");
+  if (intent === "close") {
+    return redirect(`/${params.studentId}`);
+  }
 
   const reason = formData.get("reason") ?? "";
   const endAt = formData.get("endAt");
@@ -82,77 +87,114 @@ export default function PassDetailsRoute() {
   }, [duration]);
 
   return (
-    <div className="absolute right-0 h-full w-1/3 bg-gray-500 p-10 text-gray-300">
-      <div>Start: {formatDateTime(pass.startAt)}</div>
-      <div>End: {formatDateTime(endAt)}</div>
-      <div className="text-4xl text-gray-900">
-        {duration.hours ? (
-          <>
-            <label className="font-mono text-4xl text-gray-900">
-              {(duration.hours ?? 0) < 10 ? "0" : null}
-              <input
-                className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-                  (duration.hours ?? 0) < 10 ? "w-14" : "w-20"
-                }`}
-                type="number"
-                min={duration.days === 0 ? "0" : undefined}
-                value={duration.hours}
-                onChange={({ target: { value } }) =>
-                  updateDuration({ hours: parseInt(value) })
-                }
-              />
-            </label>{" "}
-            :
-          </>
-        ) : null}
-        <label className="font-mono text-4xl text-gray-900">
-          {(duration.minutes ?? 0) < 10 ? "0" : null}
-          <input
-            className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-              (duration.minutes ?? 0) < 10 ? "w-14" : "w-20"
-            }`}
-            type="number"
-            min={duration.hours === 0 ? "0" : undefined}
-            value={duration.minutes}
-            onChange={({ target: { value } }) =>
-              updateDuration({ minutes: parseInt(value) })
-            }
-          />
-        </label>
-        :
-        <label className="font-mono text-4xl text-gray-900">
-          {(duration.seconds ?? 0) < 10 ? "0" : null}
-          <input
-            className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-              (duration.seconds ?? 0) < 10 ? "w-14" : "w-20"
-            }`}
-            type="number"
-            min={duration.minutes === 0 ? "0" : undefined}
-            value={duration.seconds}
-            onChange={({ target: { value } }) =>
-              updateDuration({ seconds: parseInt(value) })
-            }
-          />
-        </label>
-      </div>
-      <div>
-        <Form method="post" key={pass.id}>
-          <input type="hidden" name="endAt" value={endAtStr} />
-          <label>
-            Space Walk Notes: <br />
-            <textarea
-              id="reason"
-              rows={5}
-              name="reason"
-              className={`w-full font-mono text-gray-800`}
-              defaultValue={pass.reason ?? ""}
+    <div className="absolute right-0 h-full w-1/3 bg-gray-500 px-10 text-gray-300">
+      <Form method="post">
+        <button
+          type="submit"
+          name="intent"
+          value="close"
+          className="absolute right-0 m-5 rounded p-3 text-5xl hover:bg-blue-500"
+        >
+          X
+        </button>
+      </Form>
+      <div className="my-10">
+        <h2 className="text-4xl">
+          {formatDate(pass.startAt)}{" "}
+          <span className="text-2xl">
+            ({formatDistanceToNow(new Date(pass.startAt))} ago)
+          </span>
+        </h2>
+        <div className="text-3xl">
+          {`${formatTime(pass.startAt)} - ${formatTime(endAt)}`}
+          {duration.days ? ` +${duration.days}` : null}
+        </div>
+        <div className="mt-10 text-6xl text-gray-900">
+          {duration.days ? (
+            <>
+              <label className="font-mono text-gray-900">
+                {(duration.days ?? 0) < 10 ? "0" : null}
+                <input
+                  className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                    (duration.days ?? 0) < 10 ? "w-14" : "w-24"
+                  }`}
+                  type="number"
+                  min="0"
+                  value={duration.days}
+                  onChange={({ target: { value } }) =>
+                    updateDuration({ days: parseInt(value) })
+                  }
+                />
+              </label>{" "}
+              :
+            </>
+          ) : null}
+          <label className="font-mono text-gray-900">
+            {(duration.hours ?? 0) < 10 ? "0" : null}
+            <input
+              className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
+              }`}
+              type="number"
+              max="23"
+              min={duration.days === 0 ? "0" : undefined}
+              value={duration.hours}
+              onChange={({ target: { value } }) =>
+                updateDuration({ hours: parseInt(value) })
+              }
             />
           </label>
-          <br />
-          <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
-            Update Space Walk
-          </button>
-        </Form>
+          :
+          <label className="font-mono text-gray-900">
+            {(duration.minutes ?? 0) < 10 ? "0" : null}
+            <input
+              className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
+              }`}
+              type="number"
+              min={duration.hours === 0 ? "0" : undefined}
+              value={duration.minutes}
+              onChange={({ target: { value } }) =>
+                updateDuration({ minutes: parseInt(value) })
+              }
+            />
+          </label>
+          :
+          <label className="font-mono text-gray-900">
+            {(duration.seconds ?? 0) < 10 ? "0" : null}
+            <input
+              className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                (duration.seconds ?? 0) < 10 ? "w-14" : "w-24"
+              }`}
+              type="number"
+              min={duration.minutes === 0 ? "0" : undefined}
+              value={duration.seconds}
+              onChange={({ target: { value } }) =>
+                updateDuration({ seconds: parseInt(value) })
+              }
+            />
+          </label>
+        </div>
+        <div>
+          <Form method="post" key={pass.id}>
+            <input type="hidden" name="endAt" value={endAtStr} />
+            <label>
+              Space Walk Notes: <br />
+              <textarea
+                id="reason"
+                rows={5}
+                name="reason"
+                className={`w-full rounded p-2 font-mono text-gray-800`}
+                placeholder="Out fixing the repulser rays."
+                defaultValue={pass.reason ?? ""}
+              />
+            </label>
+            <br />
+            <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
+              Update Space Walk
+            </button>
+          </Form>
+        </div>
       </div>
     </div>
   );

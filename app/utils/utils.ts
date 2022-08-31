@@ -85,3 +85,13 @@ export const formatDateTime = (dateTimeStr: string | Date | null) => {
   if (!dateTimeStr) return "N/A";
   return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
 };
+
+export const formatDate = (dateTimeStr: string | Date | null) => {
+  if (!dateTimeStr) return "N/A";
+  return format(new Date(dateTimeStr), "d-MMM-yy");
+};
+
+export const formatTime = (dateTimeStr: string | Date | null) => {
+  if (!dateTimeStr) return "N/A";
+  return format(new Date(dateTimeStr), "h:mm aaa");
+};
