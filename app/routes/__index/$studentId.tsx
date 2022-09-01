@@ -8,7 +8,7 @@ import {
   getStudent,
 } from "~/models/hall-pass.server";
 import invariant from "tiny-invariant";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import { add, format, formatDuration, intervalToDuration } from "date-fns";
 import React from "react";
@@ -75,6 +75,7 @@ export default function StudentDetailsRoute() {
       end: pass.endAt ? new Date(pass.endAt) : undefined,
     }))
   );
+  const { passId } = useParams();
 
   return (
     <div className="flex flex-1 flex-col px-10">
@@ -151,17 +152,29 @@ export default function StudentDetailsRoute() {
                   : undefined;
               return (
                 <React.Fragment key={pass.id}>
-                  <Link to={pass.id} title={pass.reason || "N/A"}>
+                  <Link
+                    to={pass.id}
+                    title={pass.reason || "N/A"}
+                    className={pass.id === passId ? "bg-amber-100" : ""}
+                  >
                     <div className={textColor}>{`${formatDateTime(
                       pass.startAt
                     )}`}</div>
                   </Link>
-                  <Link to={pass.id} title={pass.reason || "N/A"}>
+                  <Link
+                    to={pass.id}
+                    title={pass.reason || "N/A"}
+                    className={pass.id === passId ? "bg-amber-100" : ""}
+                  >
                     <div className={textColor}>{`${formatDateTime(
                       pass.endAt
                     )}`}</div>
                   </Link>
-                  <Link to={pass.id} title={pass.reason || "N/A"}>
+                  <Link
+                    to={pass.id}
+                    title={pass.reason || "N/A"}
+                    className={pass.id === passId ? "bg-amber-100" : ""}
+                  >
                     <div className={textColor}>{formattedDuration}</div>
                   </Link>
                 </React.Fragment>
