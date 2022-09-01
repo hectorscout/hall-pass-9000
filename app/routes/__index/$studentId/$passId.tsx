@@ -12,7 +12,7 @@ import {
   updateHallPass,
 } from "~/models/hall-pass.server";
 import { Form, useLoaderData } from "@remix-run/react";
-import { formatDate, formatDateTime, formatTime } from "~/utils/utils";
+import { formatDate, formatTime } from "~/utils/utils";
 import { useEffect, useState } from "react";
 import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
 
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   invariant(typeof reason === "string", "reason must be a string");
   invariant(typeof endAt === "string", "endAt must be a string");
 
-  const pass = await updateHallPass({
+  await updateHallPass({
     id: params.passId,
     endAt: endAt ? new Date(endAt) : undefined,
     reason,
@@ -93,7 +93,7 @@ export default function PassDetailsRoute() {
     const newEndAt = add(new Date(pass.startAt), duration);
     setEndAt(newEndAt);
     setEndAtStr(newEndAt.toISOString());
-  }, [duration]);
+  }, [duration, pass.startAt]);
 
   return (
     <div className="absolute right-0 h-full w-1/3 bg-gray-500 px-10 text-gray-300">

@@ -10,7 +10,7 @@ import {
 import invariant from "tiny-invariant";
 import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
-import { add, format, formatDuration, intervalToDuration } from "date-fns";
+import { add, formatDuration, intervalToDuration } from "date-fns";
 import React from "react";
 import { formatDateTime } from "~/utils/utils";
 
@@ -63,8 +63,8 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-const inputClassName =
-  "w-full rounded border border-gray-500 px-2 py-1 text-lg";
+// const inputClassName =
+//   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
 
 export default function StudentDetailsRoute() {
   const { openPass, passes, student, totalDuration } =
@@ -76,11 +76,6 @@ export default function StudentDetailsRoute() {
     }))
   );
   const { passId } = useParams();
-
-  const formatDateTime = (dateTimeStr: string | null) => {
-    if (!dateTimeStr) return "N/A";
-    return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
-  };
 
   return (
     <div className="flex flex-1 flex-col px-10">
