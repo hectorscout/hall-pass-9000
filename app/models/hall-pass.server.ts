@@ -147,7 +147,7 @@ export function updateHallPass({
   id,
   endAt,
   reason,
-}: Pick<Pass, "id" | "endAt" | "reason">) {
+}: Partial<Pass> & Pick<Pass, "id" | "reason">) {
   return prisma.pass.update({
     where: { id },
     data: {

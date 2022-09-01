@@ -36,14 +36,14 @@ export const action: ActionFunction = async ({ params, request }) => {
   }
 
   const reason = formData.get("reason") ?? "";
-  const endAt = formData.get("endAt");
+  const endAt = formData.get("endAt") ?? "";
 
-  invariant(typeof endAt === "string", "endAt must be a string");
   invariant(typeof reason === "string", "reason must be a string");
+  invariant(typeof endAt === "string", "endAt must be a string");
 
   const pass = await updateHallPass({
     id: params.passId,
-    endAt: new Date(endAt),
+    endAt: endAt ? new Date(endAt) : undefined,
     reason,
   });
 
@@ -106,78 +106,89 @@ export default function PassDetailsRoute() {
           </span>
         </h2>
         <div className="text-3xl">
-          {`${formatTime(pass.startAt)} - ${formatTime(endAt)}`}
+          {`${formatTime(pass.startAt)} - ${formatTime(
+            pass.endAt ? endAt : null
+          )}`}
           {duration.days ? ` +${duration.days}` : null}
         </div>
-        <div className="mt-10 text-6xl text-gray-900">
-          {duration.days ? (
-            <>
-              <label className="font-mono text-gray-900">
-                {(duration.days ?? 0) < 10 ? "0" : null}
-                <input
-                  className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-                    (duration.days ?? 0) < 10 ? "w-14" : "w-24"
-                  }`}
-                  type="number"
-                  min="0"
-                  value={duration.days}
-                  onChange={({ target: { value } }) =>
-                    updateDuration({ days: parseInt(value) })
-                  }
-                />
-              </label>{" "}
-              :
-            </>
-          ) : null}
-          <label className="font-mono text-gray-900">
-            {(duration.hours ?? 0) < 10 ? "0" : null}
-            <input
-              className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-                (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
-              }`}
-              type="number"
-              max="23"
-              min={duration.days === 0 ? "0" : undefined}
-              value={duration.hours}
-              onChange={({ target: { value } }) =>
-                updateDuration({ hours: parseInt(value) })
-              }
-            />
-          </label>
-          :
-          <label className="font-mono text-gray-900">
-            {(duration.minutes ?? 0) < 10 ? "0" : null}
-            <input
-              className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-                (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
-              }`}
-              type="number"
-              min={duration.hours === 0 ? "0" : undefined}
-              value={duration.minutes}
-              onChange={({ target: { value } }) =>
-                updateDuration({ minutes: parseInt(value) })
-              }
-            />
-          </label>
-          :
-          <label className="font-mono text-gray-900">
-            {(duration.seconds ?? 0) < 10 ? "0" : null}
-            <input
-              className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
-                (duration.seconds ?? 0) < 10 ? "w-14" : "w-24"
-              }`}
-              type="number"
-              min={duration.minutes === 0 ? "0" : undefined}
-              value={duration.seconds}
-              onChange={({ target: { value } }) =>
-                updateDuration({ seconds: parseInt(value) })
-              }
-            />
-          </label>
-        </div>
+        {pass.endAt ? (
+          <div className="mt-10 text-6xl text-gray-900">
+            {duration.days ? (
+              <>
+                <label className="font-mono text-gray-900">
+                  {(duration.days ?? 0) < 10 ? "0" : null}
+                  <input
+                    className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                      (duration.days ?? 0) < 10 ? "w-14" : "w-24"
+                    }`}
+                    type="number"
+                    min="0"
+                    value={duration.days}
+                    onChange={({ target: { value } }) =>
+                      updateDuration({ days: parseInt(value) })
+                    }
+                  />
+                </label>{" "}
+                :
+              </>
+            ) : null}
+            <label className="font-mono text-gray-900">
+              {(duration.hours ?? 0) < 10 ? "0" : null}
+              <input
+                className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
+                }`}
+                type="number"
+                max="23"
+                min={duration.days === 0 ? "0" : undefined}
+                value={duration.hours}
+                onChange={({ target: { value } }) =>
+                  updateDuration({ hours: parseInt(value) })
+                }
+              />
+            </label>
+            :
+            <label className="font-mono text-gray-900">
+              {(duration.minutes ?? 0) < 10 ? "0" : null}
+              <input
+                className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
+                }`}
+                type="number"
+                min={duration.hours === 0 ? "0" : undefined}
+                value={duration.minutes}
+                onChange={({ target: { value } }) =>
+                  updateDuration({ minutes: parseInt(value) })
+                }
+              />
+            </label>
+            :
+            <label className="font-mono text-gray-900">
+              {(duration.seconds ?? 0) < 10 ? "0" : null}
+              <input
+                className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  (duration.seconds ?? 0) < 10 ? "w-14" : "w-24"
+                }`}
+                type="number"
+                min={duration.minutes === 0 ? "0" : undefined}
+                value={duration.seconds}
+                onChange={({ target: { value } }) =>
+                  updateDuration({ seconds: parseInt(value) })
+                }
+              />
+            </label>
+          </div>
+        ) : (
+          <div className="py-2">
+            You'll need to return the student before you can modify this space
+            walk duration. You can still add notes though.
+          </div>
+        )}
         <div>
           <Form method="post" key={pass.id}>
-            <input type="hidden" name="endAt" value={endAtStr} />
+            {pass.endAt ? (
+              <input type="hidden" name="endAt" value={endAtStr} />
+            ) : null}
             <label>
               Space Walk Notes: <br />
               <textarea

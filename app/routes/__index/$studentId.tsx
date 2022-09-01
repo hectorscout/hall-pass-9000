@@ -151,17 +151,17 @@ export default function StudentDetailsRoute() {
                   : undefined;
               return (
                 <React.Fragment key={pass.id}>
-                  <Link to={pass.id}>
+                  <Link to={pass.id} title={pass.reason || "N/A"}>
                     <div className={textColor}>{`${formatDateTime(
                       pass.startAt
                     )}`}</div>
                   </Link>
-                  <Link to={pass.id}>
+                  <Link to={pass.id} title={pass.reason || "N/A"}>
                     <div className={textColor}>{`${formatDateTime(
                       pass.endAt
                     )}`}</div>
                   </Link>
-                  <Link to={pass.id}>
+                  <Link to={pass.id} title={pass.reason || "N/A"}>
                     <div className={textColor}>{formattedDuration}</div>
                   </Link>
                 </React.Fragment>
