@@ -156,3 +156,12 @@ export function updateHallPass({
     },
   });
 }
+
+export function deleteHallPass({
+  id,
+  userId,
+}: Pick<Pass, "id"> & { userId: User["id"] }) {
+  return prisma.pass.deleteMany({
+    where: { id, userId },
+  });
+}

@@ -6,7 +6,11 @@ import type {
 import { json, redirect } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import invariant from "tiny-invariant";
-import { getHallPass, updateHallPass } from "~/models/hall-pass.server";
+import {
+  deleteHallPass,
+  getHallPass,
+  updateHallPass,
+} from "~/models/hall-pass.server";
 import { Form, useLoaderData } from "@remix-run/react";
 import { formatDate, formatDateTime, formatTime } from "~/utils/utils";
 import { useEffect, useState } from "react";
@@ -32,6 +36,11 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   const intent = formData.get("intent");
   if (intent === "close") {
+    return redirect(`/${params.studentId}`);
+  }
+
+  if (intent === "delete") {
+    await deleteHallPass({ id: params.passId, userId });
     return redirect(`/${params.studentId}`);
   }
 
@@ -203,6 +212,13 @@ export default function PassDetailsRoute() {
             <br />
             <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
               Update Space Walk
+            </button>
+            <button
+              name="intent"
+              value="delete"
+              className="absolute right-0 bottom-0 m-5 rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
+            >
+              Delete
             </button>
           </Form>
         </div>
