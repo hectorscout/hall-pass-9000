@@ -8,10 +8,11 @@ import {
   getStudent,
 } from "~/models/hall-pass.server";
 import invariant from "tiny-invariant";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
-import { add, format, formatDuration, intervalToDuration } from "date-fns";
+import { add, formatDuration, intervalToDuration } from "date-fns";
 import React from "react";
+import { formatDateTime } from "~/utils/utils";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -62,8 +63,8 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-const inputClassName =
-  "w-full rounded border border-gray-500 px-2 py-1 text-lg";
+// const inputClassName =
+//   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
 
 export default function StudentDetailsRoute() {
   const { openPass, passes, student, totalDuration } =
@@ -74,11 +75,7 @@ export default function StudentDetailsRoute() {
       end: pass.endAt ? new Date(pass.endAt) : undefined,
     }))
   );
-
-  const formatDateTime = (dateTimeStr: string | null) => {
-    if (!dateTimeStr) return "N/A";
-    return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
-  };
+  const { passId } = useParams();
 
   return (
     <div className="flex flex-1 flex-col px-10">
@@ -155,19 +152,38 @@ export default function StudentDetailsRoute() {
                   : undefined;
               return (
                 <React.Fragment key={pass.id}>
-                  <div className={textColor}>{`${formatDateTime(
-                    pass.startAt
-                  )}`}</div>
-                  <div className={textColor}>{`${formatDateTime(
-                    pass.endAt
-                  )}`}</div>
-                  <div className={textColor}>{formattedDuration}</div>
+                  <Link
+                    to={pass.id}
+                    title={pass.reason || "N/A"}
+                    className={pass.id === passId ? "bg-amber-100" : ""}
+                  >
+                    <div className={textColor}>{`${formatDateTime(
+                      pass.startAt
+                    )}`}</div>
+                  </Link>
+                  <Link
+                    to={pass.id}
+                    title={pass.reason || "N/A"}
+                    className={pass.id === passId ? "bg-amber-100" : ""}
+                  >
+                    <div className={textColor}>{`${formatDateTime(
+                      pass.endAt
+                    )}`}</div>
+                  </Link>
+                  <Link
+                    to={pass.id}
+                    title={pass.reason || "N/A"}
+                    className={pass.id === passId ? "bg-amber-100" : ""}
+                  >
+                    <div className={textColor}>{formattedDuration}</div>
+                  </Link>
                 </React.Fragment>
               );
             })}
           </div>
         </div>
       </Form>
+      <Outlet />
     </div>
   );
 }
