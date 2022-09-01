@@ -77,6 +77,11 @@ export default function StudentDetailsRoute() {
   );
   const { passId } = useParams();
 
+  const formatDateTime = (dateTimeStr: string | null) => {
+    if (!dateTimeStr) return "N/A";
+    return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
+  };
+
   return (
     <div className="flex flex-1 flex-col px-10">
       <div className="flex py-10">
