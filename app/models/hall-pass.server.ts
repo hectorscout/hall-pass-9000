@@ -10,16 +10,16 @@ export function getStudent({
   });
 }
 
-export function getStudents({ userId }: { userId: User["id"] }) {
+export function getStudentsAndOpenPasses({ userId }: { userId: User["id"] }) {
   return prisma.student.findMany({
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      period: true,
-      createdAt: true,
-    },
     where: { userId },
+    include: {
+      passes: {
+        where: {
+          endAt: null,
+        },
+      },
+    },
     orderBy: { firstName: "asc" },
   });
 }

@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getStudents } from "~/models/hall-pass.server";
+import { getStudentsAndOpenPasses } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
@@ -16,13 +16,13 @@ export const links = () => {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
-  const students = await getStudents({ userId });
+  const studentsAndOpenPasses = await getStudentsAndOpenPasses({ userId });
 
-  return json({ students });
+  return json({ studentsAndOpenPasses });
 };
 
 export default function HallMonitorPage() {
-  const { students } = useLoaderData<typeof loader>();
+  const { studentsAndOpenPasses } = useLoaderData<typeof loader>();
   const user = useUser();
 
   const [studentSearch, setStudentSearch] = useState("");
@@ -30,25 +30,32 @@ export default function HallMonitorPage() {
   return (
     <div className="flex h-full flex-col">
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
-      <main className="flex h-full bg-white">
-        <div className="h-full w-80 border-r bg-gray-100 pl-10">
-          <h2 className="my-5 text-3xl">
-            <Link to="">Home</Link>
-          </h2>
-          <h2 className="text-2xl">
-            <Link to={`new/edit?firstname=${studentSearch}`}>
-              + New Student
-            </Link>
-          </h2>
-          <div className="mt-10">
-            <input
-              className="mb-2"
-              name="studentSearch"
-              value={studentSearch}
-              placeholder="Ethan"
-              onChange={(e) => setStudentSearch(e.target.value)}
-            />
-            <StudentList students={students} studentSearch={studentSearch} />
+      <main className="flex flex h-full bg-white">
+        <div className="h-full w-80 border-r bg-gray-100">
+          <div className="pl-10">
+            <h2 className="my-5 text-3xl">
+              <Link to="">Home</Link>
+            </h2>
+            <h2 className="text-2xl">
+              <Link to={`new/edit?firstname=${studentSearch}`}>
+                + New Student
+              </Link>
+            </h2>
+          </div>
+          <div>
+            <div className="mt-10">
+              <input
+                className="mx-10 mb-2"
+                name="studentSearch"
+                value={studentSearch}
+                placeholder="Ethan"
+                onChange={(e) => setStudentSearch(e.target.value)}
+              />
+              <StudentList
+                studentsAndOpenPasses={studentsAndOpenPasses}
+                studentSearch={studentSearch}
+              />
+            </div>
           </div>
         </div>
         <Outlet />
