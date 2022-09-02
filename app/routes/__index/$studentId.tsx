@@ -11,8 +11,12 @@ import invariant from "tiny-invariant";
 import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import { add, formatDuration, intervalToDuration } from "date-fns";
-import React from "react";
-import { formatDateTime, formatDurationDigital } from "~/utils/utils";
+import React, { useEffect, useState } from "react";
+import {
+  formatDateTime,
+  formatDurationDigital,
+  getDurationStatus,
+} from "~/utils/utils";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -24,6 +28,19 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   const passes = await getHallPassesForStudent(params.studentId);
+  const closedPasses = passes
+    .filter((pass) => pass.endAt)
+    .map((pass) => {
+      const duration = intervalToDuration({
+        start: new Date(pass.startAt),
+        end: new Date(pass.endAt || ""),
+      });
+      return {
+        ...pass,
+        duration,
+        status: getDurationStatus(duration),
+      };
+    });
   const openPass = passes.find((pass) => !pass.endAt);
 
   const now = new Date();
@@ -43,7 +60,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     })
   );
 
-  return json({ openPass, passes, student, totalDuration });
+  return json({ openPass, closedPasses, student, totalDuration });
 };
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -80,21 +97,40 @@ const statusMessages = {
   error: "Critical: Oxygen depleted!!",
 };
 
+// const homeUrl =
+//   "https://images.unsplash.com/photo-1518228684816-9135c15ab4ea?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjIwOTM5ODA&ixlib=rb-1.2.1&q=80";
+const homeUrl =
+  "https://images.unsplash.com/photo-1601892782633-675465fa7f3a?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjIwOTQxMDI&ixlib=rb-1.2.1&q=80";
+// const homeUrl =
+//   "https://images.unsplash.com/photo-1520442027413-7bf6c51517da?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjIwOTQzNDU&ixlib=rb-1.2.1&q=80";
+
 export default function StudentDetailsRoute() {
-  const { openPass, passes, student, totalDuration } =
+  const { openPass, closedPasses, student, totalDuration } =
     useLoaderData<typeof loader>();
-  const elapsedTimes = useTimeElapsed(
-    passes.map((pass) => ({
-      start: new Date(pass.startAt),
-      end: pass.endAt ? new Date(pass.endAt) : undefined,
-    }))
+  const [elapsedDuration, setElapsedDuration] = useState(
+    intervalToDuration({
+      start: openPass ? new Date(openPass.startAt) : new Date(),
+      end: new Date(),
+    })
   );
+
+  useEffect(() => {
+    const tick = () => {
+      setElapsedDuration(
+        intervalToDuration({
+          start: openPass ? new Date(openPass.startAt) : new Date(),
+          end: new Date(),
+        })
+      );
+    };
+    tick();
+    const interval = openPass ? setInterval(tick, 1000) : null;
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [openPass]);
   const { passId } = useParams();
-  const lastElapsedTime = elapsedTimes[elapsedTimes.length - 1] ?? {
-    status: "good",
-    duration: {},
-    formattedDuration: "",
-  };
 
   return (
     <div className="relative flex flex-1 flex-col bg-blue-900">
@@ -104,7 +140,13 @@ export default function StudentDetailsRoute() {
           className="absolute inset-0 z-0 h-full w-full object-cover"
           src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
         />
-      ) : null}
+      ) : (
+        <img
+          alt=""
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+          src={homeUrl}
+        />
+      )}
       <div className="z-10 flex flex-1 flex-col">
         <div className="z-10 flex p-10">
           <h1 className="flex flex-1 items-center text-6xl font-extrabold">
@@ -129,12 +171,12 @@ export default function StudentDetailsRoute() {
                 name="passId"
                 value={openPass.id}
                 className={`justify-center rounded py-12 px-14 font-mono text-4xl ${
-                  buttonColors[lastElapsedTime.status]
+                  buttonColors[getDurationStatus(elapsedDuration)]
                 }`}
               >
-                <div>{formatDurationDigital(lastElapsedTime.duration)}</div>
+                <div>{formatDurationDigital(elapsedDuration)}</div>
                 <div className="text-2xl">
-                  {statusMessages[lastElapsedTime.status]}
+                  {statusMessages[getDurationStatus(elapsedDuration)]}
                 </div>
               </button>
             ) : (
@@ -152,10 +194,10 @@ export default function StudentDetailsRoute() {
             <div>
               <h2 className="mb-5 flex justify-between align-middle">
                 <div className="text-5xl">Space Walk Log:</div>
-                {passes.length ? (
+                {closedPasses.length ? (
                   <div className="flex flex-col justify-center">
-                    <span className="ml-10">{`${passes.length} walk${
-                      passes.length > 1 ? "s" : ""
+                    <span className="ml-10">{`${closedPasses.length} walk${
+                      closedPasses.length > 1 ? "s" : ""
                     }`}</span>
                     <span className="ml-10">{totalDuration}</span>
                   </div>
@@ -167,54 +209,52 @@ export default function StudentDetailsRoute() {
                 <div className="text-2xl">End</div>
                 <div className="text-2xl">Duration</div>
                 <hr className="col-span-4 mb-2" />
-                {passes.map((pass, index) => {
-                  const { formattedDuration, status } = elapsedTimes[index] ?? {
-                    duration: undefined,
-                    status: "good",
-                  };
-                  const statusColor =
-                    status === "error"
-                      ? "bg-red-600"
-                      : status === "warning"
-                      ? "bg-yellow-600"
-                      : undefined;
-                  return (
-                    <React.Fragment key={pass.id}>
-                      <Link
-                        to={pass.id}
-                        title={pass.reason || "N/A"}
-                        className={pass.id === passId ? "bg-amber-100" : ""}
-                      >
-                        <div
-                          className={`${statusColor} rounded-full text-center text-gray-200`}
+                {closedPasses.map(
+                  ({ duration, id, reason, startAt, endAt, status }) => {
+                    const statusColor =
+                      status === "error"
+                        ? "bg-red-600"
+                        : status === "warning"
+                        ? "bg-yellow-600"
+                        : undefined;
+                    return (
+                      <React.Fragment key={id}>
+                        <Link
+                          to={id}
+                          title={reason || "N/A"}
+                          className={id === passId ? "bg-amber-100" : ""}
                         >
-                          {status !== "good" ? "!" : ""}
-                        </div>
-                      </Link>
-                      <Link
-                        to={pass.id}
-                        title={pass.reason || "N/A"}
-                        className={pass.id === passId ? "bg-amber-100" : ""}
-                      >
-                        <div>{`${formatDateTime(pass.startAt)}`}</div>
-                      </Link>
-                      <Link
-                        to={pass.id}
-                        title={pass.reason || "N/A"}
-                        className={pass.id === passId ? "bg-amber-100" : ""}
-                      >
-                        <div>{`${formatDateTime(pass.endAt)}`}</div>
-                      </Link>
-                      <Link
-                        to={pass.id}
-                        title={pass.reason || "N/A"}
-                        className={pass.id === passId ? "bg-amber-100" : ""}
-                      >
-                        <div>{formattedDuration}</div>
-                      </Link>
-                    </React.Fragment>
-                  );
-                })}
+                          <div
+                            className={`${statusColor} rounded-full text-center text-gray-200`}
+                          >
+                            {status !== "good" ? "!" : ""}
+                          </div>
+                        </Link>
+                        <Link
+                          to={id}
+                          title={reason || "N/A"}
+                          className={id === passId ? "bg-amber-100" : ""}
+                        >
+                          <div>{`${formatDateTime(startAt)}`}</div>
+                        </Link>
+                        <Link
+                          to={id}
+                          title={reason || "N/A"}
+                          className={id === passId ? "bg-amber-100" : ""}
+                        >
+                          <div>{`${formatDateTime(endAt)}`}</div>
+                        </Link>
+                        <Link
+                          to={id}
+                          title={reason || "N/A"}
+                          className={id === passId ? "bg-amber-100" : ""}
+                        >
+                          <div>{formatDuration(duration)}</div>
+                        </Link>
+                      </React.Fragment>
+                    );
+                  }
+                )}
               </div>
             </div>
           </div>
