@@ -96,7 +96,7 @@ export default function PassDetailsRoute() {
   }, [duration, pass.startAt]);
 
   return (
-    <div className="absolute right-0 h-full w-1/3 bg-gray-500 px-10 text-gray-300">
+    <div className="absolute right-0 top-0 z-10 h-full w-1/3 bg-gray-500 px-10 text-gray-300">
       <Form method="post">
         <button
           type="submit"

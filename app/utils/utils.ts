@@ -95,3 +95,9 @@ export const formatTime = (dateTimeStr: string | Date | null) => {
   if (!dateTimeStr) return "N/A";
   return format(new Date(dateTimeStr), "h:mm aaa");
 };
+
+export const formatDurationDigital = (duration: Duration) => {
+  return `${String(duration.hours).padStart(2, "0")}:${String(
+    duration.minutes
+  ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
+};

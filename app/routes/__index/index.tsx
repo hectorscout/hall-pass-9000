@@ -5,6 +5,7 @@ import { requireUserId } from "~/utils/session.server";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import invariant from "tiny-invariant";
+import { formatDurationDigital } from "~/utils/utils";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -29,15 +30,10 @@ export default function HallMonitorIndexPage() {
     openPasses.map((openPass) => ({ start: new Date(openPass.startAt) }))
   );
 
-  const formatDuration = (duration: Duration) => {
-    return `${String(duration.hours).padStart(2, "0")}:${String(
-      duration.minutes
-    ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
-  };
-
   return (
     <div className="relative flex flex-1">
       <img
+        alt=""
         className="absolute inset-0 h-full w-full object-cover"
         src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
       />
@@ -71,7 +67,7 @@ export default function HallMonitorIndexPage() {
                 </h1>
                 <div
                   className={`font-mono text-6xl ${textColor}`}
-                >{`${formatDuration(duration)}`}</div>
+                >{`${formatDurationDigital(duration)}`}</div>
                 {/*<div className={textColor}>*/}
                 {/*  {`${student.firstName} has been out there for ${duration}.`}*/}
                 {/*</div>*/}
