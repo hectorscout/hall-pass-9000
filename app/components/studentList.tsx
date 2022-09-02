@@ -1,14 +1,32 @@
 import { Link, useParams } from "@remix-run/react";
-import type { getStudents } from "~/models/hall-pass.server";
+import { useEffect, useState } from "react";
 interface HeaderProps {
-  students: Awaited<ReturnType<typeof getStudents>>;
+  students: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    period: string;
+  }[];
+  studentSearch: string;
 }
-export const StudentList: React.FC<HeaderProps> = ({ students }) => {
+export const StudentList: React.FC<HeaderProps> = ({
+  students,
+  studentSearch,
+}) => {
   const { studentId } = useParams();
+
+  const [filteredStudents, setFilteredStudents] = useState(students);
+  useEffect(() => {
+    setFilteredStudents(
+      students.filter((student) =>
+        student.firstName.toLowerCase().startsWith(studentSearch.toLowerCase())
+      )
+    );
+  }, [students, studentSearch]);
 
   return (
     <ol className="mr-10">
-      {students.map((student) => (
+      {filteredStudents.map((student) => (
         <li
           key={student.id}
           className={studentId === student.id ? "bg-amber-200" : undefined}
@@ -19,6 +37,11 @@ export const StudentList: React.FC<HeaderProps> = ({ students }) => {
           </Link>
         </li>
       ))}
+      {studentSearch ? (
+        <Link to={`new/edit?firstname=${studentSearch}`}>
+          Create New "{studentSearch}"
+        </Link>
+      ) : null}
     </ol>
   );
 };

@@ -11,6 +11,7 @@ import {
   Form,
   useActionData,
   useLoaderData,
+  useSearchParams,
   useTransition,
 } from "@remix-run/react";
 
@@ -94,6 +95,7 @@ const inputClassName =
 export default function EditStudentRoute() {
   const { student } = useLoaderData() as LoaderData;
   const errors = useActionData();
+  const [searchParams] = useSearchParams();
 
   const transition = useTransition();
   const isCreating = transition.submission?.formData.get("intent") === "create";
@@ -115,7 +117,9 @@ export default function EditStudentRoute() {
             type="text"
             name="firstName"
             className={inputClassName}
-            defaultValue={student?.firstName ?? ""}
+            defaultValue={
+              student?.firstName ?? searchParams.get("firstname") ?? ""
+            }
           />
         </label>
       </p>

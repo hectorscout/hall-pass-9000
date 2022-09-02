@@ -1,4 +1,4 @@
-import type { LoaderArgs, LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getStudents } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
@@ -8,26 +8,24 @@ import { Header } from "~/components/header";
 import styles from "~/components/hal9000/hal9000.css";
 // import { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { StudentList } from "~/components/studentList";
-
-export type RootLoaderData = {
-  students: Awaited<ReturnType<typeof getStudents>>;
-};
-export type SerializedStudents = RootLoaderData["students"];
+import { useState } from "react";
 
 export const links = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
   const students = await getStudents({ userId });
 
-  return json<RootLoaderData>({ students });
+  return json({ students });
 };
 
 export default function HallMonitorPage() {
-  const { students } = useLoaderData();
+  const { students } = useLoaderData<typeof loader>();
   const user = useUser();
+
+  const [studentSearch, setStudentSearch] = useState("");
 
   return (
     <div className="flex h-full flex-col">
@@ -38,10 +36,19 @@ export default function HallMonitorPage() {
             <Link to="">Home</Link>
           </h2>
           <h2 className="text-2xl">
-            <Link to="new/edit">+ New Student</Link>
+            <Link to={`new/edit?firstname=${studentSearch}`}>
+              + New Student
+            </Link>
           </h2>
           <div className="mt-10">
-            <StudentList students={students} />
+            <input
+              className="mb-2"
+              name="studentSearch"
+              value={studentSearch}
+              placeholder="Ethan"
+              onChange={(e) => setStudentSearch(e.target.value)}
+            />
+            <StudentList students={students} studentSearch={studentSearch} />
           </div>
         </div>
         <Outlet />
