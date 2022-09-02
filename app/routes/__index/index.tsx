@@ -33,6 +33,7 @@ export default function HallMonitorIndexPage() {
   return (
     <div className="relative flex flex-1">
       <img
+        alt=""
         className="absolute inset-0 h-full w-full object-cover"
         src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
       />
