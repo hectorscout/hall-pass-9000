@@ -12,7 +12,7 @@ import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import { add, formatDuration, intervalToDuration } from "date-fns";
 import React from "react";
-import { formatDateTime } from "~/utils/utils";
+import { formatDateTime, formatDurationDigital } from "~/utils/utils";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -66,6 +66,20 @@ export const action: ActionFunction = async ({ params, request }) => {
 // const inputClassName =
 //   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
 
+const buttonColors = {
+  good: "bg-green-500 text-white hover:bg-green-600 focus:bg-green-400 disabled:bg-green-300",
+  warning:
+    "bg-yellow-500 text-gray-800 animate-pulse hover:bg-yellow-600 focus:bg-yellow-400 disabled:bg-yellow-300",
+  error:
+    "bg-red-700 text-white animate-pulse hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300",
+};
+
+const statusMessages = {
+  good: "Click to bring them home",
+  warning: "Warning: Oxygen levels low",
+  error: "Critical: Oxygen depleted!!",
+};
+
 export default function StudentDetailsRoute() {
   const { openPass, passes, student, totalDuration } =
     useLoaderData<typeof loader>();
@@ -76,114 +90,137 @@ export default function StudentDetailsRoute() {
     }))
   );
   const { passId } = useParams();
+  const lastElapsedTime = elapsedTimes[elapsedTimes.length - 1] ?? {
+    status: "good",
+    duration: {},
+    formattedDuration: "",
+  };
 
   return (
-    <div className="flex flex-1 flex-col px-10">
-      <div className="flex py-10">
-        <h1 className="flex-1 text-center text-6xl font-extrabold">
-          <span className="block uppercase text-red-500 drop-shadow-md">{`${student?.firstName} ${student?.lastName}`}</span>
-          <span>({student.period})</span>
-        </h1>
-        <div>
-          <Link to="edit" className="justify-end">
-            <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
-              Edit
-            </button>
-          </Link>
-        </div>
-      </div>
-      <Form method="post">
-        <div className="flex flex-1 justify-center">
-          {openPass ? (
-            <button
-              type="submit"
-              name="passId"
-              value={openPass.id}
-              className="justify-center rounded bg-red-500 py-12 px-14 text-3xl text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
-            >
-              Return Student From The Cold Uncaring Void Of Space
-            </button>
-          ) : (
-            <button
-              type="submit"
-              name="passId"
-              value="newPass"
-              className="justify-center rounded bg-green-500 py-12 px-14 text-3xl text-white hover:bg-green-600 focus:bg-green-400 disabled:bg-green-300"
-            >
-              Jettison Student Into The Cold Uncaring Void Of Space
-            </button>
-          )}
-        </div>
-        {/*/!*<label htmlFor="reason">Reason:</label>*!/*/}
-        {/*/!*<br />*!/*/}
-        {/*/!*<div className="flex gap-2">*!/*/}
-        {/*/!*  <textarea*!/*/}
-        {/*// id="reason" // rows={1}*/}
-        {/*// name="reason" // className={`${inputClassName} font-mono`}*/}
-        {/*/!*  />*!/*/}
-        {/*/!*</div>*!/*/}
-        <div className="mt-10">
-          <h2 className="mb-5">
-            <span className="text-5xl">Space Walk Log:</span>
-            {passes.length ? (
-              <>
-                <span className="ml-10">{`${passes.length} walk${
-                  passes.length > 1 ? "s" : ""
-                }`}</span>
-                <span className="ml-10">{totalDuration}</span>
-              </>
-            ) : null}
-          </h2>
-          <div className="mt-1 grid grid-cols-3">
-            <div className="text-2xl">Start</div>
-            <div className="text-2xl">End</div>
-            <div className="text-2xl">Duration</div>
-            <hr className="col-span-3 mb-2" />
-            {passes.map((pass, index) => {
-              const { formattedDuration, status } = elapsedTimes[index] ?? {
-                duration: undefined,
-                status: "good",
-              };
-              const textColor =
-                status === "error"
-                  ? "text-red-600"
-                  : status === "warning"
-                  ? "text-yellow-500"
-                  : undefined;
-              return (
-                <React.Fragment key={pass.id}>
-                  <Link
-                    to={pass.id}
-                    title={pass.reason || "N/A"}
-                    className={pass.id === passId ? "bg-amber-100" : ""}
-                  >
-                    <div className={textColor}>{`${formatDateTime(
-                      pass.startAt
-                    )}`}</div>
-                  </Link>
-                  <Link
-                    to={pass.id}
-                    title={pass.reason || "N/A"}
-                    className={pass.id === passId ? "bg-amber-100" : ""}
-                  >
-                    <div className={textColor}>{`${formatDateTime(
-                      pass.endAt
-                    )}`}</div>
-                  </Link>
-                  <Link
-                    to={pass.id}
-                    title={pass.reason || "N/A"}
-                    className={pass.id === passId ? "bg-amber-100" : ""}
-                  >
-                    <div className={textColor}>{formattedDuration}</div>
-                  </Link>
-                </React.Fragment>
-              );
-            })}
+    <div className="relative flex flex-1 flex-col bg-blue-900">
+      {openPass ? (
+        <img
+          alt=""
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+          src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
+        />
+      ) : null}
+      <div className="z-10 flex flex-1 flex-col">
+        <div className="z-10 flex p-10">
+          <h1 className="flex flex-1 items-center text-6xl font-extrabold">
+            <div className="block uppercase text-red-500 drop-shadow-md">{`${student?.firstName} ${student?.lastName}`}</div>
+            <div className="ml-5 text-3xl text-gray-400">
+              ({student.period})
+            </div>
+          </h1>
+          <div>
+            <Link to="edit" className="justify-end">
+              <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
+                Edit
+              </button>
+            </Link>
           </div>
         </div>
-      </Form>
-      <Outlet />
+        <Form method="post" className="flex flex-1 flex-col">
+          <div className="flex justify-center">
+            {openPass ? (
+              <button
+                type="submit"
+                name="passId"
+                value={openPass.id}
+                className={`justify-center rounded py-12 px-14 font-mono text-4xl ${
+                  buttonColors[lastElapsedTime.status]
+                }`}
+              >
+                <div>{formatDurationDigital(lastElapsedTime.duration)}</div>
+                <div className="text-2xl">
+                  {statusMessages[lastElapsedTime.status]}
+                </div>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                name="passId"
+                value="newPass"
+                className="justify-center rounded bg-red-500 py-12 px-14 text-3xl text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
+              >
+                Jettison Student Into The Cold Uncaring Void Of Space
+              </button>
+            )}
+          </div>
+          <div className="mt-10 flex-1 bg-blue-300/60 p-10">
+            <div>
+              <h2 className="mb-5 flex justify-between align-middle">
+                <div className="text-5xl">Space Walk Log:</div>
+                {passes.length ? (
+                  <div className="flex flex-col justify-center">
+                    <span className="ml-10">{`${passes.length} walk${
+                      passes.length > 1 ? "s" : ""
+                    }`}</span>
+                    <span className="ml-10">{totalDuration}</span>
+                  </div>
+                ) : null}
+              </h2>
+              <div className="mt-1 grid grid-cols-[30px_1fr_1fr_1fr] gap-x-2 gap-y-1">
+                <div />
+                <div className="text-2xl">Start</div>
+                <div className="text-2xl">End</div>
+                <div className="text-2xl">Duration</div>
+                <hr className="col-span-4 mb-2" />
+                {passes.map((pass, index) => {
+                  const { formattedDuration, status } = elapsedTimes[index] ?? {
+                    duration: undefined,
+                    status: "good",
+                  };
+                  const statusColor =
+                    status === "error"
+                      ? "bg-red-600"
+                      : status === "warning"
+                      ? "bg-yellow-600"
+                      : undefined;
+                  return (
+                    <React.Fragment key={pass.id}>
+                      <Link
+                        to={pass.id}
+                        title={pass.reason || "N/A"}
+                        className={pass.id === passId ? "bg-amber-100" : ""}
+                      >
+                        <div
+                          className={`${statusColor} rounded-full text-center text-gray-200`}
+                        >
+                          {status !== "good" ? "!" : ""}
+                        </div>
+                      </Link>
+                      <Link
+                        to={pass.id}
+                        title={pass.reason || "N/A"}
+                        className={pass.id === passId ? "bg-amber-100" : ""}
+                      >
+                        <div>{`${formatDateTime(pass.startAt)}`}</div>
+                      </Link>
+                      <Link
+                        to={pass.id}
+                        title={pass.reason || "N/A"}
+                        className={pass.id === passId ? "bg-amber-100" : ""}
+                      >
+                        <div>{`${formatDateTime(pass.endAt)}`}</div>
+                      </Link>
+                      <Link
+                        to={pass.id}
+                        title={pass.reason || "N/A"}
+                        className={pass.id === passId ? "bg-amber-100" : ""}
+                      >
+                        <div>{formattedDuration}</div>
+                      </Link>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </Form>
+        <Outlet />
+      </div>
     </div>
   );
 }
