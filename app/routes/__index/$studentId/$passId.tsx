@@ -118,7 +118,7 @@ export default function PassDetailsRoute() {
           {`${formatTime(pass.startAt)} - ${formatTime(
             pass.endAt ? endAt : null
           )}`}
-          {duration.days ? ` +${duration.days}` : null}
+          {pass.endAt && duration.days ? ` +${duration.days}` : null}
         </div>
         {pass.endAt ? (
           <>

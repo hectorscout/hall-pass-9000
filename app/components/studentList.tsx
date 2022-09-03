@@ -1,8 +1,7 @@
 import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
-import { getDurationStatus, getPassStatus } from "~/utils/utils";
-import { intervalToDuration } from "date-fns";
+import { getPassStatus } from "~/utils/utils";
 interface HeaderProps {
   studentsAndOpenPasses: {
     id: string;

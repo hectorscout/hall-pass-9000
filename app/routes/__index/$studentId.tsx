@@ -18,6 +18,7 @@ import {
 } from "~/utils/utils";
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 import { PencilIcon } from "@heroicons/react/24/solid";
+import { HallPassLog } from "~/components/hallPassLog";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -54,13 +55,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       })
     );
   }, now);
-  const totalDuration = formatDuration(
-    intervalToDuration({
-      start: now,
-      end: nowPlusTotalDuration,
-    })
-  );
-
+  const totalDuration = intervalToDuration({
+    start: now,
+    end: nowPlusTotalDuration,
+  });
   return json({ openPass, closedPasses, student, totalDuration });
 };
 
@@ -131,7 +129,6 @@ export default function StudentDetailsRoute() {
       if (interval) clearInterval(interval);
     };
   }, [openPass]);
-  const { passId } = useParams();
 
   return (
     <div className="relative flex flex-1 flex-col bg-blue-900">
@@ -190,72 +187,12 @@ export default function StudentDetailsRoute() {
             )}
           </div>
           <div className="mt-10 flex-1 bg-blue-300/60 p-10">
-            <div>
-              <h2 className="mb-5 flex justify-between align-middle">
-                <div className="text-5xl">Space Walk Log:</div>
-                {closedPasses.length ? (
-                  <div className="flex flex-col justify-center">
-                    <span className="ml-10">{`${closedPasses.length} walk${
-                      closedPasses.length > 1 ? "s" : ""
-                    }`}</span>
-                    <span className="ml-10">{totalDuration}</span>
-                  </div>
-                ) : null}
-              </h2>
-              <div className="mt-1 grid grid-cols-[30px_1fr_1fr_1fr] gap-x-2 gap-y-1">
-                <div />
-                <div className="text-2xl">Start</div>
-                <div className="text-2xl">End</div>
-                <div className="text-2xl">Duration</div>
-                <hr className="col-span-4 mb-2" />
-                {closedPasses.map(
-                  ({ duration, id, reason, startAt, endAt, status }) => {
-                    const statusColor =
-                      status === "error"
-                        ? "text-red-600"
-                        : status === "warning"
-                        ? "text-yellow-600"
-                        : undefined;
-                    return (
-                      <React.Fragment key={id}>
-                        <Link
-                          to={id}
-                          title={reason || "N/A"}
-                          className={id === passId ? "bg-amber-100" : ""}
-                        >
-                          {status !== "good" ? (
-                            <ExclamationTriangleIcon
-                              className={`h-6 w-6 ${statusColor}`}
-                            />
-                          ) : null}
-                        </Link>
-                        <Link
-                          to={id}
-                          title={reason || "N/A"}
-                          className={id === passId ? "bg-amber-100" : ""}
-                        >
-                          <div>{`${formatDateTime(startAt)}`}</div>
-                        </Link>
-                        <Link
-                          to={id}
-                          title={reason || "N/A"}
-                          className={id === passId ? "bg-amber-100" : ""}
-                        >
-                          <div>{`${formatDateTime(endAt)}`}</div>
-                        </Link>
-                        <Link
-                          to={id}
-                          title={reason || "N/A"}
-                          className={id === passId ? "bg-amber-100" : ""}
-                        >
-                          <div>{formatDuration(duration)}</div>
-                        </Link>
-                      </React.Fragment>
-                    );
-                  }
-                )}
-              </div>
-            </div>
+            <HallPassLog
+              passes={closedPasses}
+              totalDuration={totalDuration}
+              openPass={openPass}
+              elapsedDuration={elapsedDuration}
+            />
           </div>
         </Form>
         <Outlet />
