@@ -2,7 +2,8 @@ import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
-import { format } from "date-fns";
+import { format, intervalToDuration } from "date-fns";
+import { Pass } from "@prisma/client";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -122,4 +123,13 @@ export const getDurationStatus = (duration: Duration): DurationStatus => {
     return "warning";
   }
   return "good";
+};
+
+export const getPassStatus = (pass: Pass) => {
+  return getDurationStatus(
+    intervalToDuration({
+      start: new Date(pass.startAt),
+      end: pass.endAt ? new Date(pass.endAt) : new Date(),
+    })
+  );
 };

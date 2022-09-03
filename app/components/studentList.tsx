@@ -1,5 +1,8 @@
 import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { EyeSlashIcon } from "@heroicons/react/20/solid";
+import { getDurationStatus, getPassStatus } from "~/utils/utils";
+import { intervalToDuration } from "date-fns";
 interface HeaderProps {
   studentsAndOpenPasses: {
     id: string;
@@ -10,6 +13,13 @@ interface HeaderProps {
   }[];
   studentSearch: string;
 }
+
+const statusColors = {
+  good: "text-black",
+  warning: "text-orange-600 animate-pulse",
+  error: "text-red-600 animate-pulse",
+};
+
 export const StudentList: React.FC<HeaderProps> = ({
   studentsAndOpenPasses,
   studentSearch,
@@ -32,15 +42,23 @@ export const StudentList: React.FC<HeaderProps> = ({
       {filteredStudents.map((student) => {
         const isSelected = studentId === student.id;
         const isOutside = !!student.passes.length;
+        const status = student.passes.length
+          ? getPassStatus(student.passes[0])
+          : "good";
 
         return (
           <li
             key={student.id}
             className={`px-10 ${isSelected ? "bg-amber-200" : undefined}`}
+            title={isOutside ? `${student.firstName} is out there...` : ""}
           >
             <Link to={`${student.id}`} className="flex">
               <div className="flex-1">{`${student.firstName} ${student.lastName}`}</div>
-              {isOutside ? "*" : <div>{student.period}</div>}
+              {isOutside ? (
+                <EyeSlashIcon className={`h-6 w-6 ${statusColors[status]}`} />
+              ) : (
+                <div>{student.period}</div>
+              )}
             </Link>
           </li>
         );

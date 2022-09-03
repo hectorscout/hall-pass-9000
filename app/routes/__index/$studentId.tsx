@@ -9,7 +9,6 @@ import {
 } from "~/models/hall-pass.server";
 import invariant from "tiny-invariant";
 import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
-import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import { add, formatDuration, intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,6 +16,8 @@ import {
   formatDurationDigital,
   getDurationStatus,
 } from "~/utils/utils";
+import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -155,13 +156,11 @@ export default function StudentDetailsRoute() {
               ({student.period})
             </div>
           </h1>
-          <div>
-            <Link to="edit" className="justify-end">
-              <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
-                Edit
-              </button>
-            </Link>
-          </div>
+          <Link to="edit" className="justify-end" title="Edit Student">
+            <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
+              <PencilIcon className="h-6 w-6" />
+            </button>
+          </Link>
         </div>
         <Form method="post" className="flex flex-1 flex-col">
           <div className="flex justify-center">
@@ -213,9 +212,9 @@ export default function StudentDetailsRoute() {
                   ({ duration, id, reason, startAt, endAt, status }) => {
                     const statusColor =
                       status === "error"
-                        ? "bg-red-600"
+                        ? "text-red-600"
                         : status === "warning"
-                        ? "bg-yellow-600"
+                        ? "text-yellow-600"
                         : undefined;
                     return (
                       <React.Fragment key={id}>
@@ -224,11 +223,11 @@ export default function StudentDetailsRoute() {
                           title={reason || "N/A"}
                           className={id === passId ? "bg-amber-100" : ""}
                         >
-                          <div
-                            className={`${statusColor} rounded-full text-center text-gray-200`}
-                          >
-                            {status !== "good" ? "!" : ""}
-                          </div>
+                          {status !== "good" ? (
+                            <ExclamationTriangleIcon
+                              className={`h-6 w-6 ${statusColor}`}
+                            />
+                          ) : null}
                         </Link>
                         <Link
                           to={id}
