@@ -171,9 +171,6 @@ export default function StudentDetailsRoute() {
                   value={openPass.id}
                   size="big"
                   kind={getDurationStatus(elapsedDuration)}
-                  // className={`justify-center rounded py-12 px-14 font-mono text-4xl ${
-                  //   buttonColors[getDurationStatus(elapsedDuration)]
-                  // }`}
                 >
                   <div className="font-mono text-5xl">
                     {formatDurationDigital(elapsedDuration)}

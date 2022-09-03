@@ -21,7 +21,7 @@ const kindColors = {
 
 const sizes = {
   normal: "py-2 px-4",
-  big: "py-12 px-14 text-3xl",
+  big: "py-12 px-14 text-3xl rounded-3xl",
 };
 
 export const Button = ({
