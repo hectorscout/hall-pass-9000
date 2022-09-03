@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
+import { Button } from "~/components/common/button";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -149,9 +150,9 @@ export default function StudentDetailsRoute() {
             </div>
           </h1>
           <Link to="edit" className="justify-end" title="Edit Student">
-            <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
+            <Button>
               <PencilIcon className="h-6 w-6" />
-            </button>
+            </Button>
           </Link>
         </div>
         <Form method="post" className="flex flex-1 flex-col">
