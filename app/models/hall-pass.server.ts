@@ -129,6 +129,7 @@ export function getHallPassesForStudent(studentId: Student["id"]) {
       reason: true,
     },
     where: { studentId },
+    orderBy: { startAt: "desc" },
   });
 }
 

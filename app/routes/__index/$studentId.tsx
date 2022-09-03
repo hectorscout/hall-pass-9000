@@ -8,17 +8,12 @@ import {
   getStudent,
 } from "~/models/hall-pass.server";
 import invariant from "tiny-invariant";
-import { Form, Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
-import { add, formatDuration, intervalToDuration } from "date-fns";
+import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { add, intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
-import {
-  formatDateTime,
-  formatDurationDigital,
-  getDurationStatus,
-} from "~/utils/utils";
-import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
+import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { HallPassLog } from "~/components/hallPassLog";
+import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
