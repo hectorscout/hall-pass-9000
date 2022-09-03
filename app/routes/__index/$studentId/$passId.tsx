@@ -15,6 +15,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { formatDate, formatTime } from "~/utils/utils";
 import { useEffect, useState } from "react";
 import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -102,9 +103,9 @@ export default function PassDetailsRoute() {
           type="submit"
           name="intent"
           value="close"
-          className="absolute right-0 m-5 rounded p-3 text-5xl hover:bg-blue-500"
+          className="absolute right-0 m-5 rounded p-3 hover:bg-blue-500"
         >
-          X
+          <XMarkIcon className="h-10 w-10" />
         </button>
       </Form>
       <div className="my-10">
