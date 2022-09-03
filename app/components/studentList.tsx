@@ -16,7 +16,7 @@ interface HeaderProps {
 const statusColors = {
   good: "text-black",
   warning: "text-orange-600 animate-pulse",
-  error: "text-red-600 animate-pulse",
+  critical: "text-red-600 animate-pulse",
 };
 
 export const StudentList: React.FC<HeaderProps> = ({

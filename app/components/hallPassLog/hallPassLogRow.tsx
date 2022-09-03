@@ -17,7 +17,7 @@ interface HallPassLogRowProps {
 const statusColors = {
   good: undefined,
   warning: "text-yellow-600",
-  error: "text-red-600",
+  critical: "text-red-600",
 };
 
 export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({

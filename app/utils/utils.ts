@@ -106,7 +106,7 @@ export const formatDurationDigital = (duration: Duration) => {
 
 const WARNING_TIME_LIMIT = 5;
 const ERROR_TIME_LIMIT = 10;
-export type DurationStatus = "good" | "warning" | "error";
+export type DurationStatus = "good" | "warning" | "critical";
 
 export const getDurationStatus = (duration: Duration): DurationStatus => {
   const { years, months, weeks, days, hours, minutes } = duration;
@@ -118,7 +118,7 @@ export const getDurationStatus = (duration: Duration): DurationStatus => {
     hours ||
     (minutes && minutes >= ERROR_TIME_LIMIT)
   ) {
-    return "error";
+    return "critical";
   } else if (minutes && minutes >= WARNING_TIME_LIMIT) {
     return "warning";
   }

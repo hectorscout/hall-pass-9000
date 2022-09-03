@@ -82,14 +82,14 @@ const buttonColors = {
   good: "bg-green-500 text-white hover:bg-green-600 focus:bg-green-400 disabled:bg-green-300",
   warning:
     "bg-yellow-500 text-gray-800 animate-pulse hover:bg-yellow-600 focus:bg-yellow-400 disabled:bg-yellow-300",
-  error:
+  critical:
     "bg-red-700 text-white animate-pulse hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300",
 };
 
 const statusMessages = {
   good: "Click to bring them home",
   warning: "Warning: Oxygen levels low",
-  error: "Critical: Oxygen depleted!!",
+  critical: "Critical: Oxygen depleted!!",
 };
 
 // const homeUrl =
@@ -158,28 +158,41 @@ export default function StudentDetailsRoute() {
         <Form method="post" className="flex flex-1 flex-col">
           <div className="flex justify-center">
             {openPass ? (
-              <button
-                type="submit"
-                name="passId"
-                value={openPass.id}
-                className={`justify-center rounded py-12 px-14 font-mono text-4xl ${
-                  buttonColors[getDurationStatus(elapsedDuration)]
-                }`}
+              <div
+                className={
+                  getDurationStatus(elapsedDuration) !== "good"
+                    ? "animate-pulse"
+                    : ""
+                }
               >
-                <div>{formatDurationDigital(elapsedDuration)}</div>
-                <div className="text-2xl">
-                  {statusMessages[getDurationStatus(elapsedDuration)]}
-                </div>
-              </button>
+                <Button
+                  type="submit"
+                  name="passId"
+                  value={openPass.id}
+                  size="big"
+                  kind={getDurationStatus(elapsedDuration)}
+                  // className={`justify-center rounded py-12 px-14 font-mono text-4xl ${
+                  //   buttonColors[getDurationStatus(elapsedDuration)]
+                  // }`}
+                >
+                  <div className="font-mono text-5xl">
+                    {formatDurationDigital(elapsedDuration)}
+                  </div>
+                  <div className="font-mono text-2xl">
+                    {statusMessages[getDurationStatus(elapsedDuration)]}
+                  </div>
+                </Button>
+              </div>
             ) : (
-              <button
+              <Button
                 type="submit"
                 name="passId"
                 value="newPass"
-                className="justify-center rounded bg-red-500 py-12 px-14 text-3xl text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
+                size="big"
+                kind="critical"
               >
                 Jettison Student Into The Cold Uncaring Void Of Space
-              </button>
+              </Button>
             )}
           </div>
           <div className="mt-10 flex-1 bg-blue-300/60 p-10">
