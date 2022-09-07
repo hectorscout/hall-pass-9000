@@ -2,7 +2,8 @@ import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
-import { format } from "date-fns";
+import { format, intervalToDuration } from "date-fns";
+import { Pass } from "@prisma/client";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -81,6 +82,7 @@ export function getRequiredEnvVariable(name: string): string {
   return envVar;
 }
 
+// Time utils
 export const formatDateTime = (dateTimeStr: string | Date | null) => {
   if (!dateTimeStr) return "N/A";
   return format(new Date(dateTimeStr), "d-MMM-yy h:mm aaa");
@@ -100,4 +102,34 @@ export const formatDurationDigital = (duration: Duration) => {
   return `${String(duration.hours).padStart(2, "0")}:${String(
     duration.minutes
   ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
+};
+
+const CRITICAL_TIME_LIMIT = 5;
+const ERROR_TIME_LIMIT = 10;
+export type DurationStatus = "good" | "warning" | "critical";
+
+export const getDurationStatus = (duration: Duration): DurationStatus => {
+  const { years, months, weeks, days, hours, minutes } = duration;
+  if (
+    years ||
+    months ||
+    weeks ||
+    days ||
+    hours ||
+    (minutes && minutes >= ERROR_TIME_LIMIT)
+  ) {
+    return "critical";
+  } else if (minutes && minutes >= CRITICAL_TIME_LIMIT) {
+    return "warning";
+  }
+  return "good";
+};
+
+export const getPassStatus = (pass: Pass) => {
+  return getDurationStatus(
+    intervalToDuration({
+      start: new Date(pass.startAt),
+      end: pass.endAt ? new Date(pass.endAt) : new Date(),
+    })
+  );
 };

@@ -1,64 +1,28 @@
 import { useEffect, useState } from "react";
 import { clearInterval } from "timers";
-import { formatDuration, intervalToDuration } from "date-fns";
+import { intervalToDuration } from "date-fns";
 
-const WARNING_TIME_LIMIT = 5;
-const ERROR_TIME_LIMIT = 10;
-export type DurationStatus = "good" | "warning" | "error";
-
-export const useTimeElapsed = (
-  intervals: (Partial<Interval> & Pick<Interval, "start">)[]
-) => {
-  const getDurationStatus = (duration: Duration): DurationStatus => {
-    const { years, months, weeks, days, hours, minutes } = duration;
-    if (
-      years ||
-      months ||
-      weeks ||
-      days ||
-      hours ||
-      (minutes && minutes >= ERROR_TIME_LIMIT)
-    ) {
-      return "error";
-    } else if (minutes && minutes >= WARNING_TIME_LIMIT) {
-      return "warning";
-    }
-    return "good";
-  };
-  const hasOpen = intervals.some((interval) => !interval.end);
-  const createDurations = (): {
-    duration: Duration;
-    formattedDuration: string;
-    status: DurationStatus;
-  }[] => {
-    return intervals.map(({ start, end }) => {
-      const duration = intervalToDuration({
-        start,
-        end: end ?? new Date(),
-      });
-      return {
-        duration,
-        formattedDuration: formatDuration(duration),
-        status: getDurationStatus(duration),
-      };
-    });
-  };
-
-  const [elapsedDurations, setElapsedDurations] = useState(createDurations());
+export const useTimeElapsed = (intervals: Pick<Interval, "start">[]) => {
+  const [elapsedDurations, setElapsedDurations] = useState<Duration[]>(
+    intervals.map(({ start }) => intervalToDuration({ start, end: new Date() }))
+  );
 
   useEffect(() => {
     const tick = () => {
-      setElapsedDurations(createDurations());
+      setElapsedDurations(
+        intervals.map(({ start }) =>
+          intervalToDuration({ start, end: new Date() })
+        )
+      );
     };
 
-    // TODO: figure out how to make this work
-    // const interval = hasOpen ? setInterval(tick, 1000) : null;
-    const interval = setInterval(tick, 1000);
+    tick();
+    const interval = intervals.length ? setInterval(tick, 1000) : null;
 
     return () => {
       if (interval) clearInterval(interval);
     };
-  });
+  }, [intervals]);
 
   return elapsedDurations;
 };

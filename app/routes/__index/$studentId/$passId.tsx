@@ -15,6 +15,8 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { formatDate, formatTime } from "~/utils/utils";
 import { useEffect, useState } from "react";
 import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import { Button } from "~/components/common/button";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -98,14 +100,11 @@ export default function PassDetailsRoute() {
   return (
     <div className="absolute right-0 top-0 z-10 h-full w-1/3 bg-gray-500 px-10 text-gray-300">
       <Form method="post">
-        <button
-          type="submit"
-          name="intent"
-          value="close"
-          className="absolute right-0 m-5 rounded p-3 text-5xl hover:bg-blue-500"
-        >
-          X
-        </button>
+        <div className="absolute right-0 m-5">
+          <Button kind="ghost" type="submit" name="intent" value="close">
+            <XMarkIcon className="h-10 w-10" />
+          </Button>
+        </div>
       </Form>
       <div className="my-10">
         <h2 className="text-5xl">
@@ -118,7 +117,7 @@ export default function PassDetailsRoute() {
           {`${formatTime(pass.startAt)} - ${formatTime(
             pass.endAt ? endAt : null
           )}`}
-          {duration.days ? ` +${duration.days}` : null}
+          {pass.endAt && duration.days ? ` +${duration.days}` : null}
         </div>
         {pass.endAt ? (
           <>
@@ -213,16 +212,12 @@ export default function PassDetailsRoute() {
               />
             </label>
             <br />
-            <button className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300">
-              Update Space Walk
-            </button>
-            <button
-              name="intent"
-              value="delete"
-              className="absolute right-0 bottom-0 m-5 rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300"
-            >
-              Delete
-            </button>
+            <Button>Update Space Walk</Button>
+            <div className="absolute right-0 bottom-0 m-5">
+              <Button name="intent" value="delete" kind="critical">
+                Delete
+              </Button>
+            </div>
           </Form>
         </div>
       </div>

@@ -5,7 +5,8 @@ import { requireUserId } from "~/utils/session.server";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import invariant from "tiny-invariant";
-import { formatDurationDigital } from "~/utils/utils";
+import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
+import { useEffect, useState } from "react";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -26,9 +27,16 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function HallMonitorIndexPage() {
   const { openPasses } = useLoaderData<typeof loader>();
-  const elapsedTimes = useTimeElapsed(
+  const [intervals, setIntervals] = useState(
     openPasses.map((openPass) => ({ start: new Date(openPass.startAt) }))
   );
+  const elapsedTimes = useTimeElapsed(intervals);
+
+  useEffect(() => {
+    setIntervals(
+      openPasses.map((openPass) => ({ start: new Date(openPass.startAt) }))
+    );
+  }, openPasses);
 
   return (
     <div className="relative flex flex-1">
@@ -43,12 +51,10 @@ export default function HallMonitorIndexPage() {
       >
         {openPasses.length ? (
           openPasses.map(({ id, student }, index) => {
-            const { duration, status } = elapsedTimes[index] ?? {
-              duration: undefined,
-              status: "good",
-            };
+            const duration = elapsedTimes[index];
+            const status = getDurationStatus(duration);
             const textColor =
-              status === "error"
+              status === "critical"
                 ? "text-red-600 animate-pulse"
                 : status === "warning"
                 ? "text-yellow-500 animate-pulse"
