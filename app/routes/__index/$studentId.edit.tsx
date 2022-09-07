@@ -11,8 +11,10 @@ import {
   Form,
   useActionData,
   useLoaderData,
+  useSearchParams,
   useTransition,
 } from "@remix-run/react";
+import { Button } from "~/components/common/button";
 
 type LoaderData = { student?: Awaited<ReturnType<typeof getStudent>> };
 
@@ -94,6 +96,7 @@ const inputClassName =
 export default function EditStudentRoute() {
   const { student } = useLoaderData() as LoaderData;
   const errors = useActionData();
+  const [searchParams] = useSearchParams();
 
   const transition = useTransition();
   const isCreating = transition.submission?.formData.get("intent") === "create";
@@ -115,7 +118,9 @@ export default function EditStudentRoute() {
             type="text"
             name="firstName"
             className={inputClassName}
-            defaultValue={student?.firstName ?? ""}
+            defaultValue={
+              student?.firstName ?? searchParams.get("firstname") ?? ""
+            }
           />
         </label>
       </p>
@@ -170,11 +175,10 @@ export default function EditStudentRoute() {
       </p>
 
       <div className="flex justify-end gap-4">
-        <button
+        <Button
           type="submit"
           name="intent"
           value="create"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
           disabled={isCreating || isUpdating}
         >
           {isNewStudent
@@ -187,7 +191,7 @@ export default function EditStudentRoute() {
               ? "Updating..."
               : "Update Student"
             : null}
-        </button>
+        </Button>
       </div>
     </Form>
   );
