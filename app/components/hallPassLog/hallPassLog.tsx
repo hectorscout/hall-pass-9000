@@ -57,6 +57,7 @@ export const HallPassLog: React.FC<HallPassLogProps> = ({
       {passes.map((pass) => {
         return (
           <HallPassLogRow
+            key={pass.id}
             pass={pass}
             duration={pass.duration}
             selectedPassId={passId}

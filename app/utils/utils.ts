@@ -104,7 +104,7 @@ export const formatDurationDigital = (duration: Duration) => {
   ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
 };
 
-const WARNING_TIME_LIMIT = 5;
+const CRITICAL_TIME_LIMIT = 5;
 const ERROR_TIME_LIMIT = 10;
 export type DurationStatus = "good" | "warning" | "critical";
 
@@ -119,7 +119,7 @@ export const getDurationStatus = (duration: Duration): DurationStatus => {
     (minutes && minutes >= ERROR_TIME_LIMIT)
   ) {
     return "critical";
-  } else if (minutes && minutes >= WARNING_TIME_LIMIT) {
+  } else if (minutes && minutes >= CRITICAL_TIME_LIMIT) {
     return "warning";
   }
   return "good";

@@ -214,7 +214,7 @@ export default function PassDetailsRoute() {
             <br />
             <Button>Update Space Walk</Button>
             <div className="absolute right-0 bottom-0 m-5">
-              <Button name="intent" value="delete" kind="warn">
+              <Button name="intent" value="delete" kind="critical">
                 Delete
               </Button>
             </div>
