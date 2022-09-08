@@ -121,6 +121,7 @@ export default function EditStudentRoute() {
             defaultValue={
               student?.firstName ?? searchParams.get("firstname") ?? ""
             }
+            autoFocus
           />
         </label>
       </p>
