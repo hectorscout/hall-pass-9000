@@ -182,15 +182,11 @@ export default function EditStudentRoute() {
           value="create"
           disabled={isCreating || isUpdating}
         >
-          {isNewStudent
-            ? isCreating
-              ? "Creating..."
-              : "Create Student"
-            : null}
+          {isNewStudent ? (isCreating ? "Enrolling..." : "Enroll Cadet") : null}
           {!isNewStudent
             ? isUpdating
               ? "Updating..."
-              : "Update Student"
+              : "Update Cadet Records"
             : null}
         </Button>
       </div>

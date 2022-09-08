@@ -42,7 +42,7 @@ export default function HallMonitorPage() {
             </h2>
             <h2 className="text-2xl">
               <Link to={`new/edit?firstname=${studentSearch}`}>
-                + New Student
+                + New Cadet
               </Link>
             </h2>
           </div>

@@ -68,7 +68,7 @@ export const StudentList: React.FC<HeaderProps> = ({
       {studentSearch ? (
         <li className="mt-5">
           <Link to={`new/edit?firstname=${studentSearch}`}>
-            <Button>Create New "{studentSearch}"</Button>
+            <Button>New Cadet "{studentSearch}"</Button>
           </Link>
         </li>
       ) : null}

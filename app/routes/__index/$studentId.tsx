@@ -75,19 +75,8 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-// const inputClassName =
-//   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
-
-const buttonColors = {
-  good: "bg-green-500 text-white hover:bg-green-600 focus:bg-green-400 disabled:bg-green-300",
-  warning:
-    "bg-yellow-500 text-gray-800 animate-pulse hover:bg-yellow-600 focus:bg-yellow-400 disabled:bg-yellow-300",
-  critical:
-    "bg-red-700 text-white animate-pulse hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300",
-};
-
 const statusMessages = {
-  good: "Click to bring them home",
+  good: "Click to bring them back to safety.",
   warning: "Warning: Oxygen levels low",
   critical: "Critical: Oxygen depleted!!",
 };
@@ -188,7 +177,7 @@ export default function StudentDetailsRoute() {
                 size="big"
                 kind="critical"
               >
-                Jettison Student Into The Cold Uncaring Void Of Space
+                Jettison Cadet Into The Cold Uncaring Void Of Space
               </Button>
             )}
           </div>
