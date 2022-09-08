@@ -2,6 +2,7 @@ import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { getPassStatus } from "~/utils/utils";
+import { Button } from "~/components/common/button";
 interface HeaderProps {
   studentsAndOpenPasses: {
     id: string;
@@ -37,7 +38,7 @@ export const StudentList: React.FC<HeaderProps> = ({
   }, [studentsAndOpenPasses, studentSearch]);
 
   return (
-    <ol>
+    <ol className="px-10">
       {filteredStudents.map((student) => {
         const isSelected = studentId === student.id;
         const isOutside = !!student.passes.length;
@@ -48,7 +49,9 @@ export const StudentList: React.FC<HeaderProps> = ({
         return (
           <li
             key={student.id}
-            className={`px-10 ${isSelected ? "bg-amber-200" : undefined}`}
+            className={`hover:bg-gray-400 ${
+              isSelected ? "bg-amber-200" : undefined
+            }`}
             title={isOutside ? `${student.firstName} is out there...` : ""}
           >
             <Link to={`${student.id}`} className="flex">
@@ -63,9 +66,11 @@ export const StudentList: React.FC<HeaderProps> = ({
         );
       })}
       {studentSearch ? (
-        <Link to={`new/edit?firstname=${studentSearch}`}>
-          Create New "{studentSearch}"
-        </Link>
+        <li className="mt-5">
+          <Link to={`new/edit?firstname=${studentSearch}`}>
+            <Button>Create New "{studentSearch}"</Button>
+          </Link>
+        </li>
       ) : null}
     </ol>
   );

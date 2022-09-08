@@ -74,9 +74,6 @@ export default function HallMonitorIndexPage() {
                 <div
                   className={`font-mono text-6xl ${textColor}`}
                 >{`${formatDurationDigital(duration)}`}</div>
-                {/*<div className={textColor}>*/}
-                {/*  {`${student.firstName} has been out there for ${duration}.`}*/}
-                {/*</div>*/}
               </button>
             );
           })
