@@ -3,6 +3,7 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import {
   createStudent,
+  deleteStudent,
   getStudent,
   updateStudent,
 } from "~/models/hall-pass.server";
@@ -46,6 +47,14 @@ export const action: ActionFunction = async ({ params, request }) => {
   const userId = await requireUserId(request);
   invariant(params.studentId, "params.studentId is required");
   const formData = await request.formData();
+
+  const intent = formData.get("intent");
+
+  if (intent === "delete") {
+    await deleteStudent({ id: params.studentId, userId });
+
+    return redirect("/");
+  }
 
   const firstName = formData.get("firstName");
   const lastName = formData.get("lastName");
@@ -188,6 +197,11 @@ export default function EditStudentRoute() {
               ? "Updating..."
               : "Update Cadet Records"
             : null}
+        </Button>
+      </div>
+      <div className="absolute right-0 bottom-0 m-10">
+        <Button kind="critical" value="delete" name="intent">
+          Retire Cadet
         </Button>
       </div>
     </Form>
