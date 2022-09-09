@@ -16,6 +16,8 @@ import {
   useTransition,
 } from "@remix-run/react";
 import { Button } from "~/components/common/button";
+import { useState } from "react";
+import { Modal } from "~/components/common/modal";
 
 type LoaderData = { student?: Awaited<ReturnType<typeof getStudent>> };
 
@@ -98,6 +100,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     return redirect(`/${student.id}`);
   }
 };
+const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
 
 const inputClassName =
   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
@@ -116,7 +119,7 @@ export default function EditStudentRoute() {
   const isDeleting = transition.submission?.formData.get("intent") === "delete";
   const isNewStudent = !student;
 
-  const periods = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between">
@@ -128,7 +131,7 @@ export default function EditStudentRoute() {
       <h1 className="z-10 mt-10 ml-10 flex-grow-0 text-6xl font-extrabold">
         Cadet {isNewStudent ? "Enrollment" : "Profile"}
       </h1>
-      <div className="z-10 flex w-1/3 flex-1 items-center">
+      <div className="z-10 flex w-1/2 flex-1 items-center justify-center">
         <Form method="post" key={student?.id} className="z-10 ml-10">
           <p>
             <label>
@@ -172,7 +175,7 @@ export default function EditStudentRoute() {
                 defaultValue={student?.period ?? ""}
                 className={inputClassName}
               >
-                {periods.map((period) => (
+                {PERIODS.map((period) => (
                   <option value={period} key={period}>
                     {period}
                   </option>
@@ -217,15 +220,58 @@ export default function EditStudentRoute() {
                 : null}
             </Button>
           </div>
-          {!isNewStudent ? (
-            <div className="absolute right-0 bottom-0 m-10">
-              <Button kind="critical" value="delete" name="intent">
-                {isDeleting ? "Retiring..." : "Retire Cadet"}
-              </Button>
-            </div>
-          ) : null}
         </Form>
+        {!isNewStudent ? (
+          <div
+            className="absolute right-0 bottom-0 m-10"
+            onClick={() => setConfirmDelete(true)}
+          >
+            <Button kind="critical">
+              {isDeleting ? "Retiring..." : "Retire Cadet"}
+            </Button>
+          </div>
+        ) : null}
       </div>
+      {confirmDelete ? (
+        <Modal
+          title="Confirm Retirement"
+          footer={
+            <div className="flex justify-end">
+              <Button
+                kind="ghostLight"
+                className="mr-5"
+                onClick={() => setConfirmDelete(false)}
+              >
+                Cancel
+              </Button>
+              <Form method="post" key={student?.id}>
+                <Button
+                  kind="critical"
+                  name="intent"
+                  value="delete"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Deleting" : "Make It So"}
+                </Button>
+              </Form>
+            </div>
+          }
+          onClose={() => setConfirmDelete(false)}
+        >
+          <div>
+            <h3 className="mb-5 text-2xl font-extrabold text-red-600">
+              WARNING:
+            </h3>
+            <div>
+              {`Retiring ${student?.firstName} ${student?.lastName} will permanently destroy
+              all records of this cadet and all of their space walks.`}
+            </div>
+            <div className="mt-3">
+              You gotta ask yourself, <i>"is this really what I want to do?"</i>
+            </div>
+          </div>
+        </Modal>
+      ) : null}
     </div>
   );
 }
