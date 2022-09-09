@@ -30,9 +30,9 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
   return (
     <Link
       to={pass.id}
-      title={pass.reason || "N/A"}
-      className={`mt-1 grid grid-cols-[30px_1fr_1fr_1fr] gap-x-2 gap-y-1 hover:bg-gray-200 ${
-        pass.id === selectedPassId ? "bg-amber-100" : ""
+      title={pass.reason || "No notes for this walk."}
+      className={`mt-1 grid grid-cols-[30px_1fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-200 ${
+        pass.id === selectedPassId ? "bg-gray-200" : ""
       }`}
       key={pass.id}
     >
@@ -44,7 +44,7 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
         <div></div>
       )}
       <div>{formatDateTime(pass.startAt)}</div>
-      <div>{pass.endAt ? formatDateTime(pass.endAt) : "N/A"}</div>
+      <div>{pass.endAt ? formatDateTime(pass.endAt) : "-"}</div>
       <div>{formatDuration(duration)}</div>
     </Link>
   );
