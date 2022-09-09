@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { getPassStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
-interface HeaderProps {
-  studentsAndOpenPasses: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    period: string;
-    passes: any[];
-  }[];
+interface Student {
+  id: string;
+  firstName: string;
+  lastName: string;
+  period: string;
+  passes: any[];
+}
+interface StudentListProps {
+  studentsAndOpenPasses: Student[];
   studentSearch: string;
+  periodFilter: string;
 }
 
 const statusColors = {
@@ -20,10 +22,11 @@ const statusColors = {
   critical: "text-red-600 animate-pulse",
 };
 
-export const StudentList: React.FC<HeaderProps> = ({
+export const StudentList = ({
   studentsAndOpenPasses,
   studentSearch,
-}) => {
+  periodFilter,
+}: StudentListProps) => {
   const { studentId } = useParams();
 
   const [filteredStudents, setFilteredStudents] = useState(
@@ -31,11 +34,19 @@ export const StudentList: React.FC<HeaderProps> = ({
   );
   useEffect(() => {
     setFilteredStudents(
-      studentsAndOpenPasses.filter((student) =>
-        student.firstName.toLowerCase().startsWith(studentSearch.toLowerCase())
-      )
+      studentsAndOpenPasses.reduce((filtered, student) => {
+        if (
+          (!periodFilter || student.period === periodFilter) &&
+          student.firstName
+            .toLowerCase()
+            .startsWith(studentSearch.toLowerCase())
+        ) {
+          filtered.push(student);
+        }
+        return filtered;
+      }, [] as Student[])
     );
-  }, [studentsAndOpenPasses, studentSearch]);
+  }, [studentsAndOpenPasses, studentSearch, periodFilter]);
 
   return (
     <ol>
