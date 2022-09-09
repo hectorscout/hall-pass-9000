@@ -51,14 +51,14 @@ export default function HallMonitorPage() {
           <div className="mt-10">
             <div className="mx-10 mb-2 flex justify-between">
               <input
-                className="w-2/3"
+                className="w-2/3 outline-none"
                 name="studentSearch"
                 value={studentSearch}
                 placeholder="Ethan"
                 onChange={(e) => setStudentSearch(e.target.value)}
               />
               <select
-                className="outline-none"
+                className="bg-gray-100 outline-none"
                 onChange={({ target }) => setPeriodFilter(target.value)}
               >
                 <option value="">All</option>
