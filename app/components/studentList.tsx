@@ -49,8 +49,8 @@ export const StudentList: React.FC<HeaderProps> = ({
         return (
           <li
             key={student.id}
-            className={`hover:bg-gray-400 ${
-              isSelected ? "bg-amber-200" : undefined
+            className={`px-10 hover:bg-gray-300 ${
+              isSelected ? "bg-gray-300" : undefined
             }`}
             title={isOutside ? `${student.firstName} is out there...` : ""}
           >
@@ -66,9 +66,9 @@ export const StudentList: React.FC<HeaderProps> = ({
         );
       })}
       {studentSearch ? (
-        <li className="mt-5">
+        <li className="mt-5 px-10">
           <Link to={`new/edit?firstname=${studentSearch}`}>
-            <Button>Create New "{studentSearch}"</Button>
+            <Button>New Cadet "{studentSearch}"</Button>
           </Link>
         </li>
       ) : null}
