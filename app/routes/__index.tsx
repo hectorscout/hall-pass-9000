@@ -32,7 +32,7 @@ export default function HallMonitorPage() {
     <div className="flex h-full flex-col">
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
       <main className="flex flex h-full bg-white">
-        <div className="h-full w-80 border-r bg-gray-100">
+        <div className="h-full w-80 bg-gray-100">
           <div className="pl-10">
             <h2 className="my-5 text-3xl">
               <Link to="">
@@ -42,7 +42,7 @@ export default function HallMonitorPage() {
             </h2>
             <h2 className="text-2xl">
               <Link to={`new/edit?firstname=${studentSearch}`}>
-                + New Student
+                + New Cadet
               </Link>
             </h2>
           </div>
