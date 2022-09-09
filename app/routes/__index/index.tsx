@@ -32,11 +32,12 @@ export default function HallMonitorIndexPage() {
   );
   const elapsedTimes = useTimeElapsed(intervals);
 
-  useEffect(() => {
-    setIntervals(
-      openPasses.map((openPass) => ({ start: new Date(openPass.startAt) }))
-    );
-  }, openPasses);
+  // TODO: figure out dependencies. Currently has bugs if there's more than one pass
+  // useEffect(() => {
+  //   setIntervals(
+  //     openPasses.map((openPass) => ({ start: new Date(openPass.startAt) }))
+  //   );
+  // }, openPasses);
 
   return (
     <div className="relative flex flex-1">
