@@ -18,6 +18,7 @@ import {
 import { Button } from "~/components/common/button";
 import { useState } from "react";
 import { Modal } from "~/components/common/modal";
+import { PERIODS } from "~/utils/utils";
 
 type LoaderData = { student?: Awaited<ReturnType<typeof getStudent>> };
 
@@ -100,7 +101,6 @@ export const action: ActionFunction = async ({ params, request }) => {
     return redirect(`/${student.id}`);
   }
 };
-const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
 
 const inputClassName =
   "w-full rounded border border-gray-500 px-2 py-1 text-lg";

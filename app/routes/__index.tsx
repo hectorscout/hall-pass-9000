@@ -21,7 +21,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ studentsAndOpenPasses });
 };
 
-const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
+const getAvailablePeriods = (students: { period: string }[]) => {
+  return Array.from(new Set(students.map((student) => student.period))).sort();
+};
 
 export default function HallMonitorPage() {
   const { studentsAndOpenPasses } = useLoaderData<typeof loader>();
@@ -58,11 +60,11 @@ export default function HallMonitorPage() {
                 onChange={(e) => setStudentSearch(e.target.value)}
               />
               <select
-                className="bg-gray-100 outline-none"
+                className="cursor-pointer bg-gray-100 outline-none"
                 onChange={({ target }) => setPeriodFilter(target.value)}
               >
                 <option value="">All</option>
-                {PERIODS.map((period) => {
+                {getAvailablePeriods(studentsAndOpenPasses).map((period) => {
                   return (
                     <option key={period} value={period}>
                       {period}
