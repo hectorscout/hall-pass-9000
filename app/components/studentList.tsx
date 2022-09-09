@@ -38,7 +38,7 @@ export const StudentList: React.FC<HeaderProps> = ({
   }, [studentsAndOpenPasses, studentSearch]);
 
   return (
-    <ol className="px-10">
+    <ol>
       {filteredStudents.map((student) => {
         const isSelected = studentId === student.id;
         const isOutside = !!student.passes.length;
