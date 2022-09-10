@@ -1,17 +1,19 @@
 import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
-import { getPassStatus } from "~/utils/utils";
+import { capitalizeString, getPassStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
-interface HeaderProps {
-  studentsAndOpenPasses: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    period: string;
-    passes: any[];
-  }[];
+interface Student {
+  id: string;
+  firstName: string;
+  lastName: string;
+  period: string;
+  passes: any[];
+}
+interface StudentListProps {
+  studentsAndOpenPasses: Student[];
   studentSearch: string;
+  periodFilter: string;
 }
 
 const statusColors = {
@@ -20,22 +22,35 @@ const statusColors = {
   critical: "text-red-600 animate-pulse",
 };
 
-export const StudentList: React.FC<HeaderProps> = ({
+export const StudentList = ({
   studentsAndOpenPasses,
   studentSearch,
-}) => {
+  periodFilter,
+}: StudentListProps) => {
   const { studentId } = useParams();
 
   const [filteredStudents, setFilteredStudents] = useState(
     studentsAndOpenPasses
   );
+  const [newName, setNewName] = useState({ firstName: "", lastName: "" });
+
   useEffect(() => {
+    const [firstName, lastName] = studentSearch.split(" ");
+    setNewName({ firstName, lastName });
     setFilteredStudents(
-      studentsAndOpenPasses.filter((student) =>
-        student.firstName.toLowerCase().startsWith(studentSearch.toLowerCase())
-      )
+      studentsAndOpenPasses.reduce((filtered, student) => {
+        if (
+          (!periodFilter || student.period === periodFilter) &&
+          student.firstName.toLowerCase().startsWith(firstName.toLowerCase()) &&
+          (!lastName ||
+            student.lastName.toLowerCase().startsWith(lastName.toLowerCase()))
+        ) {
+          filtered.push(student);
+        }
+        return filtered;
+      }, [] as Student[])
     );
-  }, [studentsAndOpenPasses, studentSearch]);
+  }, [studentsAndOpenPasses, studentSearch, periodFilter]);
 
   return (
     <ol>
@@ -67,8 +82,18 @@ export const StudentList: React.FC<HeaderProps> = ({
       })}
       {studentSearch ? (
         <li className="mt-5 px-10">
-          <Link to={`new/edit?firstname=${studentSearch}`}>
-            <Button>New Cadet "{studentSearch}"</Button>
+          <Link
+            to={`new/edit?firstname=${newName.firstName}&lastName=${
+              newName.lastName ?? ""
+            }&period=${periodFilter}`}
+          >
+            <Button>
+              New Cadet "
+              {`${capitalizeString(newName.firstName)} ${capitalizeString(
+                newName.lastName
+              )}`}
+              "
+            </Button>
           </Link>
         </li>
       ) : null}

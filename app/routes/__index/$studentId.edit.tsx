@@ -1,13 +1,6 @@
+import { useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { requireUserId } from "~/utils/session.server";
-import {
-  createStudent,
-  deleteStudent,
-  getStudent,
-  updateStudent,
-} from "~/models/hall-pass.server";
-import invariant from "tiny-invariant";
 import {
   Form,
   useActionData,
@@ -15,9 +8,19 @@ import {
   useSearchParams,
   useTransition,
 } from "@remix-run/react";
+import invariant from "tiny-invariant";
+
+import { requireUserId } from "~/utils/session.server";
+import {
+  createStudent,
+  deleteStudent,
+  getStudent,
+  updateStudent,
+} from "~/models/hall-pass.server";
+
 import { Button } from "~/components/common/button";
-import { useState } from "react";
 import { Modal } from "~/components/common/modal";
+import { capitalizeString, PERIODS } from "~/utils/utils";
 
 type LoaderData = { student?: Awaited<ReturnType<typeof getStudent>> };
 
@@ -100,7 +103,6 @@ export const action: ActionFunction = async ({ params, request }) => {
     return redirect(`/${student.id}`);
   }
 };
-const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
 
 const inputClassName =
   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
@@ -144,7 +146,8 @@ export default function EditStudentRoute() {
                 name="firstName"
                 className={inputClassName}
                 defaultValue={
-                  student?.firstName ?? searchParams.get("firstname") ?? ""
+                  student?.firstName ??
+                  capitalizeString(searchParams.get("firstname"))
                 }
                 autoFocus
               />
@@ -160,7 +163,10 @@ export default function EditStudentRoute() {
                 type="text"
                 name="lastName"
                 className={inputClassName}
-                defaultValue={student?.lastName ?? ""}
+                defaultValue={
+                  student?.lastName ??
+                  capitalizeString(searchParams.get("lastName"))
+                }
               />
             </label>
           </p>
@@ -172,7 +178,9 @@ export default function EditStudentRoute() {
               ) : null}
               <select
                 name="period"
-                defaultValue={student?.period ?? ""}
+                defaultValue={
+                  student?.period ?? searchParams.get("period") ?? ""
+                }
                 className={inputClassName}
               >
                 {PERIODS.map((period) => (
