@@ -45,7 +45,9 @@ export default function HallMonitorPage() {
               </Link>
             </h2>
             <h2 className="text-2xl">
-              <Link to={`new/edit?firstname=${studentSearch}`}>
+              <Link
+                to={`new/edit?firstname=${studentSearch}&period=${periodFilter}`}
+              >
                 + New Cadet
               </Link>
             </h2>

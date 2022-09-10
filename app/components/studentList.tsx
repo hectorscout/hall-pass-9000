@@ -78,7 +78,9 @@ export const StudentList = ({
       })}
       {studentSearch ? (
         <li className="mt-5 px-10">
-          <Link to={`new/edit?firstname=${studentSearch}`}>
+          <Link
+            to={`new/edit?firstname=${studentSearch}&period=${periodFilter}`}
+          >
             <Button>New Cadet "{studentSearch}"</Button>
           </Link>
         </li>

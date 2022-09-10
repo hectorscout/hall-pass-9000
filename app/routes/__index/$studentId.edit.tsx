@@ -172,7 +172,9 @@ export default function EditStudentRoute() {
               ) : null}
               <select
                 name="period"
-                defaultValue={student?.period ?? ""}
+                defaultValue={
+                  student?.period ?? searchParams.get("period") ?? ""
+                }
                 className={inputClassName}
               >
                 {PERIODS.map((period) => (
