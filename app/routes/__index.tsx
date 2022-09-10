@@ -50,35 +50,37 @@ export default function HallMonitorPage() {
               </Link>
             </h2>
           </div>
-          <div className="mt-10">
-            <div className="mx-10 mb-2 flex justify-between">
-              <input
-                className="w-2/3 outline-none"
-                name="studentSearch"
-                value={studentSearch}
-                placeholder="Ethan"
-                onChange={(e) => setStudentSearch(e.target.value)}
+          {studentsAndOpenPasses.length ? (
+            <div className="mt-10">
+              <div className="mx-10 mb-2 flex justify-between">
+                <input
+                  className="w-2/3 outline-none"
+                  name="studentSearch"
+                  value={studentSearch}
+                  placeholder="Ethan"
+                  onChange={(e) => setStudentSearch(e.target.value)}
+                />
+                <select
+                  className="cursor-pointer bg-gray-100 outline-none"
+                  onChange={({ target }) => setPeriodFilter(target.value)}
+                >
+                  <option value="">All</option>
+                  {getAvailablePeriods(studentsAndOpenPasses).map((period) => {
+                    return (
+                      <option key={period} value={period}>
+                        {period}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <StudentList
+                studentsAndOpenPasses={studentsAndOpenPasses}
+                studentSearch={studentSearch}
+                periodFilter={periodFilter}
               />
-              <select
-                className="cursor-pointer bg-gray-100 outline-none"
-                onChange={({ target }) => setPeriodFilter(target.value)}
-              >
-                <option value="">All</option>
-                {getAvailablePeriods(studentsAndOpenPasses).map((period) => {
-                  return (
-                    <option key={period} value={period}>
-                      {period}
-                    </option>
-                  );
-                })}
-              </select>
             </div>
-            <StudentList
-              studentsAndOpenPasses={studentsAndOpenPasses}
-              studentSearch={studentSearch}
-              periodFilter={periodFilter}
-            />
-          </div>
+          ) : null}
         </div>
         <Outlet />
       </main>
