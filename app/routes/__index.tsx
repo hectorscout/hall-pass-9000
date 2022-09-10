@@ -6,7 +6,6 @@ import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
 import { Header } from "~/components/header";
 import styles from "~/components/hal9000/hal9000.css";
-// import { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { StudentList } from "~/components/studentList";
 import { useState } from "react";
 import { HomeModernIcon } from "@heroicons/react/24/solid";
@@ -22,11 +21,16 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ studentsAndOpenPasses });
 };
 
+const getAvailablePeriods = (students: { period: string }[]) => {
+  return Array.from(new Set(students.map((student) => student.period))).sort();
+};
+
 export default function HallMonitorPage() {
   const { studentsAndOpenPasses } = useLoaderData<typeof loader>();
   const user = useUser();
 
   const [studentSearch, setStudentSearch] = useState("");
+  const [periodFilter, setPeriodFilter] = useState("");
 
   return (
     <div className="flex h-full flex-col">
@@ -41,26 +45,48 @@ export default function HallMonitorPage() {
               </Link>
             </h2>
             <h2 className="text-2xl">
-              <Link to={`new/edit?firstname=${studentSearch}`}>
+              <Link
+                to={`new/edit?firstname=${
+                  studentSearch.split(" ")[0]
+                }&lastName=${
+                  studentSearch.split(" ")[1] ?? ""
+                }&period=${periodFilter}`}
+              >
                 + New Cadet
               </Link>
             </h2>
           </div>
-          <div>
+          {studentsAndOpenPasses.length ? (
             <div className="mt-10">
-              <input
-                className="mx-10 mb-2"
-                name="studentSearch"
-                value={studentSearch}
-                placeholder="Ethan"
-                onChange={(e) => setStudentSearch(e.target.value)}
-              />
+              <div className="mx-10 mb-2 flex justify-between">
+                <input
+                  className="w-2/3 outline-none"
+                  name="studentSearch"
+                  value={studentSearch}
+                  placeholder="Ethan"
+                  onChange={(e) => setStudentSearch(e.target.value)}
+                />
+                <select
+                  className="cursor-pointer bg-gray-100 outline-none"
+                  onChange={({ target }) => setPeriodFilter(target.value)}
+                >
+                  <option value="">All</option>
+                  {getAvailablePeriods(studentsAndOpenPasses).map((period) => {
+                    return (
+                      <option key={period} value={period}>
+                        {period}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
               <StudentList
                 studentsAndOpenPasses={studentsAndOpenPasses}
                 studentSearch={studentSearch}
+                periodFilter={periodFilter}
               />
             </div>
-          </div>
+          ) : null}
         </div>
         <Outlet />
       </main>

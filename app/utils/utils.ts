@@ -6,6 +6,7 @@ import { format, intervalToDuration } from "date-fns";
 import { Pass } from "@prisma/client";
 
 const DEFAULT_REDIRECT = "/";
+export const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
 
 /**
  * This should be used any time the redirect path is user-provided
@@ -132,4 +133,11 @@ export const getPassStatus = (pass: Pass) => {
       end: pass.endAt ? new Date(pass.endAt) : new Date(),
     })
   );
+};
+
+export const capitalizeString = (s: string | undefined | null) => {
+  if (!s) {
+    return "";
+  }
+  return s[0].toUpperCase() + s.substring(1);
 };
