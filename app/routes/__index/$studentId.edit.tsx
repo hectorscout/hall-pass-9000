@@ -18,7 +18,7 @@ import {
 import { Button } from "~/components/common/button";
 import { useState } from "react";
 import { Modal } from "~/components/common/modal";
-import { PERIODS } from "~/utils/utils";
+import { capitalizeString, PERIODS } from "~/utils/utils";
 
 type LoaderData = { student?: Awaited<ReturnType<typeof getStudent>> };
 
@@ -144,7 +144,8 @@ export default function EditStudentRoute() {
                 name="firstName"
                 className={inputClassName}
                 defaultValue={
-                  student?.firstName ?? searchParams.get("firstname") ?? ""
+                  student?.firstName ??
+                  capitalizeString(searchParams.get("firstname"))
                 }
                 autoFocus
               />
@@ -160,7 +161,10 @@ export default function EditStudentRoute() {
                 type="text"
                 name="lastName"
                 className={inputClassName}
-                defaultValue={student?.lastName ?? ""}
+                defaultValue={
+                  student?.lastName ??
+                  capitalizeString(searchParams.get("lastName"))
+                }
               />
             </label>
           </p>

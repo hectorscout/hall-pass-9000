@@ -46,7 +46,11 @@ export default function HallMonitorPage() {
             </h2>
             <h2 className="text-2xl">
               <Link
-                to={`new/edit?firstname=${studentSearch}&period=${periodFilter}`}
+                to={`new/edit?firstname=${
+                  studentSearch.split(" ")[0]
+                }&lastName=${
+                  studentSearch.split(" ")[1] ?? ""
+                }&period=${periodFilter}`}
               >
                 + New Cadet
               </Link>

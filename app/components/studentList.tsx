@@ -1,7 +1,7 @@
 import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
-import { getPassStatus } from "~/utils/utils";
+import { capitalizeString, getPassStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
 interface Student {
   id: string;
@@ -32,14 +32,18 @@ export const StudentList = ({
   const [filteredStudents, setFilteredStudents] = useState(
     studentsAndOpenPasses
   );
+  const [newName, setNewName] = useState({ firstName: "", lastName: "" });
+
   useEffect(() => {
+    const [firstName, lastName] = studentSearch.split(" ");
+    setNewName({ firstName, lastName });
     setFilteredStudents(
       studentsAndOpenPasses.reduce((filtered, student) => {
         if (
           (!periodFilter || student.period === periodFilter) &&
-          student.firstName
-            .toLowerCase()
-            .startsWith(studentSearch.toLowerCase())
+          student.firstName.toLowerCase().startsWith(firstName.toLowerCase()) &&
+          (!lastName ||
+            student.lastName.toLowerCase().startsWith(lastName.toLowerCase()))
         ) {
           filtered.push(student);
         }
@@ -79,9 +83,17 @@ export const StudentList = ({
       {studentSearch ? (
         <li className="mt-5 px-10">
           <Link
-            to={`new/edit?firstname=${studentSearch}&period=${periodFilter}`}
+            to={`new/edit?firstname=${newName.firstName}&lastName=${
+              newName.lastName ?? ""
+            }&period=${periodFilter}`}
           >
-            <Button>New Cadet "{studentSearch}"</Button>
+            <Button>
+              New Cadet "
+              {`${capitalizeString(newName.firstName)} ${capitalizeString(
+                newName.lastName
+              )}`}
+              "
+            </Button>
           </Link>
         </li>
       ) : null}

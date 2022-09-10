@@ -134,3 +134,10 @@ export const getPassStatus = (pass: Pass) => {
     })
   );
 };
+
+export const capitalizeString = (s: string | undefined | null) => {
+  if (!s) {
+    return "";
+  }
+  return s[0].toUpperCase() + s.substring(1);
+};
