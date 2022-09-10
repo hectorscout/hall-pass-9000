@@ -1,13 +1,6 @@
+import { useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { requireUserId } from "~/utils/session.server";
-import {
-  createStudent,
-  deleteStudent,
-  getStudent,
-  updateStudent,
-} from "~/models/hall-pass.server";
-import invariant from "tiny-invariant";
 import {
   Form,
   useActionData,
@@ -15,8 +8,17 @@ import {
   useSearchParams,
   useTransition,
 } from "@remix-run/react";
+import invariant from "tiny-invariant";
+
+import { requireUserId } from "~/utils/session.server";
+import {
+  createStudent,
+  deleteStudent,
+  getStudent,
+  updateStudent,
+} from "~/models/hall-pass.server";
+
 import { Button } from "~/components/common/button";
-import { useState } from "react";
 import { Modal } from "~/components/common/modal";
 import { capitalizeString, PERIODS } from "~/utils/utils";
 
