@@ -1,4 +1,5 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
+import type { MouseEventHandler } from "react";
 
 interface ButtonProps {
   type?: "submit" | "button" | "reset";
