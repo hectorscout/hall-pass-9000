@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ profileImgUrl, username }: HeaderProps) => {
-  const [showUserMenu, setShowUserMenu] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const closeUserMenu = () => {
     setShowUserMenu(false);
     document.removeEventListener("click", closeUserMenu);
