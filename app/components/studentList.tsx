@@ -1,5 +1,6 @@
 import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import type { MouseEventHandler } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { capitalizeString, getPassStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
@@ -14,6 +15,7 @@ interface StudentListProps {
   studentsAndOpenPasses: Student[];
   studentSearch: string;
   periodFilter: string;
+  onNavigate: MouseEventHandler;
 }
 
 const statusColors = {
@@ -26,6 +28,7 @@ export const StudentList = ({
   studentsAndOpenPasses,
   studentSearch,
   periodFilter,
+  onNavigate,
 }: StudentListProps) => {
   const { studentId } = useParams();
 
@@ -69,7 +72,7 @@ export const StudentList = ({
             }`}
             title={isOutside ? `${student.firstName} is out there...` : ""}
           >
-            <Link to={`${student.id}`} className="flex">
+            <Link to={`${student.id}`} className="flex" onClick={onNavigate}>
               <div className="flex-1">{`${student.firstName} ${student.lastName}`}</div>
               {isOutside ? (
                 <EyeSlashIcon className={`h-6 w-6 ${statusColors[status]}`} />
@@ -83,6 +86,7 @@ export const StudentList = ({
       {studentSearch ? (
         <li className="mt-5 px-10">
           <Link
+            onClick={onNavigate}
             to={`new/edit?firstname=${newName.firstName}&lastName=${
               newName.lastName ?? ""
             }&period=${periodFilter}`}

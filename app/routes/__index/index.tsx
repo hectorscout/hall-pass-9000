@@ -6,7 +6,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import invariant from "tiny-invariant";
 import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);

@@ -1,4 +1,6 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
+import type { MouseEventHandler } from "react";
+
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
 

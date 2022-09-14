@@ -32,6 +32,10 @@ export default function HallMonitorPage() {
   const [studentSearch, setStudentSearch] = useState("");
   const [periodFilter, setPeriodFilter] = useState("");
 
+  const resetStudentSearch = () => {
+    setStudentSearch("");
+  };
+
   return (
     <div className="flex h-full flex-col">
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
@@ -44,7 +48,7 @@ export default function HallMonitorPage() {
                 Home
               </Link>
             </h2>
-            <h2 className="text-2xl">
+            <h2 className="text-2xl" onClick={resetStudentSearch}>
               <Link
                 to={`new/edit?firstname=${
                   studentSearch.split(" ")[0]
@@ -84,6 +88,7 @@ export default function HallMonitorPage() {
                 studentsAndOpenPasses={studentsAndOpenPasses}
                 studentSearch={studentSearch}
                 periodFilter={periodFilter}
+                onNavigate={resetStudentSearch}
               />
             </div>
           ) : null}
