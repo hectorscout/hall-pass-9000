@@ -1,12 +1,26 @@
 import { Form, Link } from "@remix-run/react";
 import { Hal9000 } from "~/components/hal9000/hal9000";
+import { UserMenu } from "~/components/userMenu";
+import { useState } from "react";
 
 interface HeaderProps {
   profileImgUrl: string | null;
   username: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ profileImgUrl, username }) => {
+export const Header = ({ profileImgUrl, username }: HeaderProps) => {
+  const [showUserMenu, setShowUserMenu] = useState(true);
+  const closeUserMenu = () => {
+    setShowUserMenu(false);
+    document.removeEventListener("click", closeUserMenu);
+  };
+  const toggleUserMenu = () => {
+    if (!showUserMenu) {
+      document.addEventListener("click", closeUserMenu);
+      setShowUserMenu(true);
+    } else closeUserMenu();
+  };
+
   return (
     <header className="border-primary-600 bg-gray-800">
       <nav className="px-4 sm:px-6 lg:px-8" aria-label="Top">
@@ -19,22 +33,16 @@ export const Header: React.FC<HeaderProps> = ({ profileImgUrl, username }) => {
               </h1>
             </Link>
           </div>
-          <div className="flex flex-row">
-            <Form action="/logout" method="post">
-              <button
-                type="submit"
-                className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
-              >
-                Logout {username}
-              </button>
-            </Form>
+          <div className="relative">
             {profileImgUrl ? (
               <img
-                className="ml-10 inline-block h-10 w-10 rounded-full"
+                className="ml-10 inline-block h-10 w-10 cursor-pointer rounded-full"
                 src={profileImgUrl}
                 alt={username}
+                onClick={toggleUserMenu}
               />
             ) : null}
+            {showUserMenu ? <UserMenu username={username} /> : null}
           </div>
           {/*<div className="ml-10 flex shrink-0 items-center space-x-4">*/}
           {/*  {}*/}
