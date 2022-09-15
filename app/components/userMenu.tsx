@@ -10,9 +10,9 @@ export const UserMenu = ({ username }: UserMenuProps) => {
       <Form action="/logout" method="post" className="p-5 hover:bg-gray-200">
         <button type="submit">Logout {username}</button>
       </Form>
-      {/*// <Link to={"/settings"} className="border-t p-5 hover:bg-gray-200">*/}
-      {/*  Settings*/}
-      {/*</Link>*/}
+      <Link to={"/settings"} className="border-t p-5 hover:bg-gray-200">
+        Settings
+      </Link>
     </div>
   );
 };

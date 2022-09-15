@@ -1,3 +1,10 @@
+import { Form } from "@remix-run/react";
+
 export default function SettingsRoute() {
-  return <div>Settings go here</div>;
+  return (
+    <Form>
+      <div>Warning:</div>
+      <div>Critical:</div>
+    </Form>
+  );
 }
