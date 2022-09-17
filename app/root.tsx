@@ -31,11 +31,6 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-type LoaderData = {
-  user: Awaited<ReturnType<typeof getUser>>;
-  ENV: ReturnType<typeof getEnv>;
-};
-
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
@@ -44,7 +39,7 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
-  const data = useLoaderData() as LoaderData;
+  const data = useLoaderData<typeof loader>();
   return (
     <html lang="en" className="h-full">
       <head>
