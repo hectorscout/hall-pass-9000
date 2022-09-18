@@ -41,7 +41,7 @@ export default function HallMonitorPage() {
     <div className="flex h-full flex-col">
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
       <main className="flex flex h-full bg-white">
-        <div className="h-full w-80 bg-gray-100">
+        <div className="flex h-full w-80 flex-col overflow-hidden bg-gray-100">
           <div className="pl-10">
             <h2 className="my-5 text-3xl">
               <Link to="">
@@ -62,7 +62,7 @@ export default function HallMonitorPage() {
             </h2>
           </div>
           {studentsAndOpenPasses.length ? (
-            <div className="mt-10">
+            <div className="mt-10 flex flex-col overflow-hidden">
               <div className="mx-10 mb-2 flex justify-between">
                 <input
                   className="w-2/3 outline-none"
