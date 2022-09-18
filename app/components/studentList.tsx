@@ -1,6 +1,5 @@
 import { Link, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { MouseEventHandler } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { capitalizeString, getPassStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
