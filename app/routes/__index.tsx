@@ -40,7 +40,7 @@ export default function HallMonitorPage() {
   return (
     <div className="flex h-full flex-col">
       <Header username={user.displayName} profileImgUrl={user.profileImgUrl} />
-      <main className="flex flex h-full bg-white">
+      <main className="flex flex h-full overflow-hidden bg-white">
         <div className="flex h-full w-80 flex-col overflow-hidden bg-gray-100">
           <div className="pl-10">
             <h2 className="my-5 text-3xl">
