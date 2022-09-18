@@ -53,7 +53,7 @@ export const StudentList = ({
   }, [studentsAndOpenPasses, studentSearch, periodFilter]);
 
   return (
-    <ol>
+    <ol className="overflow-auto">
       {filteredStudents.map((student) => {
         const isSelected = studentId === student.id;
         const isOutside = !!student.passes.length;

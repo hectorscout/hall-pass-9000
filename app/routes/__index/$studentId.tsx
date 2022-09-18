@@ -116,7 +116,7 @@ export default function StudentDetailsRoute() {
   }, [openPass]);
 
   return (
-    <div className="relative flex flex-1 flex-col bg-blue-900">
+    <div className="relative flex flex-1 flex-col overflow-auto bg-blue-900">
       {openPass ? (
         <img
           alt=""
