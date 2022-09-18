@@ -69,6 +69,7 @@ export default function HallMonitorPage() {
                   name="studentSearch"
                   value={studentSearch}
                   placeholder="Ethan"
+                  type="search"
                   onChange={(e) => setStudentSearch(e.target.value)}
                 />
                 <select
