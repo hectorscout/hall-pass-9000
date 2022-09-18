@@ -2,12 +2,12 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getStudentsAndOpenPasses } from "~/models/hall-pass.server";
 import { requireUserId } from "~/utils/session.server";
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
 import { Header } from "~/components/header";
 import styles from "~/components/hal9000/hal9000.css";
 import { StudentList } from "~/components/studentList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HomeModernIcon } from "@heroicons/react/24/solid";
 
 export const links = () => {
@@ -32,9 +32,10 @@ export default function HallMonitorPage() {
   const [studentSearch, setStudentSearch] = useState("");
   const [periodFilter, setPeriodFilter] = useState("");
 
-  const resetStudentSearch = () => {
+  const location = useLocation();
+  useEffect(() => {
     setStudentSearch("");
-  };
+  }, [location]);
 
   return (
     <div className="flex h-full flex-col">
@@ -48,7 +49,7 @@ export default function HallMonitorPage() {
                 Home
               </Link>
             </h2>
-            <h2 className="text-2xl" onClick={resetStudentSearch}>
+            <h2 className="text-2xl">
               <Link
                 to={`new/edit?firstname=${
                   studentSearch.split(" ")[0]
@@ -68,6 +69,7 @@ export default function HallMonitorPage() {
                   name="studentSearch"
                   value={studentSearch}
                   placeholder="Ethan"
+                  type="search"
                   onChange={(e) => setStudentSearch(e.target.value)}
                 />
                 <select
@@ -88,7 +90,6 @@ export default function HallMonitorPage() {
                 studentsAndOpenPasses={studentsAndOpenPasses}
                 studentSearch={studentSearch}
                 periodFilter={periodFilter}
-                onNavigate={resetStudentSearch}
               />
             </div>
           ) : null}
