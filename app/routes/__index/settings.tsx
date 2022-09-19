@@ -1,4 +1,4 @@
-import { Form, useMatches } from "@remix-run/react";
+import { Form, useActionData, useMatches } from "@remix-run/react";
 import { useRouteData } from "remix-utils";
 import { RootLoaderData } from "../../root";
 import { Button } from "~/components/common/button";
@@ -16,8 +16,8 @@ const getWarningError = (warning: number) => {
 
 const getCriticalError = (critical: number, warning: number) => {
   if (!critical) return "Critical is required";
-  if (critical < 0) return "Critcal must be positive";
-  if (critical < warning) return "Critical must be greater than warning";
+  if (critical < 0) return "Critical must be positive";
+  if (critical <= warning) return "Critical must be greater than warning";
 
   return null;
 };
@@ -64,15 +64,18 @@ const inputClassName =
 
 export default function SettingsRoute() {
   const rootData = useRouteData<RootLoaderData>("root");
-  // const  = useMatches();
   console.log(rootData?.userSettings);
-  // console.log(matches);
+
+  const errors = useActionData();
 
   return (
     <Form method="post">
       <div>
         <label>
           Warning:
+          {errors?.warning ? (
+            <em className="text-red-600">{errors.warning}</em>
+          ) : null}
           <input
             type="number"
             name="warning"
@@ -85,6 +88,9 @@ export default function SettingsRoute() {
       <div>
         <label>
           Critical:
+          {errors?.critical ? (
+            <em className="text-red-600">{errors.critical}</em>
+          ) : null}
           <input
             type="number"
             name="critical"
