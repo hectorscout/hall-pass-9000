@@ -6,6 +6,7 @@ import { ActionFunction, json } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
+import { useUserSettings } from "~/hooks/useUserSettings";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -63,8 +64,7 @@ const inputClassName =
   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
 
 export default function SettingsRoute() {
-  const rootData = useRouteData<RootLoaderData>("root");
-  console.log(rootData?.userSettings);
+  const userSettings = useUserSettings();
 
   const errors = useActionData();
 
@@ -80,7 +80,7 @@ export default function SettingsRoute() {
             type="number"
             name="warning"
             className={inputClassName}
-            defaultValue={rootData?.userSettings.warning ?? 5}
+            defaultValue={userSettings.warning}
           />
           Minutes
         </label>
@@ -95,7 +95,7 @@ export default function SettingsRoute() {
             type="number"
             name="critical"
             className={inputClassName}
-            defaultValue={rootData?.userSettings.critical ?? 10}
+            defaultValue={userSettings.critical}
           />
           Minutes
         </label>
