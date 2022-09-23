@@ -1,7 +1,7 @@
 import { RootLoaderData } from "~/root";
 import { useRouteData } from "remix-utils";
 
-type UserSettings = {
+export type UserSettings = {
   warning: number;
   critical: number;
 };

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { capitalizeString, getPassStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
+import { useUserSettings } from "~/hooks/useUserSettings";
 interface Student {
   id: string;
   firstName: string;
@@ -28,6 +29,7 @@ export const StudentList = ({
   periodFilter,
 }: StudentListProps) => {
   const { studentId } = useParams();
+  const userSettings = useUserSettings();
 
   const [filteredStudents, setFilteredStudents] = useState(
     studentsAndOpenPasses
@@ -58,7 +60,7 @@ export const StudentList = ({
         const isSelected = studentId === student.id;
         const isOutside = !!student.passes.length;
         const status = student.passes.length
-          ? getPassStatus(student.passes[0])
+          ? getPassStatus(student.passes[0], userSettings)
           : "good";
 
         return (
