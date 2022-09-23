@@ -16,7 +16,7 @@ interface ButtonProps {
 const kindColors = {
   good: "bg-blue-500 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300",
   warning:
-    "bg-red-500 text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300",
+    "bg-yellow-500 text-white hover:bg-yellow-600 focus:bg-yellow-400 disabled:bg-yellow-300",
   critical:
     "bg-red-500 text-white hover:bg-red-600 focus:bg-red-400 disabled:bg-red-300",
   ghost: "text-white hover:bg-gray-600 focus:bg-gray-400 disabled:bg-gray-300",
