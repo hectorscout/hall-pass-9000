@@ -36,7 +36,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       return {
         ...pass,
         duration,
-        status: getDurationStatus(duration),
       };
     });
   const openPass = passes.find((pass) => !pass.endAt);

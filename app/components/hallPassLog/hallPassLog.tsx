@@ -2,11 +2,9 @@ import type { Pass } from "@prisma/client";
 import { useParams } from "@remix-run/react";
 import { formatDuration } from "date-fns";
 import React from "react";
-import type { DurationStatus } from "~/utils/utils";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
 
 type ExtendedPass = Pick<Pass, "id" | "reason"> & {
-  status: DurationStatus;
   duration: Duration;
   startAt: string;
   endAt: string | null;
