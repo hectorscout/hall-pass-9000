@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import type { User } from "~/models/user.server";
 import { format, intervalToDuration } from "date-fns";
 import type { Pass } from "@prisma/client";
-import { UserSettings } from "~/hooks/useUserSettings";
+import type { UserSettings } from "~/hooks/useUserSettings";
 
 const DEFAULT_REDIRECT = "/";
 export const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];

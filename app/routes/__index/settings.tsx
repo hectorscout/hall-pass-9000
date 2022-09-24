@@ -1,13 +1,7 @@
-import {
-  Form,
-  useActionData,
-  useMatches,
-  useTransition,
-} from "@remix-run/react";
-import { useRouteData } from "remix-utils";
-import { RootLoaderData } from "../../root";
+import { Form, useActionData, useTransition } from "@remix-run/react";
 import { Button } from "~/components/common/button";
-import { ActionFunction, json } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
@@ -87,7 +81,7 @@ export default function SettingsRoute() {
         setTimeout(() => setSubmittingStatus("idle"), 3000);
       }
     }
-  }, [transition.state, errors]);
+  }, [transition.state, errors, submittingStatus]);
 
   const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
   const [warningVal, setWarningVal] = useState(+userSettings.warning);
