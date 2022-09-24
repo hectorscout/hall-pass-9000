@@ -7,6 +7,7 @@ import { requireUserId } from "~/utils/session.server";
 import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
 import { useUserSettings } from "~/hooks/useUserSettings";
+import { useState } from "react";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -63,44 +64,74 @@ export const action: ActionFunction = async ({ params, request }) => {
 const inputClassName =
   "w-full rounded border border-gray-500 px-2 py-1 text-lg";
 
+const bgUrl =
+  "https://images.unsplash.com/photo-1504541095505-011bf592c055?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjI2OTExODE&ixlib=rb-1.2.1&q=80";
+
 export default function SettingsRoute() {
   const userSettings = useUserSettings();
-
   const errors = useActionData();
 
+  const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
+  const [warningVal, setWarningVal] = useState(+userSettings.warning);
+
   return (
-    <Form method="post">
-      <div>
-        <label>
-          Warning:
-          {errors?.warning ? (
-            <em className="text-red-600">{errors.warning}</em>
-          ) : null}
-          <input
-            type="number"
-            name="warning"
-            className={inputClassName}
-            defaultValue={userSettings.warning}
-          />
-          Minutes
-        </label>
+    <div className="relative flex h-full w-full flex-col justify-between">
+      <img
+        alt=""
+        className="absolute inset-0 z-0 h-full w-full object-cover"
+        src={bgUrl}
+      />
+      <h1 className="z-10 mt-10 ml-10 flex-grow-0 text-6xl font-extrabold">
+        Settings
+      </h1>
+      <div className="relative z-10 flex w-1/2 flex-1 items-center justify-center">
+        <Form method="post">
+          <div className="mb-10 text-6xl">
+            {errors?.warning ? (
+              <em className="block text-2xl text-red-600">{errors.warning}</em>
+            ) : null}
+            <label className="font-mono text-gray-900">
+              <div className="text-warning">Warning:</div>
+              {(warningVal ?? 0) < 10 ? "0" : null}
+              <input
+                className={`relative appearance-none border-none bg-transparent p-1 outline-none ${
+                  (warningVal ?? 0) < 10 ? "w-14" : "w-24"
+                }`}
+                type="number"
+                min="0"
+                max="99"
+                name="warning"
+                defaultValue={warningVal}
+                onChange={({ target: { value } }) => setWarningVal(+value)}
+              />
+              Minute{warningVal !== 1 ? "s" : ""}
+            </label>
+          </div>
+          <div className="mb-10 text-6xl">
+            {errors?.critical ? (
+              <em className="block text-2xl text-red-600">{errors.critical}</em>
+            ) : null}
+            <label className="font-mono text-gray-900">
+              <div className="text-critical">Critical:</div>
+              {(criticalVal ?? 0) < 10 ? "0" : null}
+              <input
+                className={`relative appearance-none border-none bg-transparent p-1 outline-none ${
+                  (criticalVal ?? 0) < 10 ? "w-14" : "w-24"
+                }`}
+                type="number"
+                min="0"
+                name="critical"
+                defaultValue={criticalVal}
+                onChange={({ target: { value } }) => setCriticalVal(+value)}
+              />
+              Minutes
+            </label>
+          </div>
+          <div className="flex justify-end gap-4">
+            <Button type="submit">Update Settings</Button>
+          </div>
+        </Form>
       </div>
-      <div>
-        <label>
-          Critical:
-          {errors?.critical ? (
-            <em className="text-red-600">{errors.critical}</em>
-          ) : null}
-          <input
-            type="number"
-            name="critical"
-            className={inputClassName}
-            defaultValue={userSettings.critical}
-          />
-          Minutes
-        </label>
-      </div>
-      <Button type="submit">Update Settings</Button>
-    </Form>
+    </div>
   );
 }
