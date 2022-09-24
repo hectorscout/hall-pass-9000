@@ -1,4 +1,9 @@
-import { Form, useActionData, useMatches } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useMatches,
+  useTransition,
+} from "@remix-run/react";
 import { useRouteData } from "remix-utils";
 import { RootLoaderData } from "../../root";
 import { Button } from "~/components/common/button";
@@ -7,7 +12,7 @@ import { requireUserId } from "~/utils/session.server";
 import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
 import { useUserSettings } from "~/hooks/useUserSettings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -61,15 +66,29 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-const inputClassName =
-  "w-full rounded border border-gray-500 px-2 py-1 text-lg";
-
 const bgUrl =
   "https://images.unsplash.com/photo-1504541095505-011bf592c055?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjI2OTExODE&ixlib=rb-1.2.1&q=80";
 
 export default function SettingsRoute() {
   const userSettings = useUserSettings();
   const errors = useActionData();
+  const transition = useTransition();
+
+  const [submittingStatus, setSubmittingStatus] = useState("idle");
+  useEffect(() => {
+    if (transition.state === "submitting") {
+      setSubmittingStatus("submitting");
+    }
+    if (transition.state === "idle" && submittingStatus === "submitting") {
+      if (errors) {
+        setSubmittingStatus("idle");
+      } else {
+        setSubmittingStatus("success");
+        setTimeout(() => setSubmittingStatus("idle"), 3000);
+        console.log("submitted successfully");
+      }
+    }
+  }, [transition.state, errors]);
 
   const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
   const [warningVal, setWarningVal] = useState(+userSettings.warning);
@@ -128,10 +147,19 @@ export default function SettingsRoute() {
             </label>
           </div>
           <div className="flex justify-end gap-4">
-            <Button type="submit">Update Settings</Button>
+            <Button type="submit" disabled={submittingStatus === "submitting"}>
+              {submittingStatus === "submitting"
+                ? "Updating Settings..."
+                : "Update Settings"}
+            </Button>
           </div>
         </Form>
       </div>
+      {submittingStatus === "success" ? (
+        <div className="m-1/2 absolute left-1/2 bottom-0 mb-5 -translate-x-1/2 rounded-full bg-gray-700 py-3 px-5 text-gray-200">
+          Successfully updated settings
+        </div>
+      ) : null}
     </div>
   );
 }
