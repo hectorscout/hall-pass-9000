@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { User } from "~/models/user.server";
 import { format, intervalToDuration } from "date-fns";
 import type { Pass } from "@prisma/client";
+import type { UserSettings } from "~/hooks/useUserSettings";
 
 const DEFAULT_REDIRECT = "/";
 export const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
@@ -105,11 +106,12 @@ export const formatDurationDigital = (duration: Duration) => {
   ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
 };
 
-const CRITICAL_TIME_LIMIT = 5;
-const ERROR_TIME_LIMIT = 10;
 export type DurationStatus = "good" | "warning" | "critical";
 
-export const getDurationStatus = (duration: Duration): DurationStatus => {
+export const getDurationStatus = (
+  duration: Duration,
+  userSettings: UserSettings
+): DurationStatus => {
   const { years, months, weeks, days, hours, minutes } = duration;
   if (
     years ||
@@ -117,21 +119,22 @@ export const getDurationStatus = (duration: Duration): DurationStatus => {
     weeks ||
     days ||
     hours ||
-    (minutes && minutes >= ERROR_TIME_LIMIT)
+    (minutes && minutes >= userSettings.critical)
   ) {
     return "critical";
-  } else if (minutes && minutes >= CRITICAL_TIME_LIMIT) {
+  } else if (minutes && minutes >= userSettings.warning) {
     return "warning";
   }
   return "good";
 };
 
-export const getPassStatus = (pass: Pass) => {
+export const getPassStatus = (pass: Pass, userSettings: UserSettings) => {
   return getDurationStatus(
     intervalToDuration({
       start: new Date(pass.startAt),
       end: pass.endAt ? new Date(pass.endAt) : new Date(),
-    })
+    }),
+    userSettings
   );
 };
 

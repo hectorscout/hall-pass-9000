@@ -13,6 +13,7 @@ import {
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./utils/session.server";
 import { getEnv } from "~/env.server";
+import { getSettings } from "~/models/settings.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -31,20 +32,30 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-type LoaderData = {
+export type RootLoaderData = {
   user: Awaited<ReturnType<typeof getUser>>;
+  userSettings: Record<string, string>;
   ENV: ReturnType<typeof getEnv>;
 };
 
 export async function loader({ request }: LoaderArgs) {
+  const user = await getUser(request);
+  const userSettings = (await getSettings(user?.id ?? "")).reduce(
+    (settings, setting) => {
+      settings[setting.name] = setting.value;
+      return settings;
+    },
+    {} as Record<string, string>
+  );
   return json({
-    user: await getUser(request),
+    user,
+    userSettings,
     ENV: getEnv(),
   });
 }
 
 export default function App() {
-  const data = useLoaderData() as LoaderData;
+  const data = useLoaderData<typeof loader>();
   return (
     <html lang="en" className="h-full">
       <head>

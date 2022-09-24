@@ -15,6 +15,7 @@ import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 import { Button } from "~/components/common/button";
+import { useUserSettings } from "~/hooks/useUserSettings";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -36,7 +37,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       return {
         ...pass,
         duration,
-        status: getDurationStatus(duration),
       };
     });
   const openPass = passes.find((pass) => !pass.endAt);
@@ -91,6 +91,7 @@ const homeUrl =
 export default function StudentDetailsRoute() {
   const { openPass, closedPasses, student, totalDuration } =
     useLoaderData<typeof loader>();
+  const userSettings = useUserSettings();
   const [elapsedDuration, setElapsedDuration] = useState(
     intervalToDuration({
       start: openPass ? new Date(openPass.startAt) : new Date(),
@@ -149,7 +150,7 @@ export default function StudentDetailsRoute() {
             {openPass ? (
               <div
                 className={
-                  getDurationStatus(elapsedDuration) !== "good"
+                  getDurationStatus(elapsedDuration, userSettings) !== "good"
                     ? "animate-pulse"
                     : ""
                 }
@@ -159,13 +160,17 @@ export default function StudentDetailsRoute() {
                   name="passId"
                   value={openPass.id}
                   size="big"
-                  kind={getDurationStatus(elapsedDuration)}
+                  kind={getDurationStatus(elapsedDuration, userSettings)}
                 >
                   <div className="font-mono text-5xl">
                     {formatDurationDigital(elapsedDuration)}
                   </div>
                   <div className="font-mono text-2xl">
-                    {statusMessages[getDurationStatus(elapsedDuration)]}
+                    {
+                      statusMessages[
+                        getDurationStatus(elapsedDuration, userSettings)
+                      ]
+                    }
                   </div>
                 </Button>
               </div>
