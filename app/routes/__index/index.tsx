@@ -58,9 +58,9 @@ export default function HallMonitorIndexPage() {
             const status = getDurationStatus(duration, userSettings);
             const textColor =
               status === "critical"
-                ? "text-red-600 animate-pulse"
+                ? "text-critical animate-pulse"
                 : status === "warning"
-                ? "text-yellow-500 animate-pulse"
+                ? "text-warning animate-pulse"
                 : undefined;
 
             return (

@@ -19,8 +19,8 @@ interface StudentListProps {
 
 const statusColors = {
   good: "text-black",
-  warning: "text-orange-600 animate-pulse",
-  critical: "text-red-600 animate-pulse",
+  warning: "text-warning animate-pulse",
+  critical: "text-critical animate-pulse",
 };
 
 export const StudentList = ({
