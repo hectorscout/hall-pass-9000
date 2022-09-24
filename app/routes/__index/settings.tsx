@@ -85,7 +85,6 @@ export default function SettingsRoute() {
       } else {
         setSubmittingStatus("success");
         setTimeout(() => setSubmittingStatus("idle"), 3000);
-        console.log("submitted successfully");
       }
     }
   }, [transition.state, errors]);

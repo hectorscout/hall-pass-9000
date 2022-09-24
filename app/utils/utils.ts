@@ -106,8 +106,6 @@ export const formatDurationDigital = (duration: Duration) => {
   ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
 };
 
-// const CRITICAL_TIME_LIMIT = 5;
-// const ERROR_TIME_LIMIT = 10;
 export type DurationStatus = "good" | "warning" | "critical";
 
 export const getDurationStatus = (
