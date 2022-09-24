@@ -1,6 +1,7 @@
 import { Form, useActionData, useTransition } from "@remix-run/react";
 import { Button } from "~/components/common/button";
-import type { ActionFunction, json } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
