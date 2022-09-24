@@ -1,4 +1,4 @@
-import { User, Setting } from "@prisma/client";
+import type { User, Setting } from "@prisma/client";
 import { prisma } from "~/utils/db.server";
 
 export function getSettings(userId: User["id"] | undefined) {

@@ -1,4 +1,4 @@
-import { RootLoaderData } from "~/root";
+import type { RootLoaderData } from "~/root";
 import { useRouteData } from "remix-utils";
 
 export type UserSettings = {
