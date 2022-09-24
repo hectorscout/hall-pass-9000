@@ -7,6 +7,7 @@ import { useTimeElapsed } from "~/hooks/useTimeElapsed";
 import invariant from "tiny-invariant";
 import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { useState } from "react";
+import { useUserSettings } from "~/hooks/useUserSettings";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -26,6 +27,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function HallMonitorIndexPage() {
+  const userSettings = useUserSettings();
   const { openPasses } = useLoaderData<typeof loader>();
   const [intervals, setIntervals] = useState(
     openPasses.map((openPass) => ({ start: new Date(openPass.startAt) }))
@@ -53,12 +55,12 @@ export default function HallMonitorIndexPage() {
         {openPasses.length ? (
           openPasses.map(({ id, student }, index) => {
             const duration = elapsedTimes[index];
-            const status = getDurationStatus(duration);
+            const status = getDurationStatus(duration, userSettings);
             const textColor =
               status === "critical"
-                ? "text-red-600 animate-pulse"
+                ? "text-critical animate-pulse"
                 : status === "warning"
-                ? "text-yellow-500 animate-pulse"
+                ? "text-warning animate-pulse"
                 : undefined;
 
             return (

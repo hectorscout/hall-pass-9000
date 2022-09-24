@@ -2,6 +2,7 @@ import { Link } from "@remix-run/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 import { formatDateTime, getDurationStatus } from "~/utils/utils";
 import { formatDuration } from "date-fns";
+import { useUserSettings } from "~/hooks/useUserSettings";
 
 interface HallPassLogRowProps {
   pass: {
@@ -16,8 +17,8 @@ interface HallPassLogRowProps {
 
 const statusColors = {
   good: undefined,
-  warning: "text-yellow-600",
-  critical: "text-red-600",
+  warning: "text-warning",
+  critical: "text-critical",
 };
 
 export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
@@ -25,7 +26,8 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
   selectedPassId,
   duration,
 }) => {
-  const status = getDurationStatus(duration);
+  const userSettings = useUserSettings();
+  const status = getDurationStatus(duration, userSettings);
 
   return (
     <Link
