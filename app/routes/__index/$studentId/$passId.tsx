@@ -48,14 +48,17 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   const reason = formData.get("reason") ?? "";
   const endAt = formData.get("endAt") ?? "";
+  const official = formData.get("official") === "true";
 
   invariant(typeof reason === "string", "reason must be a string");
   invariant(typeof endAt === "string", "endAt must be a string");
+  invariant(typeof official === "boolean", "official must be a boolean");
 
   await updateHallPass({
     id: params.passId,
     endAt: endAt ? new Date(endAt) : undefined,
     reason,
+    isPersonal: !official,
   });
 
   return redirect(`/${params.studentId}`);
@@ -200,7 +203,17 @@ export default function PassDetailsRoute() {
             {pass.endAt ? (
               <input type="hidden" name="endAt" value={endAtStr} />
             ) : null}
-            <label className="text-2xl">
+            <label className="text-3xl">
+              Official Business:
+              <input
+                className="ml-5"
+                type="checkbox"
+                name="official"
+                value="true"
+                defaultChecked={!pass.isPersonal}
+              />
+            </label>
+            <label>
               <h3 className="my-3 text-3xl"> Space Walk Notes: </h3>
               <textarea
                 id="reason"
