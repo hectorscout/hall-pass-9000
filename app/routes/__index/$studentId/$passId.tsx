@@ -203,8 +203,10 @@ export default function PassDetailsRoute() {
             {pass.endAt ? (
               <input type="hidden" name="endAt" value={endAtStr} />
             ) : null}
-            <label className="text-3xl">
-              Official Business:
+            <label
+              title={`"Official" space walks don't count in overall counts and durations`}
+            >
+              <h3 className="my-3 inline-block text-3xl">Official Business:</h3>
               <input
                 className="ml-5"
                 type="checkbox"
