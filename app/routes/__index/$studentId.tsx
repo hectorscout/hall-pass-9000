@@ -41,8 +41,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     });
   const openPass = passes.find((pass) => !pass.endAt);
 
+  const personalPasses = passes.filter((pass) => pass.isPersonal);
   const now = new Date();
-  const nowPlusTotalDuration = passes.reduce((total, pass) => {
+  const nowPlusPersonalDuration = personalPasses.reduce((total, pass) => {
     return add(
       total,
       intervalToDuration({
@@ -51,11 +52,17 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       })
     );
   }, now);
-  const totalDuration = intervalToDuration({
+  const personalDuration = intervalToDuration({
     start: now,
-    end: nowPlusTotalDuration,
+    end: nowPlusPersonalDuration,
   });
-  return json({ openPass, closedPasses, student, totalDuration });
+  return json({
+    openPass,
+    closedPasses,
+    student,
+    personalDuration,
+    personalCount: personalPasses.length,
+  });
 };
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -68,7 +75,12 @@ export const action: ActionFunction = async ({ params, request }) => {
   invariant(typeof passId === "string", "passId must be a string");
 
   if (passId === "newPass") {
-    await createHallPass({ studentId: params.studentId, userId, reason });
+    await createHallPass({
+      studentId: params.studentId,
+      userId,
+      reason,
+      isPersonal: true,
+    });
   } else {
     await endHallPass({ id: passId });
   }
@@ -89,7 +101,7 @@ const homeUrl =
 //   "https://images.unsplash.com/photo-1520442027413-7bf6c51517da?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjIwOTQzNDU&ixlib=rb-1.2.1&q=80";
 
 export default function StudentDetailsRoute() {
-  const { openPass, closedPasses, student, totalDuration } =
+  const { openPass, closedPasses, student, personalDuration, personalCount } =
     useLoaderData<typeof loader>();
   const userSettings = useUserSettings();
   const [elapsedDuration, setElapsedDuration] = useState(
@@ -189,7 +201,8 @@ export default function StudentDetailsRoute() {
           <div className="mt-10 flex-1 bg-blue-300/60 p-10">
             <HallPassLog
               passes={closedPasses}
-              totalDuration={totalDuration}
+              personalCount={personalCount}
+              personalDuration={personalDuration}
               openPass={openPass}
               elapsedDuration={elapsedDuration}
             />

@@ -14,14 +14,16 @@ interface HallPassLogProps {
   elapsedDuration: Duration;
   openPass?: Pick<Pass, "id" | "reason"> & { startAt: string };
   passes: ExtendedPass[];
-  totalDuration: Duration;
+  personalCount: Number;
+  personalDuration: Duration;
 }
 
 export const HallPassLog: React.FC<HallPassLogProps> = ({
-  passes,
-  totalDuration,
-  openPass,
   elapsedDuration,
+  openPass,
+  passes,
+  personalCount,
+  personalDuration,
 }) => {
   const { passId } = useParams();
 
@@ -29,12 +31,12 @@ export const HallPassLog: React.FC<HallPassLogProps> = ({
     <div>
       <h2 className="mb-5 flex justify-between align-middle">
         <div className="text-5xl">Space Walk Log:</div>
-        {passes.length ? (
+        {personalCount ? (
           <div className="flex flex-col justify-center">
-            <span className="ml-10">{`${passes.length} walk${
-              passes.length > 1 ? "s" : ""
+            <span className="ml-10">{`${personalCount} walk${
+              personalCount > 1 ? "s" : ""
             }`}</span>
-            <span className="ml-10">{formatDuration(totalDuration)}</span>
+            <span className="ml-10">{formatDuration(personalDuration)}</span>
           </div>
         ) : null}
       </h2>
