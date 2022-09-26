@@ -43,14 +43,27 @@ export const PassButton = ({
       </Button>
     </div>
   ) : (
-    <Button
-      type="submit"
-      name="passId"
-      value="newPass"
-      size="big"
-      kind="critical"
-    >
-      Jettison Cadet Into The Cold Uncaring Void Of Space
-    </Button>
+    <>
+      <Button
+        type="submit"
+        name="passId"
+        value="personal"
+        size="big"
+        kind="critical"
+      >
+        Recreational Space Walk
+      </Button>
+      <Button
+        type="submit"
+        name="passId"
+        value="official"
+        size="big"
+        kind="critical"
+      >
+        Official Space Walk
+      </Button>
+    </>
   );
 };
+
+// Jettison Cadet Into The Cold Uncaring Void Of Space

@@ -73,12 +73,12 @@ export const action: ActionFunction = async ({ params, request }) => {
   invariant(typeof reason === "string", "reason must be a string");
   invariant(typeof passId === "string", "passId must be a string");
 
-  if (passId === "newPass") {
+  if (["personal", "official"].includes(passId)) {
     await createHallPass({
       studentId: params.studentId,
       userId,
       reason,
-      isPersonal: true,
+      isPersonal: passId === "personal",
     });
   } else {
     await endHallPass({ id: passId });
