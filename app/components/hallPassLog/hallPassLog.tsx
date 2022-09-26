@@ -8,11 +8,12 @@ type ExtendedPass = Pick<Pass, "id" | "reason"> & {
   duration: Duration;
   startAt: string;
   endAt: string | null;
+  isPersonal: boolean;
 };
 
 interface HallPassLogProps {
   elapsedDuration: Duration;
-  openPass?: Pick<Pass, "id" | "reason"> & { startAt: string };
+  openPass?: Pick<Pass, "id" | "reason" | "isPersonal"> & { startAt: string };
   passes: ExtendedPass[];
   personalCount: Number;
   personalDuration: Duration;

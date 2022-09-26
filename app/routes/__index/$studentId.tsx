@@ -154,6 +154,7 @@ export default function StudentDetailsRoute() {
             <PassButton
               openPassId={openPass ? openPass.id : undefined}
               elapsedDuration={elapsedDuration}
+              isPersonal={openPass ? openPass.isPersonal : false}
             />
           </div>
           <div className="mt-10 flex-1 bg-blue-300/60 p-10">
