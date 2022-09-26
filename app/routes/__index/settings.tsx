@@ -7,6 +7,7 @@ import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -74,11 +75,9 @@ export default function SettingsRoute() {
       setSubmittingStatus("submitting");
     }
     if (transition.state === "idle" && submittingStatus === "submitting") {
-      if (errors) {
-        setSubmittingStatus("idle");
-      } else {
-        setSubmittingStatus("success");
-        setTimeout(() => setSubmittingStatus("idle"), 3000);
+      setSubmittingStatus("idle");
+      if (!errors) {
+        toast.success("Successfully updated settings");
       }
     }
   }, [transition.state, errors, submittingStatus]);
@@ -148,11 +147,6 @@ export default function SettingsRoute() {
           </div>
         </Form>
       </div>
-      {submittingStatus === "success" ? (
-        <div className="m-1/2 absolute left-1/2 bottom-0 mb-5 -translate-x-1/2 rounded-full bg-gray-700 py-3 px-5 text-gray-200">
-          Successfully updated settings
-        </div>
-      ) : null}
     </div>
   );
 }
