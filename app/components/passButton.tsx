@@ -92,7 +92,7 @@ export const PassButton = ({
       >
         <div className="flex items-center justify-center gap-5">
           <CheckBadgeIcon className="inline-block h-12 w-12" />
-          Official Space Walk
+          Official Business
           <CheckBadgeIcon className="inline-block h-12 w-12" />
         </div>
       </Button>
