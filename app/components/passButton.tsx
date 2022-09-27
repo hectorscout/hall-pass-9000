@@ -1,7 +1,13 @@
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowsPointingOutIcon,
+  CheckBadgeIcon,
+} from "@heroicons/react/24/outline";
+import { useParams, useTransition } from "@remix-run/react";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const statusMessages = {
   good: "Click to bring them back to safety.",
@@ -33,14 +39,34 @@ const rocketIcon = (
   </svg>
 );
 
+const renderTransitionButton = () => {
+  return (
+    <Button disabled={true} size="big">
+      <div className="flex items-center justify-center gap-5">
+        <ArrowsPointingOutIcon className="h-12 w-12" />
+        Opening Pod Bay Doors...
+        <ArrowsPointingOutIcon className="h-12 w-12" />
+      </div>
+    </Button>
+  );
+};
+
 export const PassButton = ({
   openPassId,
   elapsedDuration,
   isPersonal,
 }: PassButtonProps) => {
   const userSettings = useUserSettings();
+  const transition = useTransition();
+  const { studentId } = useParams();
 
-  return openPassId && elapsedDuration ? (
+  const isTransitioning =
+    transition.location?.pathname === `/${studentId}` &&
+    ["actionSubmission", "actionReload"].includes(transition.type);
+
+  return isTransitioning ? (
+    renderTransitionButton()
+  ) : openPassId && elapsedDuration ? (
     <div
       className={
         getDurationStatus(elapsedDuration, userSettings) !== "good"
@@ -55,18 +81,10 @@ export const PassButton = ({
         size="big"
         kind={getDurationStatus(elapsedDuration, userSettings)}
       >
-        <div className="it mb-3 flex items-center justify-center gap-5 font-mono text-5xl">
-          {isPersonal ? (
-            rocketIcon
-          ) : (
-            <CheckBadgeIcon className="inline-block h-12 w-12" />
-          )}
+        <div className="mb-3 flex items-center justify-center gap-5 font-mono text-5xl">
+          {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
           <div>{formatDurationDigital(elapsedDuration)}</div>
-          {isPersonal ? (
-            rocketIcon
-          ) : (
-            <CheckBadgeIcon className="inline-block h-12 w-12" />
-          )}
+          {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
         </div>
         <div className="font-mono text-2xl">
           {statusMessages[getDurationStatus(elapsedDuration, userSettings)]}
