@@ -44,10 +44,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   const formData = await request.formData();
 
   const intent = formData.get("intent");
-  if (intent === "close") {
-    return redirect(`/${params.studentId}`);
-  }
-
   if (intent === "delete") {
     await deleteHallPass({ id: params.passId, userId });
     return redirect(`/${params.studentId}`);
@@ -81,7 +77,11 @@ export default function PassDetailsRoute() {
       transition.state === "loading" &&
       transition.type === "actionRedirect"
     ) {
-      toast.success("Successfully updated space walk.");
+      if (transition.submission.formData.get("intent") === "delete") {
+        toast.success("Successfully deleted space walk.");
+      } else {
+        toast.success("Successfully updated space walk.");
+      }
     }
   }, [transition.state, transition.type]);
 
@@ -119,13 +119,13 @@ export default function PassDetailsRoute() {
   }, [duration, pass.startAt]);
 
   return (
-    <div className="absolute right-0 top-0 z-10 h-full w-1/3 bg-gray-500 px-10 text-gray-300">
+    <div className="absolute right-0 top-0 z-10 flex h-full w-1/3 bg-gray-500 px-10 text-gray-300">
       <Link to={`/${studentId}`} className="absolute right-0 m-5">
         <Button kind="ghost" type="submit" name="intent" value="close">
           <XMarkIcon className="h-10 w-10" />
         </Button>
       </Link>
-      <div className="my-10">
+      <div className="mt-10 mb-5 flex flex-col">
         <h2 className="text-5xl">
           {formatDate(pass.startAt)}{" "}
           <span className="text-2xl">
@@ -214,43 +214,41 @@ export default function PassDetailsRoute() {
             walk duration. You can still add notes though.
           </div>
         )}
-        <div>
-          <Form method="post" key={pass.id}>
-            {pass.endAt ? (
-              <input type="hidden" name="endAt" value={endAtStr} />
-            ) : null}
-            <label
-              title={`"Official" space walks don't count in overall counts and durations`}
-            >
-              <h3 className="my-3 inline-block text-3xl">Official Business:</h3>
-              <input
-                className="ml-5"
-                type="checkbox"
-                name="official"
-                value="true"
-                defaultChecked={!pass.isPersonal}
-              />
-            </label>
-            <label>
-              <h3 className="my-3 text-3xl"> Space Walk Notes: </h3>
-              <textarea
-                id="reason"
-                rows={5}
-                name="reason"
-                className={`w-full rounded p-2 font-mono text-gray-800`}
-                placeholder="Out fixing the photon torpedo bays."
-                defaultValue={pass.reason ?? ""}
-              />
-            </label>
-            <br />
-            <Button>Update Space Walk</Button>
-            <div className="absolute right-0 bottom-0 m-5">
-              <Button name="intent" value="delete" kind="critical">
-                Delete
-              </Button>
-            </div>
-          </Form>
-        </div>
+        <Form method="post" key={pass.id} className="flex flex-1 flex-col">
+          {pass.endAt ? (
+            <input type="hidden" name="endAt" value={endAtStr} />
+          ) : null}
+          <label
+            title={`"Official" space walks don't contribute to overall counts and durations`}
+          >
+            <h3 className="my-3 inline-block text-3xl">Official Business:</h3>
+            <input
+              className="ml-5"
+              type="checkbox"
+              name="official"
+              value="true"
+              defaultChecked={!pass.isPersonal}
+            />
+          </label>
+          <label>
+            <h3 className="my-3 text-3xl"> Space Walk Notes: </h3>
+            <textarea
+              id="reason"
+              rows={5}
+              name="reason"
+              className={`w-full rounded p-2 font-mono text-gray-800`}
+              placeholder="Out fixing the photon torpedo bays."
+              defaultValue={pass.reason ?? ""}
+            />
+          </label>
+          <br />
+          <div className="flex flex-1 items-end justify-between">
+            <Button name="intent" value="delete" kind="critical">
+              Delete
+            </Button>
+            <Button className="self-end">Update Space Walk</Button>
+          </div>
+        </Form>
       </div>
     </div>
   );

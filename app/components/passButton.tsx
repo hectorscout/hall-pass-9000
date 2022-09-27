@@ -88,7 +88,7 @@ export const PassButton = ({
         value="official"
         size="big"
         kind="info"
-        title={`"Official" space walks don't count in overall counts and durations`}
+        title={`"Official" space walks don't contribute to overall counts and durations`}
       >
         <div className="flex items-center justify-center gap-5">
           <CheckBadgeIcon className="inline-block h-12 w-12" />
