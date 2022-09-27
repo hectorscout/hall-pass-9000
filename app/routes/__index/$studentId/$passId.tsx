@@ -11,12 +11,19 @@ import {
   getHallPass,
   updateHallPass,
 } from "~/models/hall-pass.server";
-import { Form, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useParams,
+  useTransition,
+} from "@remix-run/react";
 import { formatDate, formatTime } from "~/utils/utils";
 import { useEffect, useState } from "react";
 import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
+import toast from "react-hot-toast";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -63,6 +70,17 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export default function PassDetailsRoute() {
   const { pass } = useLoaderData<typeof loader>();
+  const { studentId } = useParams();
+  const transition = useTransition();
+
+  useEffect(() => {
+    if (
+      transition.state === "loading" &&
+      transition.type === "actionRedirect"
+    ) {
+      toast.success("Successfully updated space walk.");
+    }
+  }, [transition.state, transition.type]);
 
   const [endAt, setEndAt] = useState(pass.endAt ? new Date(pass.endAt) : "");
   const [endAtStr, setEndAtStr] = useState(pass.endAt ?? "");
@@ -99,13 +117,11 @@ export default function PassDetailsRoute() {
 
   return (
     <div className="absolute right-0 top-0 z-10 h-full w-1/3 bg-gray-500 px-10 text-gray-300">
-      <Form method="post">
-        <div className="absolute right-0 m-5">
-          <Button kind="ghost" type="submit" name="intent" value="close">
-            <XMarkIcon className="h-10 w-10" />
-          </Button>
-        </div>
-      </Form>
+      <Link to={`/${studentId}`} className="absolute right-0 m-5">
+        <Button kind="ghost" type="submit" name="intent" value="close">
+          <XMarkIcon className="h-10 w-10" />
+        </Button>
+      </Link>
       <div className="my-10">
         <h2 className="text-5xl">
           {formatDate(pass.startAt)}{" "}
@@ -191,7 +207,7 @@ export default function PassDetailsRoute() {
           </>
         ) : (
           <div className="py-2">
-            You'll need to return the student before you can modify this space
+            You'll need to return the cadet before you can modify this space
             walk duration. You can still add notes though.
           </div>
         )}
