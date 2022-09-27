@@ -59,13 +59,13 @@ export const PassButton = ({
           {isPersonal ? (
             rocketIcon
           ) : (
-            <CheckBadgeIcon className="h-13 w-13 inline-block" />
+            <CheckBadgeIcon className="inline-block h-12 w-12" />
           )}
           <div>{formatDurationDigital(elapsedDuration)}</div>
           {isPersonal ? (
             rocketIcon
           ) : (
-            <CheckBadgeIcon className="h-13 w-13 inline-block" />
+            <CheckBadgeIcon className="inline-block h-12 w-12" />
           )}
         </div>
         <div className="font-mono text-2xl">
