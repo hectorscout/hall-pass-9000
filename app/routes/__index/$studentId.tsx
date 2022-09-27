@@ -8,13 +8,20 @@ import {
   getStudent,
 } from "~/models/hall-pass.server";
 import invariant from "tiny-invariant";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  Outlet,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react";
 import { add, intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 import { Button } from "~/components/common/button";
 import { PassButton } from "~/components/passButton";
+import toast from "react-hot-toast";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -96,6 +103,26 @@ const homeUrl =
 export default function StudentDetailsRoute() {
   const { openPass, closedPasses, student, personalDuration, personalCount } =
     useLoaderData<typeof loader>();
+  const transition = useTransition();
+
+  useEffect(() => {
+    if (transition.state === "loading" && transition.type === "actionReload") {
+      const passId = transition.submission.formData.get("passId") ?? "";
+      invariant(typeof passId === "string", "passId must be a string");
+      if (["personal", "official"].includes(passId)) {
+        toast.success(
+          `${student.firstName} has been jettisoned into the cold uncaring void of space.`,
+          { duration: 4000 }
+        );
+      } else {
+        toast.success(
+          `${student.firstName} has safely returned through the pod bay doors.`,
+          { duration: 4000 }
+        );
+      }
+    }
+  }, [transition.state, transition.type]);
+
   const [elapsedDuration, setElapsedDuration] = useState(
     intervalToDuration({
       start: openPass ? new Date(openPass.startAt) : new Date(),

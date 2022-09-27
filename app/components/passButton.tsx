@@ -99,5 +99,3 @@ export const PassButton = ({
     </div>
   );
 };
-
-// Jettison Cadet Into The Cold Uncaring Void Of Space
