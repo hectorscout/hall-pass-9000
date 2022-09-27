@@ -3,11 +3,8 @@ import {
   CheckBadgeIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/20/solid";
-import {
-  DurationStatus,
-  formatDateTime,
-  getDurationStatus,
-} from "~/utils/utils";
+import { formatDateTime, getDurationStatus } from "~/utils/utils";
+import type { DurationStatus } from "~/utils/utils";
 import { formatDuration } from "date-fns";
 import { useUserSettings } from "~/hooks/useUserSettings";
 
