@@ -69,18 +69,15 @@ export default function SettingsRoute() {
   const errors = useActionData();
   const transition = useTransition();
 
-  const [submittingStatus, setSubmittingStatus] = useState("idle");
   useEffect(() => {
-    if (transition.state === "submitting") {
-      setSubmittingStatus("submitting");
-    }
-    if (transition.state === "idle" && submittingStatus === "submitting") {
-      setSubmittingStatus("idle");
-      if (!errors) {
-        toast.success("Successfully updated settings");
+    if (transition.state === "loading" && transition.type === "actionReload") {
+      if (errors) {
+        toast.error("Please correct any errors and try again.");
+      } else {
+        toast.success("Successfully updated settings.");
       }
     }
-  }, [transition.state, errors, submittingStatus]);
+  }, [transition.state, transition.type, errors]);
 
   const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
   const [warningVal, setWarningVal] = useState(+userSettings.warning);
@@ -139,8 +136,8 @@ export default function SettingsRoute() {
             </label>
           </div>
           <div className="flex justify-end gap-4">
-            <Button type="submit" disabled={submittingStatus === "submitting"}>
-              {submittingStatus === "submitting"
+            <Button type="submit" disabled={transition.state !== "idle"}>
+              {transition.state !== "idle"
                 ? "Updating Settings..."
                 : "Update Settings"}
             </Button>
