@@ -101,9 +101,12 @@ export const formatTime = (dateTimeStr: string | Date | null) => {
 };
 
 export const formatDurationDigital = (duration: Duration) => {
-  return `${String(duration.hours).padStart(2, "0")}:${String(
-    duration.minutes
-  ).padStart(2, "0")}:${String(duration.seconds).padStart(2, "0")}`;
+  const hoursString = duration.hours
+    ? `${String(duration.hours).padStart(2, "0")}:`
+    : "";
+  return `${hoursString}${String(duration.minutes).padStart(2, "0")}:${String(
+    duration.seconds
+  ).padStart(2, "0")}`;
 };
 
 export type DurationStatus = "good" | "warning" | "critical";

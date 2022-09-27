@@ -94,10 +94,12 @@ export function createHallPass({
   studentId,
   userId,
   reason,
-}: Pick<Pass, "studentId" | "reason"> & { userId: User["id"] }) {
+  isPersonal,
+}: Pick<Pass, "studentId" | "reason" | "isPersonal"> & { userId: User["id"] }) {
   return prisma.pass.create({
     data: {
       reason,
+      isPersonal,
       student: {
         connect: { id: studentId },
       },
@@ -127,6 +129,7 @@ export function getHallPassesForStudent(studentId: Student["id"]) {
       startAt: true,
       endAt: true,
       reason: true,
+      isPersonal: true,
     },
     where: { studentId },
     orderBy: { startAt: "desc" },
@@ -148,12 +151,14 @@ export function updateHallPass({
   id,
   endAt,
   reason,
-}: Partial<Pass> & Pick<Pass, "id" | "reason">) {
+  isPersonal,
+}: Partial<Pass> & Pick<Pass, "id" | "reason" | "isPersonal">) {
   return prisma.pass.update({
     where: { id },
     data: {
-      endAt: endAt,
+      endAt,
       reason,
+      isPersonal,
     },
   });
 }

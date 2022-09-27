@@ -5,6 +5,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 model User {
@@ -39,16 +40,17 @@ model Student {
 }
 
 model Pass {
-  id        String @id @default(cuid())
-  startAt   DateTime @default(now())
-  endAt     DateTime?
-  reason    String
+  id         String @id @default(cuid())
+  startAt    DateTime @default(now())
+  endAt      DateTime?
+  reason     String
+  isPersonal Boolean @default(true)
 
-  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId String
+  student    Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId  String
 
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId    String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     String
 }
 
 model Setting {
