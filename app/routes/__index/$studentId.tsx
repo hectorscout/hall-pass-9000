@@ -11,11 +11,10 @@ import invariant from "tiny-invariant";
 import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { add, intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 import { Button } from "~/components/common/button";
-import { useUserSettings } from "~/hooks/useUserSettings";
+import { PassButton } from "~/components/passButton";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -41,8 +40,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     });
   const openPass = passes.find((pass) => !pass.endAt);
 
+  const personalPasses = passes.filter((pass) => pass.isPersonal);
   const now = new Date();
-  const nowPlusTotalDuration = passes.reduce((total, pass) => {
+  const nowPlusPersonalDuration = personalPasses.reduce((total, pass) => {
     return add(
       total,
       intervalToDuration({
@@ -51,11 +51,17 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       })
     );
   }, now);
-  const totalDuration = intervalToDuration({
+  const personalDuration = intervalToDuration({
     start: now,
-    end: nowPlusTotalDuration,
+    end: nowPlusPersonalDuration,
   });
-  return json({ openPass, closedPasses, student, totalDuration });
+  return json({
+    openPass,
+    closedPasses,
+    student,
+    personalDuration,
+    personalCount: personalPasses.length,
+  });
 };
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -67,18 +73,17 @@ export const action: ActionFunction = async ({ params, request }) => {
   invariant(typeof reason === "string", "reason must be a string");
   invariant(typeof passId === "string", "passId must be a string");
 
-  if (passId === "newPass") {
-    await createHallPass({ studentId: params.studentId, userId, reason });
+  if (["personal", "official"].includes(passId)) {
+    await createHallPass({
+      studentId: params.studentId,
+      userId,
+      reason,
+      isPersonal: passId === "personal",
+    });
   } else {
     await endHallPass({ id: passId });
   }
   return null;
-};
-
-const statusMessages = {
-  good: "Click to bring them back to safety.",
-  warning: "Warning: Oxygen levels low",
-  critical: "Critical: Oxygen depleted!!",
 };
 
 // const homeUrl =
@@ -89,9 +94,8 @@ const homeUrl =
 //   "https://images.unsplash.com/photo-1520442027413-7bf6c51517da?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjIwOTQzNDU&ixlib=rb-1.2.1&q=80";
 
 export default function StudentDetailsRoute() {
-  const { openPass, closedPasses, student, totalDuration } =
+  const { openPass, closedPasses, student, personalDuration, personalCount } =
     useLoaderData<typeof loader>();
-  const userSettings = useUserSettings();
   const [elapsedDuration, setElapsedDuration] = useState(
     intervalToDuration({
       start: openPass ? new Date(openPass.startAt) : new Date(),
@@ -147,49 +151,17 @@ export default function StudentDetailsRoute() {
         </div>
         <Form method="post" className="flex flex-1 flex-col">
           <div className="flex justify-center">
-            {openPass ? (
-              <div
-                className={
-                  getDurationStatus(elapsedDuration, userSettings) !== "good"
-                    ? "animate-pulse"
-                    : ""
-                }
-              >
-                <Button
-                  type="submit"
-                  name="passId"
-                  value={openPass.id}
-                  size="big"
-                  kind={getDurationStatus(elapsedDuration, userSettings)}
-                >
-                  <div className="font-mono text-5xl">
-                    {formatDurationDigital(elapsedDuration)}
-                  </div>
-                  <div className="font-mono text-2xl">
-                    {
-                      statusMessages[
-                        getDurationStatus(elapsedDuration, userSettings)
-                      ]
-                    }
-                  </div>
-                </Button>
-              </div>
-            ) : (
-              <Button
-                type="submit"
-                name="passId"
-                value="newPass"
-                size="big"
-                kind="critical"
-              >
-                Jettison Cadet Into The Cold Uncaring Void Of Space
-              </Button>
-            )}
+            <PassButton
+              openPassId={openPass ? openPass.id : undefined}
+              elapsedDuration={elapsedDuration}
+              isPersonal={openPass ? openPass.isPersonal : false}
+            />
           </div>
           <div className="mt-10 flex-1 bg-blue-300/60 p-10">
             <HallPassLog
               passes={closedPasses}
-              totalDuration={totalDuration}
+              personalCount={personalCount}
+              personalDuration={personalDuration}
               openPass={openPass}
               elapsedDuration={elapsedDuration}
             />

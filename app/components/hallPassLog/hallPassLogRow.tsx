@@ -1,6 +1,10 @@
 import { Link } from "@remix-run/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
+import {
+  CheckBadgeIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/20/solid";
 import { formatDateTime, getDurationStatus } from "~/utils/utils";
+import type { DurationStatus } from "~/utils/utils";
 import { formatDuration } from "date-fns";
 import { useUserSettings } from "~/hooks/useUserSettings";
 
@@ -8,6 +12,7 @@ interface HallPassLogRowProps {
   pass: {
     id: string;
     reason: string;
+    isPersonal: Boolean;
     startAt: string;
     endAt?: string | null;
   };
@@ -19,6 +24,20 @@ const statusColors = {
   good: undefined,
   warning: "text-warning",
   critical: "text-critical",
+};
+
+const getStatusIcon = (isPersonal: Boolean, status: DurationStatus) => {
+  if (!isPersonal) {
+    return <CheckBadgeIcon className="h-6 w-6 text-gray-700" />;
+  }
+
+  if (status === "good") {
+    return <div></div>;
+  }
+
+  return (
+    <ExclamationTriangleIcon className={`h-6 w-6 ${statusColors[status]}`} />
+  );
 };
 
 export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
@@ -38,13 +57,7 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
       }`}
       key={pass.id}
     >
-      {status !== "good" ? (
-        <ExclamationTriangleIcon
-          className={`h-6 w-6 ${statusColors[status]}`}
-        />
-      ) : (
-        <div></div>
-      )}
+      {getStatusIcon(pass.isPersonal, status)}
       <div>{formatDateTime(pass.startAt)}</div>
       <div>{pass.endAt ? formatDateTime(pass.endAt) : "-"}</div>
       <div>{formatDuration(duration)}</div>
