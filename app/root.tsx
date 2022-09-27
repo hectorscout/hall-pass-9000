@@ -73,7 +73,10 @@ export default function App() {
           }}
         />
         <LiveReload />
-        <Toaster position="bottom-center" />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{ style: { background: "#444", color: "#FFF" } }}
+        />
       </body>
     </html>
   );
