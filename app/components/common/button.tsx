@@ -3,13 +3,14 @@ import type { MouseEventHandler } from "react";
 
 interface ButtonProps {
   type?: "submit" | "button" | "reset";
-  kind?: "good" | "warning" | "critical" | "ghost" | "ghostLight";
+  kind?: "good" | "warning" | "critical" | "ghost" | "ghostLight" | "info";
   size?: "normal" | "big";
   name?: string;
   value?: any;
   disabled?: boolean;
   className?: string;
   onClick?: MouseEventHandler;
+  title?: string;
   children: React.ReactNode;
 }
 
@@ -22,6 +23,7 @@ const kindColors = {
   ghost: "text-white hover:bg-gray-600 focus:bg-gray-400 disabled:bg-gray-300",
   ghostLight:
     "text-gray-800 hover:text-white hover:bg-gray-600 focus:text-white focus:bg-gray-400 disabled:text-white disabled:bg-gray-300",
+  info: "text-white bg-gray-500 hover:bg-gray-600 focus:bg-gray-400 disabled:bg-gray-300",
 };
 
 const sizes = {
@@ -38,6 +40,7 @@ export const Button = ({
   name,
   value,
   onClick,
+  title,
   children,
 }: ButtonProps) => {
   return (
@@ -48,6 +51,7 @@ export const Button = ({
       value={value}
       onClick={onClick}
       className={`rounded ${kindColors[kind]} ${sizes[size]} ${className}`}
+      title={title}
     >
       {children}
     </button>
