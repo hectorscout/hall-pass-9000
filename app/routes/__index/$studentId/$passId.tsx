@@ -72,6 +72,9 @@ export default function PassDetailsRoute() {
   const { studentId } = useParams();
   const transition = useTransition();
 
+  const isUpdating = transition.submission?.formData.get("intent") === "update";
+  const isDeleting = transition.submission?.formData.get("intent") === "delete";
+
   useEffect(() => {
     if (
       transition.state === "loading" &&
@@ -241,10 +244,22 @@ export default function PassDetailsRoute() {
           </label>
           <br />
           <div className="flex flex-1 items-end justify-between">
-            <Button name="intent" value="delete" kind="critical">
-              Delete
+            <Button
+              name="intent"
+              value="delete"
+              kind="critical"
+              disabled={isUpdating || isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
-            <Button className="self-end">Update Space Walk</Button>
+            <Button
+              name="intent"
+              value="update"
+              className="self-end"
+              disabled={isUpdating || isDeleting}
+            >
+              {isUpdating ? "Updating..." : "Update Space Walk"}
+            </Button>
           </div>
         </Form>
       </div>
