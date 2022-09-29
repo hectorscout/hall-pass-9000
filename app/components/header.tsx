@@ -10,6 +10,7 @@ interface HeaderProps {
 
 export const Header = ({ profileImgUrl, username }: HeaderProps) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
+
   const closeUserMenu = () => {
     setShowUserMenu(false);
     document.removeEventListener("click", closeUserMenu);
@@ -44,10 +45,6 @@ export const Header = ({ profileImgUrl, username }: HeaderProps) => {
             ) : null}
             {showUserMenu ? <UserMenu username={username} /> : null}
           </div>
-          {/*<div className="ml-10 flex shrink-0 items-center space-x-4">*/}
-          {/*  {}*/}
-          {/*  /!*<UserMenu profileImgUrl={profileImgUrl} username={username} />*!/*/}
-          {/*</div>*/}
         </div>
       </nav>
     </header>
