@@ -125,13 +125,11 @@ export default function PassDetailsRoute() {
           <XMarkIcon className="h-10 w-10" />
         </Button>
       </Link>
-      <div className="mt-10 mb-5 flex flex-col">
-        <h2 className="text-5xl">
-          {formatDate(pass.startAt)}{" "}
-          <span className="text-2xl">
-            ({formatDistanceToNow(new Date(pass.startAt))} ago)
-          </span>
-        </h2>
+      <div className="mt-10 mb-5 flex flex-1 flex-col">
+        <h2 className="text-5xl">{formatDate(pass.startAt)} </h2>
+        <div className="text-2xl">
+          ({formatDistanceToNow(new Date(pass.startAt))} ago)
+        </div>
         <div className="text-3xl">
           {`${formatTime(pass.startAt)} - ${formatTime(
             pass.endAt ? endAt : null
