@@ -147,6 +147,7 @@ export default function EditStudentRoute() {
   }, [
     transition.state,
     transition.type,
+    isCreating,
     isDeleting,
     transition.submission?.formData,
     student?.firstName,
