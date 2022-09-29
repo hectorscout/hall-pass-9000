@@ -14,6 +14,7 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./utils/session.server";
 import { getEnv } from "~/env.server";
 import { getSettings } from "~/models/settings.server";
+import { Toaster } from "react-hot-toast";
 
 export const links: LinksFunction = () => {
   return [
@@ -72,6 +73,10 @@ export default function App() {
           }}
         />
         <LiveReload />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{ style: { background: "#444", color: "#FFF" } }}
+        />
       </body>
     </html>
   );

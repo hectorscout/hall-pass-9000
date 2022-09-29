@@ -7,6 +7,7 @@ import { upsertSetting } from "~/models/settings.server";
 import invariant from "tiny-invariant";
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -68,20 +69,15 @@ export default function SettingsRoute() {
   const errors = useActionData();
   const transition = useTransition();
 
-  const [submittingStatus, setSubmittingStatus] = useState("idle");
   useEffect(() => {
-    if (transition.state === "submitting") {
-      setSubmittingStatus("submitting");
-    }
-    if (transition.state === "idle" && submittingStatus === "submitting") {
+    if (transition.state === "loading" && transition.type === "actionReload") {
       if (errors) {
-        setSubmittingStatus("idle");
+        toast.error("Please correct any errors and try again.");
       } else {
-        setSubmittingStatus("success");
-        setTimeout(() => setSubmittingStatus("idle"), 3000);
+        toast.success("Successfully updated settings.");
       }
     }
-  }, [transition.state, errors, submittingStatus]);
+  }, [transition.state, transition.type, errors]);
 
   const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
   const [warningVal, setWarningVal] = useState(+userSettings.warning);
@@ -140,19 +136,14 @@ export default function SettingsRoute() {
             </label>
           </div>
           <div className="flex justify-end gap-4">
-            <Button type="submit" disabled={submittingStatus === "submitting"}>
-              {submittingStatus === "submitting"
+            <Button type="submit" disabled={transition.state !== "idle"}>
+              {transition.state !== "idle"
                 ? "Updating Settings..."
                 : "Update Settings"}
             </Button>
           </div>
         </Form>
       </div>
-      {submittingStatus === "success" ? (
-        <div className="m-1/2 absolute left-1/2 bottom-0 mb-5 -translate-x-1/2 rounded-full bg-gray-700 py-3 px-5 text-gray-200">
-          Successfully updated settings
-        </div>
-      ) : null}
     </div>
   );
 }
