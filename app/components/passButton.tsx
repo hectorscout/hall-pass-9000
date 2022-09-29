@@ -6,8 +6,6 @@ import {
   CheckBadgeIcon,
 } from "@heroicons/react/24/outline";
 import { useParams, useTransition } from "@remix-run/react";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
 
 const statusMessages = {
   good: "Click to bring them back to safety.",

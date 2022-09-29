@@ -86,7 +86,7 @@ export default function PassDetailsRoute() {
         toast.success("Successfully updated space walk.");
       }
     }
-  }, [transition.state, transition.type]);
+  }, [transition.state, transition.type, transition.submission?.formData]);
 
   const [endAt, setEndAt] = useState(pass.endAt ? new Date(pass.endAt) : "");
   const [endAtStr, setEndAtStr] = useState(pass.endAt ?? "");

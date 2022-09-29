@@ -130,9 +130,9 @@ export default function EditStudentRoute() {
       transition.type === "actionRedirect"
     ) {
       const firstName =
-        transition?.submission.formData.get("firstName") ?? student?.firstName;
+        transition.submission.formData.get("firstName") ?? student?.firstName;
       const lastName =
-        transition?.submission.formData.get("lastName") ?? student?.lastName;
+        transition.submission.formData.get("lastName") ?? student?.lastName;
 
       if (isDeleting) {
         toast.success(`${firstName} ${lastName} has been retired.`);
@@ -144,7 +144,14 @@ export default function EditStudentRoute() {
         );
       }
     }
-  }, [transition.state, transition.type]);
+  }, [
+    transition.state,
+    transition.type,
+    isDeleting,
+    transition.submission?.formData,
+    student?.firstName,
+    student?.lastName,
+  ]);
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between">

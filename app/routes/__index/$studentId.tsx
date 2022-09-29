@@ -121,7 +121,12 @@ export default function StudentDetailsRoute() {
         );
       }
     }
-  }, [transition.state, transition.type]);
+  }, [
+    transition.state,
+    transition.type,
+    transition.submission?.formData,
+    student.firstName,
+  ]);
 
   const [elapsedDuration, setElapsedDuration] = useState(
     intervalToDuration({
