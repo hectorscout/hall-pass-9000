@@ -170,7 +170,7 @@ export default function StudentDetailsRoute() {
               ({student.period})
             </div>
           </h1>
-          <Link to="edit" className="justify-end" title="Edit Student">
+          <Link to="edit" className="justify-end" title="Edit Cadet Records">
             <Button>
               <PencilIcon className="h-6 w-6" />
             </Button>
