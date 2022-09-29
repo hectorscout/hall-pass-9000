@@ -1,4 +1,4 @@
-import { gsLink } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 
 interface UserMenuProps {
   username: string;
