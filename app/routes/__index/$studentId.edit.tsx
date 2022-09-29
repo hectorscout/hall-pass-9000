@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import {
@@ -21,6 +21,7 @@ import {
 import { Button } from "~/components/common/button";
 import { Modal } from "~/components/common/modal";
 import { capitalizeString, PERIODS } from "~/utils/utils";
+import toast from "react-hot-toast";
 
 type LoaderData = { student?: Awaited<ReturnType<typeof getStudent>> };
 
@@ -122,6 +123,36 @@ export default function EditStudentRoute() {
   const isNewStudent = !student;
 
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  useEffect(() => {
+    if (
+      transition.state === "loading" &&
+      transition.type === "actionRedirect"
+    ) {
+      const firstName =
+        transition.submission.formData.get("firstName") ?? student?.firstName;
+      const lastName =
+        transition.submission.formData.get("lastName") ?? student?.lastName;
+
+      if (isDeleting) {
+        toast.success(`${firstName} ${lastName} has been retired.`);
+      } else if (isCreating) {
+        toast.success(`${firstName} ${lastName} has been enrolled.`);
+      } else {
+        toast.success(
+          `Personal records for ${firstName} ${lastName} have been updated.`
+        );
+      }
+    }
+  }, [
+    transition.state,
+    transition.type,
+    isCreating,
+    isDeleting,
+    transition.submission?.formData,
+    student?.firstName,
+    student?.lastName,
+  ]);
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between">
