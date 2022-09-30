@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   const intent = formData.get("intent");
   if (intent === "delete") {
     await deleteHallPass({ id: params.passId, userId });
-    return redirect(`/${params.studentId}`);
+    return redirect(`/${params.studentId}/pass-log`);
   }
 
   const reason = formData.get("reason") ?? "";
@@ -64,7 +64,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     isPersonal: !official,
   });
 
-  return redirect(`/${params.studentId}`);
+  return redirect(`/${params.studentId}/pass-log`);
 };
 
 export default function PassDetailsRoute() {
@@ -123,7 +123,7 @@ export default function PassDetailsRoute() {
 
   return (
     <div className="absolute right-0 top-0 z-10 flex h-full w-1/3 bg-gray-500 px-10 text-gray-300">
-      <Link to={`/${studentId}`} className="absolute right-0 m-5">
+      <Link to={`/${studentId}/pass-log`} className="absolute right-0 m-5">
         <Button kind="ghost" type="submit" name="intent" value="close">
           <XMarkIcon className="h-10 w-10" />
         </Button>
