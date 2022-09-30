@@ -55,10 +55,12 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="absolute right-0 bottom-0 m-5">
-        <Link to="/tos" className="mr-5">
+        <Link to="/tos" className="mr-5 hover:text-gray-300">
           Terms of Service
         </Link>
-        <Link to="/privacy">Privacy Policy</Link>
+        <Link to="/privacy" className="hover:text-gray-300">
+          Privacy Policy
+        </Link>
       </div>
     </main>
   );
