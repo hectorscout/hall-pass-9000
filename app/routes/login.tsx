@@ -54,9 +54,12 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <Link to="/privacy" className="absolute right-0 bottom-0 m-5">
-        Privacy Policy
-      </Link>
+      <div className="absolute right-0 bottom-0 m-5">
+        <Link to="/tos" className="mr-5">
+          Terms of Service
+        </Link>
+        <Link to="/privacy">Privacy Policy</Link>
+      </div>
     </main>
   );
 }
