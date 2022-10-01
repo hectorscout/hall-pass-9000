@@ -90,7 +90,7 @@ export const PassButton = ({
       </Button>
     </div>
   ) : (
-    <div className="flex gap-5">
+    <div className="flex flex-col gap-5">
       <Button type="submit" name="passId" value="personal" size="big">
         <div className="flex items-center justify-center gap-5">
           {rocketIcon}
