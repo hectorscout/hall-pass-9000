@@ -6,6 +6,7 @@ import { Pass } from "@prisma/client";
 import { add, Duration, intervalToDuration } from "date-fns";
 import { formatDate, formatDurationDigital } from "~/utils/utils";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
+import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 
 interface HallPassHistoryCardProps {
   passes: (Pick<Pass, "id" | "isPersonal" | "reason"> & {
@@ -58,18 +59,20 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
       >,
     }
   );
-  const totalDuration = intervalToDuration({
-    start: now,
-    end: stats.durations.total,
-  });
-  const personalDuration = intervalToDuration({
-    start: now,
-    end: stats.durations.personal,
-  });
-  const officialDuration = intervalToDuration({
-    start: now,
-    end: stats.durations.official,
-  });
+  const durations = {
+    total: intervalToDuration({
+      start: now,
+      end: stats.durations.total,
+    }),
+    personal: intervalToDuration({
+      start: now,
+      end: stats.durations.personal,
+    }),
+    official: intervalToDuration({
+      start: now,
+      end: stats.durations.official,
+    }),
+  };
 
   return (
     <div className="rounded-2xl bg-gray-800 p-5 text-gray-300">
@@ -81,43 +84,17 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
               <ArrowsPointingInIcon className="h-9 w-9" />
             </Button>
           </div>
-          <div className="flex justify-between">
-            <div>Recreational:</div>
-            <div>{getStatString(stats.counts.personal, personalDuration)}</div>
-          </div>
-          <div className="flex justify-between">
-            <div>Official:</div>
-            <div>{getStatString(stats.counts.official, officialDuration)}</div>
-          </div>{" "}
-          <div className="flex justify-between">
-            <div>Total:</div>
-            <div>{getStatString(stats.counts.total, totalDuration)}</div>
-          </div>
-          <div className="mt-5 grid grid-cols-[30px_2fr_1fr_1fr] gap-x-2 gap-y-1">
-            <div />
-            <div className="text-2xl">Start</div>
-            <div className="text-2xl">End</div>
-            <div className="text-2xl">Duration</div>
-            <hr className="col-span-4 mb-2" />
-          </div>
-          {passes.map((pass) => {
-            return (
-              <HallPassLogRow
-                key={pass.id}
-                pass={pass}
-                duration={intervalToDuration({
-                  start: new Date(pass.startAt),
-                  end: new Date(pass.endAt || ""),
-                })}
-              />
-            );
-          })}
+          <HallPassLog
+            counts={stats.counts}
+            durations={durations}
+            passes={passes}
+          />
         </div>
       ) : (
         <div className="flex items-center gap-5">
           <div title="Only recreational space walks are included here.">
             <div className="text-2xl">
-              {getStatString(stats.counts.personal, personalDuration)}
+              {getStatString(stats.counts.personal, durations.personal)}
             </div>
             <div>Last: {formatDate(stats.last.personal)}</div>
           </div>
