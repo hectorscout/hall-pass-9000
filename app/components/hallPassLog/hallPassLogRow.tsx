@@ -52,7 +52,7 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
 
   return (
     <Link
-      to={`${pass.id}`}
+      to={pass.id}
       title={pass.reason || "No notes for this walk."}
       className="mt-1 grid grid-cols-[30px_2fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600"
       key={pass.id}

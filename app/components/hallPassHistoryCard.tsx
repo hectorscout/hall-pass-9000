@@ -2,10 +2,10 @@ import { Button } from "~/components/common/button";
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
-import { Pass } from "@prisma/client";
-import { add, Duration, intervalToDuration } from "date-fns";
+import type { Pass } from "@prisma/client";
+import { add, intervalToDuration } from "date-fns";
+import type { Duration } from "date-fns";
 import { formatDate, formatDurationDigital } from "~/utils/utils";
-import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 
 interface HallPassHistoryCardProps {

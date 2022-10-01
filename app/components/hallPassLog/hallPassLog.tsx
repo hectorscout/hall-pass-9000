@@ -1,6 +1,6 @@
 import type { Pass } from "@prisma/client";
-import { useParams } from "@remix-run/react";
-import { Duration, intervalToDuration } from "date-fns";
+import { intervalToDuration } from "date-fns";
+import type { Duration } from "date-fns";
 import React from "react";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
 import { formatDurationDigital } from "~/utils/utils";
