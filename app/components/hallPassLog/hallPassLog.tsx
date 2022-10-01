@@ -16,10 +16,13 @@ interface HallPassLogProps {
   })[];
 }
 
-const getStatString = (count: number, duration: Duration) => {
-  return `${count} walk${count !== 1 ? "s" : ""} ${formatDurationDigital(
-    duration
-  )}`;
+const renderStats = (count: number, duration: Duration) => {
+  return (
+    <div className="flex gap-3">
+      <div>{`${count} walk${count !== 1 ? "s" : ""}`}</div>
+      <div>{formatDurationDigital(duration)}</div>
+    </div>
+  );
 };
 
 export const HallPassLog: React.FC<HallPassLogProps> = ({
@@ -31,15 +34,15 @@ export const HallPassLog: React.FC<HallPassLogProps> = ({
     <div>
       <div className="flex justify-between">
         <div>Recreational:</div>
-        <div>{getStatString(counts.personal, durations.personal)}</div>
+        <div>{renderStats(counts.personal, durations.personal)}</div>
       </div>
       <div className="flex justify-between">
         <div>Official:</div>
-        <div>{getStatString(counts.official, durations.official)}</div>
+        <div>{renderStats(counts.official, durations.official)}</div>
       </div>{" "}
       <div className="flex justify-between">
         <div>Total:</div>
-        <div>{getStatString(counts.total, durations.total)}</div>
+        <div>{renderStats(counts.total, durations.total)}</div>
       </div>
       <div className="mt-5 grid grid-cols-[30px_2fr_1fr_1fr] gap-x-2 gap-y-1">
         <div />
