@@ -1,7 +1,10 @@
 import { Button } from "~/components/common/button";
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowsPointingInIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/20/solid";
 import type { Pass } from "@prisma/client";
 import { add, intervalToDuration } from "date-fns";
 import type { Duration } from "date-fns";
@@ -22,7 +25,7 @@ const getStatString = (count: number, duration: Duration) => {
 };
 
 export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const now = new Date();
   const stats = passes.reduce(
@@ -92,11 +95,16 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
         </div>
       ) : (
         <div className="flex items-center gap-5">
-          <div title="Only recreational space walks are included here.">
+          <div>
             <div className="text-2xl">
               {getStatString(stats.counts.personal, durations.personal)}
             </div>
-            <div>Last: {formatDate(stats.last.personal)}</div>
+            <div className="flex items-center gap-4">
+              <div>Last: {formatDate(stats.last.personal)}</div>
+              <span title="Only recreational space walks are included here.">
+                <InformationCircleIcon className="h-5 w-5" />
+              </span>
+            </div>
           </div>
           <Button
             kind="ghost"
