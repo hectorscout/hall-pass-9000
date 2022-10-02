@@ -27,6 +27,14 @@ const getStatString = (count: number, duration: Duration) => {
 export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
   const [expanded, setExpanded] = useState(false);
 
+  if (passes.length === 0) {
+    return (
+      <div className="rounded-2xl bg-gray-800 p-5 text-gray-300">
+        This Cadet has not walked in space.
+      </div>
+    );
+  }
+
   const now = new Date();
   const stats = passes.reduce(
     (c, pass) => {
@@ -99,7 +107,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
             <div className="text-2xl">
               {getStatString(stats.counts.personal, durations.personal)}
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between">
               <div>Last: {formatDate(stats.last.personal)}</div>
               <span title="Only recreational space walks are included here.">
                 <InformationCircleIcon className="h-5 w-5" />
