@@ -31,7 +31,11 @@ const statusColors = {
 
 const getStatusIcon = (isPersonal: Boolean, status: DurationStatus) => {
   if (!isPersonal) {
-    return <CheckBadgeIcon className="h-6 w-6 text-gray-700" />;
+    return (
+      <div title="Official Business">
+        <CheckBadgeIcon className="h-6 w-6 text-gray-500" />
+      </div>
+    );
   }
 
   if (status === "good") {
@@ -54,13 +58,15 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
     <Link
       to={pass.id}
       title={pass.reason || "No notes for this walk."}
-      className="mt-1 grid grid-cols-[30px_2fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600"
+      className="mt-1 grid grid-cols-[2fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600"
       key={pass.id}
     >
-      {getStatusIcon(pass.isPersonal, status)}
       <div>{formatDateTime(pass.startAt)}</div>
       <div>{pass.endAt ? formatTime(pass.endAt) : "-"}</div>
-      <div>{formatDurationDigital(duration)}</div>
+      <div className="flex gap-3">
+        <div>{formatDurationDigital(duration)}</div>
+        {getStatusIcon(pass.isPersonal, status)}
+      </div>
     </Link>
   );
 };

@@ -44,8 +44,7 @@ export const HallPassLog: React.FC<HallPassLogProps> = ({
         <div>Total:</div>
         <div>{renderStats(counts.total, durations.total)}</div>
       </div>
-      <div className="mt-5 grid grid-cols-[30px_2fr_1fr_1fr] gap-x-2 gap-y-1">
-        <div />
+      <div className="mt-5 grid grid-cols-[2fr_1fr_1fr] gap-x-2 gap-y-1">
         <div className="text-2xl">Start</div>
         <div className="text-2xl">End</div>
         <div className="text-2xl">Duration</div>
