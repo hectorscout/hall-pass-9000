@@ -15,15 +15,17 @@ import {
   Form,
   Link,
   useLoaderData,
+  useNavigate,
   useParams,
   useTransition,
 } from "@remix-run/react";
 import { formatDate, formatTime } from "~/utils/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
 import toast from "react-hot-toast";
+import { Modal } from "~/components/common/modal";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -71,6 +73,7 @@ export default function PassDetailsRoute() {
   const { pass } = useLoaderData<typeof loader>();
   const { studentId } = useParams();
   const transition = useTransition();
+  const navigate = useNavigate();
 
   const isUpdating = transition.submission?.formData.get("intent") === "update";
   const isDeleting = transition.submission?.formData.get("intent") === "delete";
@@ -121,14 +124,36 @@ export default function PassDetailsRoute() {
     setEndAtStr(newEndAt.toISOString());
   }, [duration, pass.startAt]);
 
+  const handleOnClose = () => {
+    navigate(`/${studentId}`);
+  };
+
   return (
-    <div className="absolute right-0 top-0 z-10 flex h-full w-1/3 bg-gray-500 px-10 text-gray-300">
-      <Link to={`/${studentId}`} className="absolute right-0 m-5">
-        <Button kind="ghost" type="submit" name="intent" value="close">
-          <XMarkIcon className="h-10 w-10" />
-        </Button>
-      </Link>
-      <div className="mt-10 mb-5 flex flex-1 flex-col">
+    <Modal
+      title="Space Walk Details"
+      onClose={handleOnClose}
+      footer={
+        <div className="flex flex-1 items-end justify-between">
+          <Button
+            name="intent"
+            value="delete"
+            kind="critical"
+            disabled={isUpdating || isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
+          <Button
+            name="intent"
+            value="update"
+            className="self-end"
+            disabled={isUpdating || isDeleting}
+          >
+            {isUpdating ? "Updating..." : "Updates Space Walk"}
+          </Button>
+        </div>
+      }
+    >
+      <div className="mb-5 flex flex-1 flex-col">
         <h2 className="text-5xl">{formatDate(pass.startAt)} </h2>
         <div className="text-2xl">
           ({formatDistanceToNow(new Date(pass.startAt))} ago)
@@ -148,7 +173,7 @@ export default function PassDetailsRoute() {
                   <label className="font-mono text-gray-900">
                     {(duration.days ?? 0) < 10 ? "0" : null}
                     <input
-                      className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                      className={`relative appearance-none border-none p-1 outline-none ${
                         (duration.days ?? 0) < 10 ? "w-14" : "w-24"
                       }`}
                       type="number"
@@ -165,7 +190,7 @@ export default function PassDetailsRoute() {
               <label className="font-mono text-gray-900">
                 {(duration.hours ?? 0) < 10 ? "0" : null}
                 <input
-                  className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  className={`relative appearance-none border-none p-1 outline-none ${
                     (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
                   }`}
                   type="number"
@@ -181,7 +206,7 @@ export default function PassDetailsRoute() {
               <label className="font-mono text-gray-900">
                 {(duration.minutes ?? 0) < 10 ? "0" : null}
                 <input
-                  className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  className={`relative appearance-none border-none p-1 outline-none ${
                     (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
                   }`}
                   type="number"
@@ -196,7 +221,7 @@ export default function PassDetailsRoute() {
               <label className="font-mono text-gray-900">
                 {(duration.seconds ?? 0) < 10 ? "0" : null}
                 <input
-                  className={`relative appearance-none border-none bg-gray-500 p-1 outline-none ${
+                  className={`relative appearance-none border-none p-1 outline-none ${
                     (duration.seconds ?? 0) < 10 ? "w-14" : "w-24"
                   }`}
                   type="number"
@@ -215,7 +240,7 @@ export default function PassDetailsRoute() {
             walk duration. You can still add notes though.
           </div>
         )}
-        <Form method="post" key={pass.id} className="flex flex-1 flex-col">
+        <div key={pass.id} className="flex flex-1 flex-col">
           {pass.endAt ? (
             <input type="hidden" name="endAt" value={endAtStr} />
           ) : null}
@@ -237,32 +262,13 @@ export default function PassDetailsRoute() {
               id="reason"
               rows={5}
               name="reason"
-              className={`w-full rounded p-2 font-mono text-gray-800`}
+              className={`w-full rounded p-2 font-mono text-gray-800 outline`}
               placeholder="Out fixing the photon torpedo bays."
               defaultValue={pass.reason ?? ""}
             />
           </label>
-          <br />
-          <div className="flex flex-1 items-end justify-between">
-            <Button
-              name="intent"
-              value="delete"
-              kind="critical"
-              disabled={isUpdating || isDeleting}
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
-            <Button
-              name="intent"
-              value="update"
-              className="self-end"
-              disabled={isUpdating || isDeleting}
-            >
-              {isUpdating ? "Updating..." : "Update Space Walk"}
-            </Button>
-          </div>
-        </Form>
+        </div>
       </div>
-    </div>
+    </Modal>
   );
 }
