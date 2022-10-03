@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useParams } from "@remix-run/react";
 import {
   CheckBadgeIcon,
   ExclamationTriangleIcon,
@@ -53,12 +53,15 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
 }) => {
   const userSettings = useUserSettings();
   const status = getDurationStatus(duration, userSettings);
+  const { passId } = useParams();
 
   return (
     <Link
       to={pass.id}
       title={pass.reason || "No notes for this walk."}
-      className="mt-1 grid grid-cols-[2fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600"
+      className={`mt-1 grid grid-cols-[2fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600 ${
+        passId === pass.id ? "bg-gray-600" : ""
+      }`}
       key={pass.id}
     >
       <div>{formatDateTime(pass.startAt)}</div>
