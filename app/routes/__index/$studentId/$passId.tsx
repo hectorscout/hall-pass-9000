@@ -26,6 +26,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
 import toast from "react-hot-toast";
 import { Modal } from "~/components/common/modal";
+import { Toggle } from "~/components/common/toggle";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -148,15 +149,17 @@ export default function PassDetailsRoute() {
             className="self-end"
             disabled={isUpdating || isDeleting}
           >
-            {isUpdating ? "Updating..." : "Updates Space Walk"}
+            {isUpdating ? "Updating..." : "Update Space Walk"}
           </Button>
         </div>
       }
     >
-      <div className="mb-5 flex flex-1 flex-col">
-        <h2 className="text-5xl">{formatDate(pass.startAt)} </h2>
-        <div className="text-2xl">
-          ({formatDistanceToNow(new Date(pass.startAt))} ago)
+      <div className="mb-5 flex w-[40rem] flex-1 flex-col">
+        <div className="flex justify-between">
+          <h2 className="text-5xl">{formatDate(pass.startAt)} </h2>
+          <div className="text-3xl">
+            ({formatDistanceToNow(new Date(pass.startAt))} ago)
+          </div>
         </div>
         <div className="text-3xl">
           {`${formatTime(pass.startAt)} - ${formatTime(
@@ -173,7 +176,7 @@ export default function PassDetailsRoute() {
                   <label className="font-mono text-gray-900">
                     {(duration.days ?? 0) < 10 ? "0" : null}
                     <input
-                      className={`relative appearance-none border-none p-1 outline-none ${
+                      className={`relative appearance-none border-none bg-gray-100 p-1 outline-none ${
                         (duration.days ?? 0) < 10 ? "w-14" : "w-24"
                       }`}
                       type="number"
@@ -190,7 +193,7 @@ export default function PassDetailsRoute() {
               <label className="font-mono text-gray-900">
                 {(duration.hours ?? 0) < 10 ? "0" : null}
                 <input
-                  className={`relative appearance-none border-none p-1 outline-none ${
+                  className={`relative appearance-none border-none bg-gray-100 bg-gray-100 p-1 outline-none ${
                     (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
                   }`}
                   type="number"
@@ -206,7 +209,7 @@ export default function PassDetailsRoute() {
               <label className="font-mono text-gray-900">
                 {(duration.minutes ?? 0) < 10 ? "0" : null}
                 <input
-                  className={`relative appearance-none border-none p-1 outline-none ${
+                  className={`relative appearance-none border-none bg-gray-100 bg-gray-100 p-1 outline-none ${
                     (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
                   }`}
                   type="number"
@@ -221,7 +224,7 @@ export default function PassDetailsRoute() {
               <label className="font-mono text-gray-900">
                 {(duration.seconds ?? 0) < 10 ? "0" : null}
                 <input
-                  className={`relative appearance-none border-none p-1 outline-none ${
+                  className={`relative appearance-none border-none bg-gray-100 p-1 outline-none ${
                     (duration.seconds ?? 0) < 10 ? "w-14" : "w-24"
                   }`}
                   type="number"
@@ -244,25 +247,22 @@ export default function PassDetailsRoute() {
           {pass.endAt ? (
             <input type="hidden" name="endAt" value={endAtStr} />
           ) : null}
-          <label
-            title={`"Official" space walks don't contribute to overall counts and durations`}
-          >
-            <h3 className="my-3 inline-block text-3xl">Official Business:</h3>
-            <input
-              className="ml-5"
-              type="checkbox"
+          <div className="mt-5">
+            <Toggle
               name="official"
               value="true"
               defaultChecked={!pass.isPersonal}
-            />
-          </label>
+            >
+              <h3 className="flex-1 text-3xl">Official Business:</h3>
+            </Toggle>
+          </div>
           <label>
             <h3 className="my-3 text-3xl"> Space Walk Notes: </h3>
             <textarea
               id="reason"
               rows={5}
               name="reason"
-              className={`w-full rounded p-2 font-mono text-gray-800 outline`}
+              className={`w-full rounded p-2 font-mono text-gray-800`}
               placeholder="Out fixing the photon torpedo bays."
               defaultValue={pass.reason ?? ""}
             />

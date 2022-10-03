@@ -30,9 +30,9 @@ export const Modal = ({ title, onClose, children, footer }: ModalProps) => {
               <XMarkIcon className="h-10 w-10" />
             </Button>
           </div>
-          <div className="p-10">{children}</div>
+          <div className="bg-gray-100 p-10">{children}</div>
           {footer ? (
-            <div className="border-t-2 px-10 py-5">{footer}</div>
+            <div className="border-t-2 bg-gray-100 px-10 py-5">{footer}</div>
           ) : null}
         </div>
       </div>
