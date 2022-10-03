@@ -27,6 +27,7 @@ import { Button } from "~/components/common/button";
 import toast from "react-hot-toast";
 import { Modal } from "~/components/common/modal";
 import { Toggle } from "~/components/common/toggle";
+import { DurationInput } from "~/components/durationInput";
 
 export const loader: LoaderFunction = async ({
   params,
@@ -154,120 +155,51 @@ export default function PassDetailsRoute() {
         </div>
       }
     >
-      <div className="mb-5 flex w-[40rem] flex-1 flex-col">
-        <div className="flex justify-between">
-          <h2 className="text-5xl">{formatDate(pass.startAt)} </h2>
+      <div className="flex w-[40rem] flex-1 flex-col gap-5">
+        {pass.endAt ? (
+          <input type="hidden" name="endAt" value={endAtStr} />
+        ) : null}
+        <div>
+          <div className="flex justify-between">
+            <h2 className="text-5xl">{formatDate(pass.startAt)} </h2>
+            <div className="text-3xl">
+              ({formatDistanceToNow(new Date(pass.startAt))} ago)
+            </div>
+          </div>
           <div className="text-3xl">
-            ({formatDistanceToNow(new Date(pass.startAt))} ago)
+            {`${formatTime(pass.startAt)} - ${formatTime(
+              pass.endAt ? endAt : null
+            )}`}
+            {pass.endAt && duration.days ? ` +${duration.days}` : null}
           </div>
         </div>
-        <div className="text-3xl">
-          {`${formatTime(pass.startAt)} - ${formatTime(
-            pass.endAt ? endAt : null
-          )}`}
-          {pass.endAt && duration.days ? ` +${duration.days}` : null}
-        </div>
         {pass.endAt ? (
-          <>
-            <h3 className="mt-10 text-3xl">Duration: </h3>
-            <div className="text-6xl text-gray-900">
-              {duration.days ? (
-                <>
-                  <label className="font-mono text-gray-900">
-                    {(duration.days ?? 0) < 10 ? "0" : null}
-                    <input
-                      className={`relative appearance-none border-none bg-gray-100 p-1 outline-none ${
-                        (duration.days ?? 0) < 10 ? "w-14" : "w-24"
-                      }`}
-                      type="number"
-                      min="0"
-                      value={duration.days}
-                      onChange={({ target: { value } }) =>
-                        updateDuration({ days: parseInt(value) })
-                      }
-                    />
-                  </label>{" "}
-                  :
-                </>
-              ) : null}
-              <label className="font-mono text-gray-900">
-                {(duration.hours ?? 0) < 10 ? "0" : null}
-                <input
-                  className={`relative appearance-none border-none bg-gray-100 bg-gray-100 p-1 outline-none ${
-                    (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
-                  }`}
-                  type="number"
-                  max="23"
-                  min={duration.days === 0 ? "0" : undefined}
-                  value={duration.hours}
-                  onChange={({ target: { value } }) =>
-                    updateDuration({ hours: parseInt(value) })
-                  }
-                />
-              </label>
-              :
-              <label className="font-mono text-gray-900">
-                {(duration.minutes ?? 0) < 10 ? "0" : null}
-                <input
-                  className={`relative appearance-none border-none bg-gray-100 bg-gray-100 p-1 outline-none ${
-                    (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
-                  }`}
-                  type="number"
-                  min={duration.hours === 0 ? "0" : undefined}
-                  value={duration.minutes}
-                  onChange={({ target: { value } }) =>
-                    updateDuration({ minutes: parseInt(value) })
-                  }
-                />
-              </label>
-              :
-              <label className="font-mono text-gray-900">
-                {(duration.seconds ?? 0) < 10 ? "0" : null}
-                <input
-                  className={`relative appearance-none border-none bg-gray-100 p-1 outline-none ${
-                    (duration.seconds ?? 0) < 10 ? "w-14" : "w-24"
-                  }`}
-                  type="number"
-                  min={duration.minutes === 0 ? "0" : undefined}
-                  value={duration.seconds}
-                  onChange={({ target: { value } }) =>
-                    updateDuration({ seconds: parseInt(value) })
-                  }
-                />
-              </label>
-            </div>
-          </>
+          <div className="flex justify-center">
+            <DurationInput
+              duration={duration}
+              updateDuration={updateDuration}
+            />
+          </div>
         ) : (
-          <div className="py-2">
+          <div>
             You'll need to return the cadet before you can modify this space
             walk duration. You can still add notes though.
           </div>
         )}
-        <div key={pass.id} className="flex flex-1 flex-col">
-          {pass.endAt ? (
-            <input type="hidden" name="endAt" value={endAtStr} />
-          ) : null}
-          <div className="mt-5">
-            <Toggle
-              name="official"
-              value="true"
-              defaultChecked={!pass.isPersonal}
-            >
-              <h3 className="flex-1 text-3xl">Official Business:</h3>
-            </Toggle>
-          </div>
-          <label>
-            <h3 className="my-3 text-3xl"> Space Walk Notes: </h3>
-            <textarea
-              id="reason"
-              rows={5}
-              name="reason"
-              className={`w-full rounded p-2 font-mono text-gray-800`}
-              placeholder="Out fixing the photon torpedo bays."
-              defaultValue={pass.reason ?? ""}
-            />
-          </label>
-        </div>
+        <label>
+          <h3 className="text-3xl"> Space Walk Notes: </h3>
+          <textarea
+            id="reason"
+            rows={5}
+            name="reason"
+            className={`w-full rounded p-2 font-mono text-gray-800`}
+            placeholder="Out fixing the photon torpedo bays."
+            defaultValue={pass.reason ?? ""}
+          />
+        </label>
+        <Toggle name="official" value="true" defaultChecked={!pass.isPersonal}>
+          <h3 className="flex-1 text-3xl">Official Business:</h3>
+        </Toggle>
       </div>
     </Modal>
   );
