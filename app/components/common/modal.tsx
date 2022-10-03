@@ -25,7 +25,6 @@ export const Modal = ({ title, onClose, children, footer }: ModalProps) => {
         >
           <div className="flex items-center justify-between rounded-t-2xl bg-blue-400 px-10 py-5">
             <div className="mr-10 text-3xl">{title}</div>
-
             <Button kind="ghostLight" onClick={onClose}>
               <XMarkIcon className="h-10 w-10" />
             </Button>
