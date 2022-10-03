@@ -32,7 +32,9 @@ export const Modal = ({ title, onClose, children, footer }: ModalProps) => {
           </div>
           <div className="bg-gray-100 p-10">{children}</div>
           {footer ? (
-            <div className="border-t-2 bg-gray-100 px-10 py-5">{footer}</div>
+            <div className="rounded-b-2xl border-t-2 bg-gray-100 px-10 py-5">
+              {footer}
+            </div>
           ) : null}
         </div>
       </div>
