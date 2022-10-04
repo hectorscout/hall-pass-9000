@@ -187,7 +187,7 @@ export default function PassDetailsRoute() {
           </div>
         )}
         <label>
-          <h3 className="text-3xl"> Space Walk Notes: </h3>
+          <h3 className="mb-2 text-3xl"> Space Walk Notes: </h3>
           <textarea
             id="reason"
             rows={5}
