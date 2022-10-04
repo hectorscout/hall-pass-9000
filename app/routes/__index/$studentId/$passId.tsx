@@ -12,17 +12,14 @@ import {
   updateHallPass,
 } from "~/models/hall-pass.server";
 import {
-  Form,
-  Link,
   useLoaderData,
   useNavigate,
   useParams,
   useTransition,
 } from "@remix-run/react";
 import { formatDate, formatTime } from "~/utils/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { add, formatDistanceToNow, intervalToDuration } from "date-fns";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
 import toast from "react-hot-toast";
 import { Modal } from "~/components/common/modal";
