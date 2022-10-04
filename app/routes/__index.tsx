@@ -5,13 +5,13 @@ import { requireUserId } from "~/utils/session.server";
 import { Link, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { useUser } from "~/utils/utils";
 import { Header } from "~/components/header";
-import styles from "~/components/hal9000/hal9000.css";
+import hal9000Styles from "~/components/hal9000/hal9000.css";
 import { StudentList } from "~/components/studentList";
 import { useEffect, useState } from "react";
 import { HomeModernIcon } from "@heroicons/react/24/solid";
 
 export const links = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [{ rel: "stylesheet", href: hal9000Styles }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

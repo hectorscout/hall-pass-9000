@@ -1,67 +1,63 @@
 import type { Pass } from "@prisma/client";
-import { useParams } from "@remix-run/react";
-import { formatDuration } from "date-fns";
+import { intervalToDuration } from "date-fns";
+import type { Duration } from "date-fns";
 import React from "react";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
-
-type ExtendedPass = Pick<Pass, "id" | "reason"> & {
-  duration: Duration;
-  startAt: string;
-  endAt: string | null;
-  isPersonal: boolean;
-};
+import { formatDurationDigital } from "~/utils/utils";
+import type { StatKeys } from "~/components/hallPassHistoryCard";
 
 interface HallPassLogProps {
-  elapsedDuration: Duration;
-  openPass?: Pick<Pass, "id" | "reason" | "isPersonal"> & { startAt: string };
-  passes: ExtendedPass[];
-  personalCount: Number;
-  personalDuration: Duration;
+  counts: Record<StatKeys, number>;
+  durations: Record<StatKeys, Duration>;
+  passes: (Pick<Pass, "id" | "isPersonal" | "reason"> & {
+    startAt: string;
+    endAt: string | null;
+  })[];
 }
 
-export const HallPassLog: React.FC<HallPassLogProps> = ({
-  elapsedDuration,
-  openPass,
-  passes,
-  personalCount,
-  personalDuration,
-}) => {
-  const { passId } = useParams();
+const renderStats = (count: number, duration: Duration) => {
+  return (
+    <div className="flex gap-3">
+      <div>{`${count} walk${count !== 1 ? "s" : ""}`}</div>
+      <div>{formatDurationDigital(duration)}</div>
+    </div>
+  );
+};
 
+export const HallPassLog: React.FC<HallPassLogProps> = ({
+  counts,
+  durations,
+  passes,
+}) => {
   return (
     <div>
-      <h2 className="mb-5 flex justify-between align-middle">
-        <div className="text-5xl">Space Walk Log:</div>
-        {personalCount ? (
-          <div className="flex flex-col justify-center">
-            <span className="ml-10">{`${personalCount} walk${
-              personalCount > 1 ? "s" : ""
-            }`}</span>
-            <span className="ml-10">{formatDuration(personalDuration)}</span>
-          </div>
-        ) : null}
-      </h2>
-      <div className="mt-1 grid grid-cols-[30px_1fr_1fr_1fr] gap-x-2 gap-y-1">
-        <div />
+      <div className="flex justify-between">
+        <div>Recreational:</div>
+        <div>{renderStats(counts.personal, durations.personal)}</div>
+      </div>
+      <div className="flex justify-between">
+        <div>Official:</div>
+        <div>{renderStats(counts.official, durations.official)}</div>
+      </div>{" "}
+      <div className="flex justify-between">
+        <div>Total:</div>
+        <div>{renderStats(counts.total, durations.total)}</div>
+      </div>
+      <div className="mt-5 grid grid-cols-[2fr_1fr_1fr] gap-x-2 gap-y-1">
         <div className="text-2xl">Start</div>
         <div className="text-2xl">End</div>
         <div className="text-2xl">Duration</div>
         <hr className="col-span-4 mb-2" />
       </div>
-      {openPass ? (
-        <HallPassLogRow
-          pass={openPass}
-          duration={elapsedDuration}
-          selectedPassId={passId}
-        />
-      ) : null}
       {passes.map((pass) => {
         return (
           <HallPassLogRow
             key={pass.id}
             pass={pass}
-            duration={pass.duration}
-            selectedPassId={passId}
+            duration={intervalToDuration({
+              start: new Date(pass.startAt),
+              end: pass.endAt ? new Date(pass.endAt) : new Date(),
+            })}
           />
         );
       })}
