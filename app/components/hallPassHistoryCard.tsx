@@ -36,54 +36,51 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
   }
 
   const now = new Date();
+  const emptyDuration = intervalToDuration({ start: now, end: now });
   const stats = passes.reduce(
-    (c, pass) => {
+    (accum, pass) => {
       const startDate = new Date(pass.startAt);
-      const duration = intervalToDuration({
+      const passDuration = intervalToDuration({
         start: startDate,
         end: pass.endAt ? new Date(pass.endAt) : now,
       });
 
-      c.durations.total = add(c.durations.total, duration);
-      c.last.total = c.last.total
-        ? new Date(Math.max(c.last.total.valueOf(), startDate.valueOf()))
-        : startDate;
-      c.counts.total++;
-      if (pass.isPersonal) {
-        c.durations.personal = add(c.durations.personal, duration);
-        c.counts.personal++;
-        c.last.personal = c.last.personal
-          ? new Date(Math.max(c.last.personal.valueOf(), startDate.valueOf()))
+      const updateStat = (
+        key: "total" | "personal" | "official",
+        duration: Duration
+      ) => {
+        accum.times[key] = add(accum.times[key], duration);
+        accum.durations[key] = intervalToDuration({
+          start: now,
+          end: accum.times[key],
+        });
+        accum.last[key] = accum.last[key]
+          ? new Date(
+              Math.max(accum.last[key]?.valueOf() || 0, startDate.valueOf())
+            )
           : startDate;
-      } else {
-        c.durations.official = add(c.durations.official, duration);
-        c.counts.official++;
-      }
-      return c;
+        accum.counts[key]++;
+      };
+
+      updateStat("total", passDuration);
+      updateStat(pass.isPersonal ? "personal" : "official", passDuration);
+      return accum;
     },
     {
-      durations: { total: now, personal: now, official: now },
+      times: { total: now, personal: now, official: now },
       counts: { total: 0, personal: 0, official: 0 },
-      last: { total: null, personal: null, official: null } as Record<
-        "total" | "personal" | "official",
-        null | Date
-      >,
+      last: {
+        total: null,
+        personal: null,
+        official: null,
+      } as Record<"total" | "personal" | "official", null | Date>,
+      durations: {
+        total: emptyDuration,
+        personal: emptyDuration,
+        official: emptyDuration,
+      } as Record<"total" | "personal" | "official", Duration>,
     }
   );
-  const durations = {
-    total: intervalToDuration({
-      start: now,
-      end: stats.durations.total,
-    }),
-    personal: intervalToDuration({
-      start: now,
-      end: stats.durations.personal,
-    }),
-    official: intervalToDuration({
-      start: now,
-      end: stats.durations.official,
-    }),
-  };
 
   return (
     <div className="rounded-2xl bg-gray-800 p-5 text-gray-300">
@@ -97,7 +94,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
           </div>
           <HallPassLog
             counts={stats.counts}
-            durations={durations}
+            durations={stats.durations}
             passes={passes}
           />
         </div>
@@ -105,7 +102,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
         <div className="flex items-center gap-5">
           <div>
             <div className="text-2xl">
-              {getStatString(stats.counts.personal, durations.personal)}
+              {getStatString(stats.counts.personal, stats.durations.personal)}
             </div>
             <div className="flex items-center justify-between">
               <div>Last: {formatDate(stats.last.personal)}</div>
