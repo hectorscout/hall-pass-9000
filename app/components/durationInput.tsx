@@ -31,7 +31,7 @@ export const DurationInput = ({
       <label className="font-mono text-gray-900">
         {(duration.hours ?? 0) < 10 ? "0" : null}
         <input
-          className={`relative appearance-none border-none bg-gray-100 bg-gray-100 p-1 outline-none ${
+          className={`relative appearance-none border-none bg-gray-100 p-1 outline-none ${
             (duration.hours ?? 0) < 10 ? "w-14" : "w-24"
           }`}
           type="number"
@@ -47,7 +47,7 @@ export const DurationInput = ({
       <label className="font-mono text-gray-900">
         {(duration.minutes ?? 0) < 10 ? "0" : null}
         <input
-          className={`relative appearance-none border-none bg-gray-100 bg-gray-100 p-1 outline-none ${
+          className={`relative appearance-none border-none bg-gray-100 p-1 outline-none ${
             (duration.minutes ?? 0) < 10 ? "w-14" : "w-24"
           }`}
           type="number"
