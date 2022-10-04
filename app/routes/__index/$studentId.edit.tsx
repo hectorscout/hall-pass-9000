@@ -279,20 +279,20 @@ export default function EditStudentRoute() {
               <Button
                 kind="ghostLight"
                 className="mr-5"
+                disabled={isDeleting}
                 onClick={() => setConfirmDelete(false)}
               >
                 Cancel
               </Button>
-              <Form method="post" key={student?.id}>
-                <Button
-                  kind="critical"
-                  name="intent"
-                  value="delete"
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? "Deleting" : "Make It So"}
-                </Button>
-              </Form>
+              <Button
+                kind="critical"
+                name="intent"
+                value="delete"
+                disabled={isDeleting}
+                type="submit"
+              >
+                {isDeleting ? "Deleting" : "Make It So"}
+              </Button>
             </div>
           }
           onClose={() => setConfirmDelete(false)}

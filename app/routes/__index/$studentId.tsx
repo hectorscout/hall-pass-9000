@@ -15,13 +15,13 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import { add, intervalToDuration } from "date-fns";
+import { intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 import { Button } from "~/components/common/button";
 import { PassButton } from "~/components/passButton";
 import toast from "react-hot-toast";
+import { HallPassHistoryCard } from "~/components/hallPassHistoryCard";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -33,41 +33,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   const passes = await getHallPassesForStudent(params.studentId);
-  const closedPasses = passes
-    .filter((pass) => pass.endAt)
-    .map((pass) => {
-      const duration = intervalToDuration({
-        start: new Date(pass.startAt),
-        end: new Date(pass.endAt || ""),
-      });
-      return {
-        ...pass,
-        duration,
-      };
-    });
   const openPass = passes.find((pass) => !pass.endAt);
 
-  const personalPasses = passes.filter((pass) => pass.isPersonal);
-  const now = new Date();
-  const nowPlusPersonalDuration = personalPasses.reduce((total, pass) => {
-    return add(
-      total,
-      intervalToDuration({
-        start: new Date(pass.startAt),
-        end: pass.endAt ? new Date(pass.endAt) : now,
-      })
-    );
-  }, now);
-  const personalDuration = intervalToDuration({
-    start: now,
-    end: nowPlusPersonalDuration,
-  });
   return json({
     openPass,
-    closedPasses,
     student,
-    personalDuration,
-    personalCount: personalPasses.length,
+    passes,
   });
 };
 
@@ -101,8 +72,7 @@ const homeUrl =
 //   "https://images.unsplash.com/photo-1520442027413-7bf6c51517da?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjIwOTQzNDU&ixlib=rb-1.2.1&q=80";
 
 export default function StudentDetailsRoute() {
-  const { openPass, closedPasses, student, personalDuration, personalCount } =
-    useLoaderData<typeof loader>();
+  const { openPass, student, passes } = useLoaderData<typeof loader>();
   const transition = useTransition();
 
   useEffect(() => {
@@ -168,15 +138,13 @@ export default function StudentDetailsRoute() {
         />
       )}
       <div className="z-10 flex flex-1 flex-col">
-        <div className="z-10 flex p-10">
-          <h1 className="flex flex-1 items-center text-6xl font-extrabold">
+        <div className="z-10 flex items-center gap-5 p-10">
+          <h1 className="flex items-center gap-5 text-6xl font-extrabold">
             <div className="block uppercase text-red-500 drop-shadow-md">{`${student?.firstName} ${student?.lastName}`}</div>
-            <div className="ml-5 text-3xl text-gray-400">
-              ({student.period})
-            </div>
+            <div className="text-3xl text-gray-400">({student.period})</div>
           </h1>
-          <Link to="edit" className="justify-end" title="Edit Cadet Records">
-            <Button>
+          <Link to="edit" title="Edit Cadet Records">
+            <Button kind="ghost">
               <PencilIcon className="h-6 w-6" />
             </Button>
           </Link>
@@ -189,16 +157,10 @@ export default function StudentDetailsRoute() {
               isPersonal={openPass ? openPass.isPersonal : false}
             />
           </div>
-          <div className="mt-10 flex-1 bg-blue-300/60 p-10">
-            <HallPassLog
-              passes={closedPasses}
-              personalCount={personalCount}
-              personalDuration={personalDuration}
-              openPass={openPass}
-              elapsedDuration={elapsedDuration}
-            />
-          </div>
         </Form>
+        <div className="absolute right-0 top-0 z-10 m-5">
+          <HallPassHistoryCard passes={passes} />
+        </div>
         <Outlet />
       </div>
     </div>
