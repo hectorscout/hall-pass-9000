@@ -11,6 +11,8 @@ import type { Duration } from "date-fns";
 import { formatDate, formatDurationDigital } from "~/utils/utils";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 
+export type StatKeys = "total" | "personal" | "official";
+
 interface HallPassHistoryCardProps {
   passes: (Pick<Pass, "id" | "isPersonal" | "reason"> & {
     startAt: string;
@@ -45,10 +47,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
         end: pass.endAt ? new Date(pass.endAt) : now,
       });
 
-      const updateStat = (
-        key: "total" | "personal" | "official",
-        duration: Duration
-      ) => {
+      const updateStat = (key: StatKeys, duration: Duration) => {
         accum.times[key] = add(accum.times[key], duration);
         accum.durations[key] = intervalToDuration({
           start: now,
@@ -73,12 +72,12 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
         total: null,
         personal: null,
         official: null,
-      } as Record<"total" | "personal" | "official", null | Date>,
+      } as Record<StatKeys, null | Date>,
       durations: {
         total: emptyDuration,
         personal: emptyDuration,
         official: emptyDuration,
-      } as Record<"total" | "personal" | "official", Duration>,
+      } as Record<StatKeys, Duration>,
     }
   );
 

@@ -4,8 +4,7 @@ import type { Duration } from "date-fns";
 import React from "react";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
 import { formatDurationDigital } from "~/utils/utils";
-
-type StatKeys = "total" | "personal" | "official";
+import type { StatKeys } from "~/components/hallPassHistoryCard";
 
 interface HallPassLogProps {
   counts: Record<StatKeys, number>;
