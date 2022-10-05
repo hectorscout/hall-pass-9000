@@ -82,7 +82,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
   );
 
   return (
-    <div className="rounded-2xl bg-gray-800 p-5 text-gray-300">
+    <div className="rounded-2xl bg-gray-800/80 p-5 text-gray-300">
       {expanded ? (
         <div>
           <div className="mb-5 flex justify-start">
