@@ -138,7 +138,7 @@ export default function StudentDetailsRoute() {
         />
       )}
       <div className="z-10 flex flex-1 flex-col">
-        <div className="z-10 flex items-center gap-5 p-10">
+        <div className="absolute z-10 flex items-center gap-5 p-10">
           <h1 className="flex items-center gap-5 text-6xl font-extrabold">
             <div className="block uppercase text-red-500 drop-shadow-md">{`${student?.firstName} ${student?.lastName}`}</div>
             <div className="text-3xl text-gray-400">({student.period})</div>
@@ -149,14 +149,15 @@ export default function StudentDetailsRoute() {
             </Button>
           </Link>
         </div>
-        <Form method="post" className="flex flex-1 flex-col">
-          <div className="flex justify-center">
-            <PassButton
-              openPassId={openPass ? openPass.id : undefined}
-              elapsedDuration={elapsedDuration}
-              isPersonal={openPass ? openPass.isPersonal : false}
-            />
-          </div>
+        <Form
+          method="post"
+          className="mx-10 flex flex-1 flex-col items-start justify-center"
+        >
+          <PassButton
+            openPassId={openPass ? openPass.id : undefined}
+            elapsedDuration={elapsedDuration}
+            isPersonal={openPass ? openPass.isPersonal : false}
+          />
         </Form>
         <div className="absolute right-0 top-0 z-10 m-5">
           <HallPassHistoryCard passes={passes} />
