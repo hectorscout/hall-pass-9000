@@ -123,13 +123,19 @@ export default function StudentDetailsRoute() {
   }, [openPass]);
 
   return (
-    <div className="relative flex flex-1 flex-col overflow-auto bg-blue-900">
+    <div className="relative flex flex-1 flex-col overflow-hidden bg-blue-900">
       {openPass ? (
-        <img
-          alt=""
-          className="absolute inset-0 z-0 h-full w-full object-cover"
-          src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
-        />
+        <>
+          <img
+            src="/images/astronaut200.png"
+            className="absolute z-10 h-[145px] w-[145px] animate-dvd"
+          />
+          <img
+            alt=""
+            className="absolute inset-0 z-0 h-full w-full object-cover"
+            src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
+          />
+        </>
       ) : (
         <img
           alt=""
