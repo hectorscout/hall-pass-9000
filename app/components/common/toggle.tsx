@@ -22,6 +22,8 @@ export const Toggle = ({
       {children}
       <div className="relative">
         <input
+          name={name}
+          value={value}
           type="checkbox"
           id={inputId}
           className="sr-only"
