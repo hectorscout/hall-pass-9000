@@ -1,10 +1,5 @@
 /*
-  Warnings:
-
-  - You are about to drop the column `name` on the `Setting` table. All the data in the column will be lost.
-  - You are about to drop the column `value` on the `Setting` table. All the data in the column will be lost.
-  - Added the required column `json` to the `Setting` table without a default value. This is not possible if the table is not empty.
-
+  I decided to just drop the Settings table since nobody is really using it anyway.
 */
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
