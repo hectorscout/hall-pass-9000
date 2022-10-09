@@ -10,6 +10,7 @@ import { add, intervalToDuration } from "date-fns";
 import type { Duration } from "date-fns";
 import { formatDate, formatDurationDigital } from "~/utils/utils";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
+import { useUserSettings } from "~/hooks/useUserSettings";
 
 export type StatKeys = "total" | "personal" | "official";
 
@@ -27,7 +28,8 @@ const getStatString = (count: number, duration: Duration) => {
 };
 
 export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const { expandPassLog } = useUserSettings();
+  const [expanded, setExpanded] = useState(expandPassLog);
 
   if (passes.length === 0) {
     return (

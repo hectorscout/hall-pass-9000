@@ -8,6 +8,7 @@ import invariant from "tiny-invariant";
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Toggle } from "~/components/common/toggle";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -37,6 +38,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   const formData = await request.formData();
   const warning = formData.get("warning");
   const critical = formData.get("critical");
+  const expandPassLog = formData.get("expand-pass-log") === "true";
 
   invariant(typeof warning === "string", "warning must be a string");
   invariant(typeof critical === "string", "critical must be a string");
@@ -44,6 +46,10 @@ export const action: ActionFunction = async ({ params, request }) => {
   const criticalNumber = +critical;
   invariant(typeof warningNumber === "number", "warning must be a number");
   invariant(typeof criticalNumber === "number", "critical must be a number");
+  invariant(
+    typeof expandPassLog === "boolean",
+    "expandPassLog must be a boolean"
+  );
 
   const errors: ActionData = {
     warning: getWarningError(warningNumber),
@@ -57,6 +63,11 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   await upsertSetting({ userId, name: "warning", value: warning });
   await upsertSetting({ userId, name: "critical", value: critical });
+  await upsertSetting({
+    userId,
+    name: "expandPassLog",
+    value: expandPassLog.toString(),
+  });
 
   return null;
 };
@@ -135,6 +146,15 @@ export default function SettingsRoute() {
               Minutes
             </label>
           </div>
+          <Toggle
+            name="expand-pass-log"
+            value="true"
+            defaultChecked={userSettings.expandPassLog === "true"}
+          >
+            <h3 className="flex-1 text-3xl">
+              Expand Space Walk Log By Default:
+            </h3>
+          </Toggle>
           <div className="flex justify-end gap-4">
             <Button type="submit" disabled={transition.state !== "idle"}>
               {transition.state !== "idle"
