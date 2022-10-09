@@ -128,7 +128,7 @@ export default function StudentDetailsRoute() {
         <>
           <img
             src="/images/astronaut200.png"
-            className="absolute z-10 h-[145px] w-[145px] animate-dvd"
+            className="absolute z-10 h-[145px] w-[145px] animate-dvd-linear"
           />
           <img
             alt=""
