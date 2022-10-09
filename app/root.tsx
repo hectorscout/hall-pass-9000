@@ -41,13 +41,10 @@ export type RootLoaderData = {
 
 export async function loader({ request }: LoaderArgs) {
   const user = await getUser(request);
-  const userSettings = (await getSettings(user?.id ?? "")).reduce(
-    (settings, setting) => {
-      settings[setting.name] = setting.value;
-      return settings;
-    },
-    {} as Record<string, string>
+  const userSettings = JSON.parse(
+    (await getSettings(user?.id ?? ""))?.json ?? "{}"
   );
+
   return json({
     user,
     userSettings,
