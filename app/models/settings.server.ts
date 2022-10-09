@@ -2,27 +2,26 @@ import type { User, Setting } from "@prisma/client";
 import { prisma } from "~/utils/db.server";
 
 export function getSettings(userId: User["id"] | undefined) {
-  return prisma.setting.findMany({
+  return prisma.setting.findFirst({
     where: { userId },
   });
 }
 
 export function upsertSetting({
   userId,
-  name,
   value,
-}: Pick<Setting, "name" | "value"> & { userId: User["id"] }) {
+}: {
+  userId: User["id"];
+  value: { critical: number; warning: number; expandPassLog: boolean };
+}) {
+  const json = JSON.stringify(value);
   return prisma.setting.upsert({
     where: {
-      userId_name: {
-        userId,
-        name,
-      },
+      userId,
     },
-    update: { value },
+    update: { json },
     create: {
-      name,
-      value,
+      json,
       userId,
     },
   });
