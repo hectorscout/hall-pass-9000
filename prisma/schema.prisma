@@ -20,7 +20,7 @@ model User {
 
   students Student[]
   passes   Pass[]
-  settings Setting[]
+  settings Setting?
 }
 
 model Student {
@@ -55,14 +55,11 @@ model Pass {
 
 model Setting {
   id       String @id @default(cuid())
-  name     String
-  value    String
+  json     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId    String
-
-  @@unique([userId, name], name: "userId_name")
+  userId    String @unique
 }

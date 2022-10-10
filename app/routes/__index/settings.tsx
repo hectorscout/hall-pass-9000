@@ -8,6 +8,7 @@ import invariant from "tiny-invariant";
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Toggle } from "~/components/common/toggle";
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -35,19 +36,20 @@ export const action: ActionFunction = async ({ params, request }) => {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
-  const warning = formData.get("warning");
-  const critical = formData.get("critical");
+  const warning = +(formData.get("warning") ?? "");
+  const critical = +(formData.get("critical") ?? "");
+  const expandPassLog = formData.get("expand-pass-log") === "true";
 
-  invariant(typeof warning === "string", "warning must be a string");
-  invariant(typeof critical === "string", "critical must be a string");
-  const warningNumber = +warning;
-  const criticalNumber = +critical;
-  invariant(typeof warningNumber === "number", "warning must be a number");
-  invariant(typeof criticalNumber === "number", "critical must be a number");
+  invariant(typeof warning === "number", "warning must be a number");
+  invariant(typeof critical === "number", "critical must be a number");
+  invariant(
+    typeof expandPassLog === "boolean",
+    "expandPassLog must be a boolean"
+  );
 
   const errors: ActionData = {
-    warning: getWarningError(warningNumber),
-    critical: getCriticalError(criticalNumber, warningNumber),
+    warning: getWarningError(warning),
+    critical: getCriticalError(critical, warning),
   };
 
   const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
@@ -55,8 +57,10 @@ export const action: ActionFunction = async ({ params, request }) => {
     return json<ActionData>(errors);
   }
 
-  await upsertSetting({ userId, name: "warning", value: warning });
-  await upsertSetting({ userId, name: "critical", value: critical });
+  await upsertSetting({
+    userId,
+    value: { warning, critical, expandPassLog },
+  });
 
   return null;
 };
@@ -135,6 +139,15 @@ export default function SettingsRoute() {
               Minutes
             </label>
           </div>
+          <Toggle
+            name="expand-pass-log"
+            value="true"
+            defaultChecked={userSettings.expandPassLog}
+          >
+            <h3 className="flex-1 text-3xl">
+              Expand Space Walk Log By Default:
+            </h3>
+          </Toggle>
           <div className="flex justify-end gap-4">
             <Button type="submit" disabled={transition.state !== "idle"}>
               {transition.state !== "idle"
