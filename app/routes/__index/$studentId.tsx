@@ -123,13 +123,20 @@ export default function StudentDetailsRoute() {
   }, [openPass]);
 
   return (
-    <div className="relative flex flex-1 flex-col overflow-auto bg-blue-900">
+    <div className="relative flex flex-1 flex-col overflow-hidden bg-blue-900">
       {openPass ? (
-        <img
-          alt=""
-          className="absolute inset-0 z-0 h-full w-full object-cover"
-          src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
-        />
+        <>
+          <img
+            alt=""
+            src="/images/astronaut200.png"
+            className="absolute z-10 h-[145px] w-[145px] animate-dvd-linear"
+          />
+          <img
+            alt=""
+            className="absolute inset-0 z-0 h-full w-full object-cover"
+            src="https://images.unsplash.com/photo-1591449235870-2d8491bf51ff?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjE3NDQ1NzI&ixlib=rb-1.2.1&q=80"
+          />
+        </>
       ) : (
         <img
           alt=""
@@ -138,7 +145,7 @@ export default function StudentDetailsRoute() {
         />
       )}
       <div className="z-10 flex flex-1 flex-col">
-        <div className="z-10 flex items-center gap-5 p-10">
+        <div className="absolute z-10 flex items-center gap-5 p-10">
           <h1 className="flex items-center gap-5 text-6xl font-extrabold">
             <div className="block uppercase text-red-500 drop-shadow-md">{`${student?.firstName} ${student?.lastName}`}</div>
             <div className="text-3xl text-gray-400">({student.period})</div>
@@ -149,14 +156,15 @@ export default function StudentDetailsRoute() {
             </Button>
           </Link>
         </div>
-        <Form method="post" className="flex flex-1 flex-col">
-          <div className="flex justify-center">
-            <PassButton
-              openPassId={openPass ? openPass.id : undefined}
-              elapsedDuration={elapsedDuration}
-              isPersonal={openPass ? openPass.isPersonal : false}
-            />
-          </div>
+        <Form
+          method="post"
+          className="mx-10 flex flex-1 flex-col items-start justify-center"
+        >
+          <PassButton
+            openPassId={openPass ? openPass.id : undefined}
+            elapsedDuration={elapsedDuration}
+            isPersonal={openPass ? openPass.isPersonal : false}
+          />
         </Form>
         <div className="absolute right-0 top-0 z-10 m-5">
           <HallPassHistoryCard passes={passes} />
