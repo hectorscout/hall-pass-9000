@@ -23,6 +23,7 @@ import { PassButton } from "~/components/passButton";
 import toast from "react-hot-toast";
 import { HallPassHistoryCard } from "~/components/hallPassHistoryCard";
 import { useUserSettings } from "~/hooks/useUserSettings";
+import { OpenPassDashboard } from "~/components/openPassDashboard";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -180,13 +181,15 @@ export default function StudentDetailsRoute() {
                 value={oxygenLevel}
                 max={userSettings.critical * 60}
               ></progress>
+              <OpenPassDashboard
+                openPassId={openPass.id}
+                elapsedDuration={elapsedDuration}
+                isPersonal={openPass.isPersonal}
+              />
             </>
-          ) : null}
-          <PassButton
-            openPassId={openPass ? openPass.id : undefined}
-            elapsedDuration={elapsedDuration}
-            isPersonal={openPass ? openPass.isPersonal : false}
-          />
+          ) : (
+            <PassButton />
+          )}
         </Form>
         <div className="absolute right-0 top-0 z-10 m-5">
           <HallPassHistoryCard passes={passes} />

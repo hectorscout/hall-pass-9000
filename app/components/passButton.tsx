@@ -1,23 +1,9 @@
-import { useUserSettings } from "~/hooks/useUserSettings";
-import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { Button } from "~/components/common/button";
 import {
   ArrowsPointingOutIcon,
   CheckBadgeIcon,
 } from "@heroicons/react/24/outline";
 import { useParams, useTransition } from "@remix-run/react";
-
-const statusMessages = {
-  good: "Click to bring them back to safety.",
-  warning: "Warning: Oxygen levels low",
-  critical: "Critical: Oxygen depleted!!",
-};
-
-interface PassButtonProps {
-  openPassId?: String;
-  elapsedDuration?: Duration;
-  isPersonal?: boolean;
-}
 
 // For some reason RocketLaunchIcon isn't showing up....
 const rocketIcon = (
@@ -49,12 +35,7 @@ const renderTransitionButton = () => {
   );
 };
 
-export const PassButton = ({
-  openPassId,
-  elapsedDuration,
-  isPersonal,
-}: PassButtonProps) => {
-  const userSettings = useUserSettings();
+export const PassButton = () => {
   const transition = useTransition();
   const { studentId } = useParams();
 
@@ -64,31 +45,6 @@ export const PassButton = ({
 
   return isTransitioning ? (
     renderTransitionButton()
-  ) : openPassId && elapsedDuration ? (
-    <div
-      className={
-        getDurationStatus(elapsedDuration, userSettings) !== "good"
-          ? "animate-pulse"
-          : ""
-      }
-    >
-      <Button
-        type="submit"
-        name="passId"
-        value={openPassId}
-        size="big"
-        kind={getDurationStatus(elapsedDuration, userSettings)}
-      >
-        <div className="mb-3 flex items-center justify-center gap-5 font-mono text-5xl">
-          {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
-          <div>{formatDurationDigital(elapsedDuration)}</div>
-          {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
-        </div>
-        <div className="font-mono text-2xl">
-          {statusMessages[getDurationStatus(elapsedDuration, userSettings)]}
-        </div>
-      </Button>
-    </div>
   ) : (
     <div className="flex flex-col gap-5 rounded-2xl bg-gray-800/80 p-5 text-gray-300">
       <div className="text-3xl">Start A New Space Walk</div>
