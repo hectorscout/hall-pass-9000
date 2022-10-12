@@ -127,6 +127,7 @@ export default function StudentDetailsRoute() {
       {openPass ? (
         <>
           <img
+            alt=""
             src="/images/astronaut200.png"
             className="absolute z-10 h-[145px] w-[145px] animate-dvd-linear"
           />
