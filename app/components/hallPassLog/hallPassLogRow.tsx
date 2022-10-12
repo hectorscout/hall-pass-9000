@@ -66,7 +66,7 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
     >
       <div>{formatDateTime(pass.startAt)}</div>
       <div>{pass.endAt ? formatTime(pass.endAt) : "-"}</div>
-      <div className="flex gap-3">
+      <div className="mr-2 flex justify-between">
         <div>{formatDurationDigital(duration)}</div>
         {getStatusIcon(pass.isPersonal, status)}
       </div>
