@@ -111,7 +111,7 @@ export default function SettingsRoute() {
                 }`}
                 type="number"
                 min="0"
-                max="99"
+                max="58"
                 name="warning"
                 defaultValue={warningVal}
                 onChange={({ target: { value } }) => setWarningVal(+value)}
@@ -132,6 +132,7 @@ export default function SettingsRoute() {
                 }`}
                 type="number"
                 min="0"
+                max="59"
                 name="critical"
                 defaultValue={criticalVal}
                 onChange={({ target: { value } }) => setCriticalVal(+value)}
