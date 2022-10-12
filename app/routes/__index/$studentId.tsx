@@ -15,13 +15,14 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import { intervalToDuration } from "date-fns";
+import { differenceInSeconds, intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
 import { PassButton } from "~/components/passButton";
 import toast from "react-hot-toast";
 import { HallPassHistoryCard } from "~/components/hallPassHistoryCard";
+import { useUserSettings } from "~/hooks/useUserSettings";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -74,6 +75,7 @@ const homeUrl =
 export default function StudentDetailsRoute() {
   const { openPass, student, passes } = useLoaderData<typeof loader>();
   const transition = useTransition();
+  const userSettings = useUserSettings();
 
   useEffect(() => {
     if (transition.state === "loading" && transition.type === "actionReload") {
@@ -105,13 +107,21 @@ export default function StudentDetailsRoute() {
     })
   );
 
+  const [oxygenLevel, setOxygenLevel] = useState(userSettings.critical * 60);
+
   useEffect(() => {
     const tick = () => {
-      setElapsedDuration(
-        intervalToDuration({
-          start: openPass ? new Date(openPass.startAt) : new Date(),
-          end: new Date(),
-        })
+      const now = new Date();
+      const passTime = openPass ? new Date(openPass.startAt) : new Date();
+      const currentDuration = intervalToDuration({
+        start: passTime,
+        end: now,
+      });
+
+      setElapsedDuration(currentDuration);
+
+      setOxygenLevel(
+        userSettings.critical * 60 - differenceInSeconds(now, passTime)
       );
     };
     tick();
@@ -160,6 +170,18 @@ export default function StudentDetailsRoute() {
           method="post"
           className="mx-10 flex flex-1 flex-col items-start justify-center"
         >
+          {openPass ? (
+            <>
+              <label htmlFor="oxygen-level" className="text-gray-300">
+                Oxygen Level:
+              </label>
+              <progress
+                id="oxygen-level"
+                value={oxygenLevel}
+                max={userSettings.critical * 60}
+              ></progress>
+            </>
+          ) : null}
           <PassButton
             openPassId={openPass ? openPass.id : undefined}
             elapsedDuration={elapsedDuration}
