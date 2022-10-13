@@ -120,7 +120,6 @@ export default function StudentDetailsRoute() {
       });
 
       setElapsedDuration(currentDuration);
-
       setOxygenLevel(
         userSettings.critical * 60 - differenceInSeconds(now, passTime)
       );
@@ -173,17 +172,10 @@ export default function StudentDetailsRoute() {
         >
           {openPass ? (
             <>
-              <label htmlFor="oxygen-level" className="text-gray-300">
-                Oxygen Level:
-              </label>
-              <progress
-                id="oxygen-level"
-                value={oxygenLevel}
-                max={userSettings.critical * 60}
-              ></progress>
               <OpenPassDashboard
                 openPassId={openPass.id}
                 elapsedDuration={elapsedDuration}
+                oxygenLevel={oxygenLevel}
                 isPersonal={openPass.isPersonal}
               />
             </>

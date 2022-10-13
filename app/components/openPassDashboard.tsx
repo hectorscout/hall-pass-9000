@@ -1,20 +1,26 @@
 import { formatDurationDigital, getDurationStatus } from "~/utils/utils";
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { Button } from "~/components/common/button";
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import {
+  CheckBadgeIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
+import { Warning } from "postcss";
 
 interface OpenPassDashboardProps {
   openPassId: String;
   elapsedDuration: Duration;
+  oxygenLevel: number;
   isPersonal: boolean;
 }
 
 const statusMessages = {
-  good: "Click to bring them back to safety.",
-  warning: "Warning: Oxygen levels low",
-  critical: "Critical: Oxygen depleted!!",
+  good: "",
+  warning: "Warning",
+  critical: "Critical!!",
 };
 
+// TODO: move to a component (or fix), share with PassButton
 const rocketIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -35,33 +41,63 @@ const rocketIcon = (
 export const OpenPassDashboard = ({
   openPassId,
   elapsedDuration,
+  oxygenLevel,
   isPersonal,
 }: OpenPassDashboardProps) => {
   const userSettings = useUserSettings();
+  const status = getDurationStatus(elapsedDuration, userSettings);
+  const warningSeconds = userSettings.warning * 60;
+  const criticalSeconds = userSettings.critical * 60;
+  const oxygenPercent = Math.max((oxygenLevel / criticalSeconds) * 100, 0);
+  const warningPercent = Math.min(
+    oxygenPercent,
+    (1 - warningSeconds / criticalSeconds) * 100
+  );
 
   return (
     <div
-      className={
-        getDurationStatus(elapsedDuration, userSettings) !== "good"
-          ? "animate-pulse"
-          : ""
-      }
+      className={`flex w-1/2 flex-col gap-10 rounded-2xl bg-gray-800/80 p-5 text-gray-300`}
     >
-      <Button
-        type="submit"
-        name="passId"
-        value={openPassId}
-        size="big"
-        kind={getDurationStatus(elapsedDuration, userSettings)}
-      >
-        <div className="mb-3 flex items-center justify-center gap-5 font-mono text-5xl">
-          {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
-          <div>{formatDurationDigital(elapsedDuration)}</div>
-          {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
+      <div className="flex justify-between">
+        <h1 className="text-5xl">Current Space Walk</h1>
+        {isPersonal ? rocketIcon : <CheckBadgeIcon className="h-12 w-12" />}
+      </div>
+      <div className="flex items-center justify-center font-mono text-9xl">
+        {formatDurationDigital(elapsedDuration)}
+      </div>
+      <div className={`flex flex-col gap-5`}>
+        <div className="flex justify-between text-3xl">
+          <div className="py-1">Oxygen Level:</div>
+          {status !== "good" ? (
+            <div
+              className={`animate-pulse bg-${status} flex items-center gap-2 rounded-full px-3 py-1`}
+            >
+              <ExclamationTriangleIcon className="h-8 w-8" />{" "}
+              {statusMessages[status]}
+            </div>
+          ) : null}
         </div>
-        <div className="font-mono text-2xl">
-          {statusMessages[getDurationStatus(elapsedDuration, userSettings)]}
+        <div
+          className={`relative h-5 w-full rounded-full ${
+            status === "critical" ? "bg-critical" : "bg-gray-200"
+          }        ${status !== "good" ? "animate-pulse" : ""}`}
+        >
+          <div
+            className="h-5 rounded-full bg-green-600"
+            style={{
+              width: `${oxygenPercent}%`,
+            }}
+          ></div>
+          <div
+            className="absolute top-0 h-5 rounded-full bg-warning"
+            style={{
+              width: `${warningPercent}%`,
+            }}
+          ></div>
         </div>
+      </div>
+      <Button type="submit" name="passId" value={openPassId} size="big">
+        <div>Return Cadet</div>
       </Button>
     </div>
   );
