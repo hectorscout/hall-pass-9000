@@ -1,5 +1,4 @@
 import { formatDurationDigital } from "~/utils/utils";
-import { useUserSettings } from "~/hooks/useUserSettings";
 import { Button } from "~/components/common/button";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import { OxygenLevel } from "~/components/oxygenLevel";
