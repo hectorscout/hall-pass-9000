@@ -130,7 +130,7 @@ export default function StudentDetailsRoute() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [openPass]);
+  }, [openPass, userSettings.critical]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden bg-blue-900">
