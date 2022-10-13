@@ -28,7 +28,7 @@ export const OxygenLevel = ({
   return (
     <div className={`flex flex-col gap-5`}>
       <div className="flex justify-between text-3xl">
-        <div className="py-1">Oxygen Level:</div>
+        <div className="py-1">Oxygen Level</div>
         {status !== "good" ? (
           <div
             className={`animate-pulse bg-${status} flex items-center gap-2 rounded-full px-3 py-1`}

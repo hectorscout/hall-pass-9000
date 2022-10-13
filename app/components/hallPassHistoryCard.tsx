@@ -88,7 +88,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
       {expanded ? (
         <div>
           <div className="mb-5 flex justify-start">
-            <span className="mr-5 text-5xl">Space Walk Log:</span>
+            <span className="mr-5 text-5xl">Space Walk Log</span>
             <Button kind="ghost" onClick={() => setExpanded(false)}>
               <ArrowsPointingInIcon className="h-9 w-9" />
             </Button>
