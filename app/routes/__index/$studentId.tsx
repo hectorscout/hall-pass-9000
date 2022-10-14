@@ -15,13 +15,15 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import { intervalToDuration } from "date-fns";
+import { differenceInSeconds, intervalToDuration } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { Button } from "~/components/common/button";
 import { PassButton } from "~/components/passButton";
 import toast from "react-hot-toast";
 import { HallPassHistoryCard } from "~/components/hallPassHistoryCard";
+import { useUserSettings } from "~/hooks/useUserSettings";
+import { OpenPassDashboard } from "~/components/openPassDashboard";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -74,6 +76,7 @@ const homeUrl =
 export default function StudentDetailsRoute() {
   const { openPass, student, passes } = useLoaderData<typeof loader>();
   const transition = useTransition();
+  const userSettings = useUserSettings();
 
   useEffect(() => {
     if (transition.state === "loading" && transition.type === "actionReload") {
@@ -105,13 +108,20 @@ export default function StudentDetailsRoute() {
     })
   );
 
+  const [oxygenLevel, setOxygenLevel] = useState(userSettings.critical * 60);
+
   useEffect(() => {
     const tick = () => {
-      setElapsedDuration(
-        intervalToDuration({
-          start: openPass ? new Date(openPass.startAt) : new Date(),
-          end: new Date(),
-        })
+      const now = new Date();
+      const passTime = openPass ? new Date(openPass.startAt) : new Date();
+      const currentDuration = intervalToDuration({
+        start: passTime,
+        end: now,
+      });
+
+      setElapsedDuration(currentDuration);
+      setOxygenLevel(
+        userSettings.critical * 60 - differenceInSeconds(now, passTime)
       );
     };
     tick();
@@ -120,7 +130,7 @@ export default function StudentDetailsRoute() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [openPass]);
+  }, [openPass, userSettings.critical]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden bg-blue-900">
@@ -160,11 +170,18 @@ export default function StudentDetailsRoute() {
           method="post"
           className="mx-10 flex flex-1 flex-col items-start justify-center"
         >
-          <PassButton
-            openPassId={openPass ? openPass.id : undefined}
-            elapsedDuration={elapsedDuration}
-            isPersonal={openPass ? openPass.isPersonal : false}
-          />
+          {openPass ? (
+            <>
+              <OpenPassDashboard
+                openPassId={openPass.id}
+                elapsedDuration={elapsedDuration}
+                oxygenLevel={oxygenLevel}
+                isPersonal={openPass.isPersonal}
+              />
+            </>
+          ) : (
+            <PassButton />
+          )}
         </Form>
         <div className="absolute right-0 top-0 z-10 m-5">
           <HallPassHistoryCard passes={passes} />
