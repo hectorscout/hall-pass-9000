@@ -4,7 +4,7 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/20/solid";
 import {
-  formatDateTime,
+  formatDate,
   formatDurationDigital,
   formatTime,
   getDurationStatus,
@@ -59,13 +59,15 @@ export const HallPassLogRow: React.FC<HallPassLogRowProps> = ({
     <Link
       to={pass.id}
       title={pass.reason || "No notes for this walk."}
-      className={`mt-1 grid grid-cols-[2fr_1fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600 ${
+      className={`mt-1 grid grid-cols-[1fr_2fr_1fr] gap-x-2 gap-y-1 rounded hover:bg-gray-600 ${
         passId === pass.id ? "bg-gray-600" : ""
       }`}
       key={pass.id}
     >
-      <div>{formatDateTime(pass.startAt)}</div>
-      <div>{pass.endAt ? formatTime(pass.endAt) : "-"}</div>
+      <div>{formatDate(pass.startAt)}</div>
+      <div>{`${formatTime(pass.startAt)} ${
+        pass.endAt ? `- ${formatTime(pass.endAt)}` : ""
+      }`}</div>
       <div className="mr-2 flex justify-between">
         <div>{formatDurationDigital(duration)}</div>
         {getStatusIcon(pass.isPersonal, status)}
