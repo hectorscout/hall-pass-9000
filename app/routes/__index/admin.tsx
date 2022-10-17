@@ -9,6 +9,7 @@ import { useUserSettings } from "~/hooks/useUserSettings";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Toggle } from "~/components/common/toggle";
+import { DeleteAllStudentsModal } from "~/components/deleteAllStudentsModal";
 
 type ActionData =
   | {
@@ -72,6 +73,8 @@ export default function AdminRoute() {
   const userSettings = useUserSettings();
   const errors = useActionData();
   const transition = useTransition();
+
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
 
   useEffect(() => {
     if (transition.state === "loading" && transition.type === "actionReload") {
@@ -158,6 +161,16 @@ export default function AdminRoute() {
           </div>
         </Form>
       </div>
+      <Button
+        kind="critical"
+        className="absolute right-0 bottom-0 m-10"
+        onClick={() => setConfirmDeleteAll(true)}
+      >
+        Retire All Cadets
+      </Button>
+      {confirmDeleteAll ? (
+        <DeleteAllStudentsModal onClose={() => setConfirmDeleteAll(false)} />
+      ) : null}
     </div>
   );
 }
