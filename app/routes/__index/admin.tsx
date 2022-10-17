@@ -10,6 +10,13 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Toggle } from "~/components/common/toggle";
 
+type ActionData =
+  | {
+      warning: null | string;
+      critical: null | string;
+    }
+  | undefined;
+
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
   if (warning < 0) return "Warning must be positive";
@@ -24,13 +31,6 @@ const getCriticalError = (critical: number, warning: number) => {
 
   return null;
 };
-
-type ActionData =
-  | {
-      warning: null | string;
-      critical: null | string;
-    }
-  | undefined;
 
 export const action: ActionFunction = async ({ params, request }) => {
   const userId = await requireUserId(request);
@@ -68,7 +68,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 const bgUrl =
   "https://images.unsplash.com/photo-1504541095505-011bf592c055?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjI2OTExODE&ixlib=rb-1.2.1&q=80";
 
-export default function SettingsRoute() {
+export default function AdminRoute() {
   const userSettings = useUserSettings();
   const errors = useActionData();
   const transition = useTransition();
@@ -94,7 +94,7 @@ export default function SettingsRoute() {
         src={bgUrl}
       />
       <h1 className="z-10 mt-10 ml-10 flex-grow-0 text-6xl font-extrabold">
-        Settings
+        Administration
       </h1>
       <div className="relative z-10 flex w-1/2 flex-1 items-center justify-center">
         <Form method="post">
