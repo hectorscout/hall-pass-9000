@@ -30,7 +30,7 @@ export const PassButton = () => {
     renderTransitionButton()
   ) : (
     <div className="flex flex-col gap-5 rounded-2xl bg-gray-800/80 p-5 text-gray-300">
-      <div className="text-3xl">Start A New Space Walk</div>
+      <div className="text-5xl">Start A New Space Walk</div>
       <Button type="submit" name="passId" value="personal" size="big">
         <div className="flex items-center justify-center gap-5">
           <RocketIcon />
