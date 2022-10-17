@@ -10,8 +10,8 @@ export const UserMenu = ({ username }: UserMenuProps) => {
       <Link to="/logout" className="p-5 hover:bg-gray-200">
         Logout {username}
       </Link>
-      <Link to={"/settings"} className="border-t p-5 hover:bg-gray-200">
-        Settings
+      <Link to={"/admin"} className="border-t p-5 hover:bg-gray-200">
+        Admin
       </Link>
     </div>
   );
