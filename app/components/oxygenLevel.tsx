@@ -40,7 +40,7 @@ export const OxygenLevel = ({
       </div>
       <div
         className={`relative h-5 w-full rounded-full ${
-          oxygenPercent === 0 ? "bg-critical" : "bg-gray-200"
+          oxygenPercent === 0 ? "bg-critical" : "bg-gray-300"
         } ${oxygenPercent === warningPercent ? "animate-pulse" : ""}`}
       >
         <div
