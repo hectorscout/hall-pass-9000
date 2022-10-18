@@ -291,7 +291,7 @@ export default function EditStudentRoute() {
                 disabled={isDeleting}
                 type="submit"
               >
-                {isDeleting ? "Deleting" : "Make It So"}
+                {isDeleting ? "Retiring" : "Make It So"}
               </Button>
             </div>
           }
