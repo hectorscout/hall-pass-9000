@@ -45,7 +45,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   const deleteAllStudentsValue = formData.get("delete-all-students") === "true";
 
   if (deleteAllStudentsValue) {
-    // await deleteAllStudents({ userId });
+    await deleteAllStudents({ userId });
     return { success: "All cadets have been retired" };
   }
 
