@@ -72,6 +72,7 @@ const createStudent = async ({
   randomPasses,
   userId,
 }: IStudent) => {
+  console.log(`Creating ${firstName} ${lastName}`);
   const student = await prisma.student.create({
     data: {
       firstName,
