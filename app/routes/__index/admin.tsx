@@ -101,7 +101,7 @@ export default function AdminRoute() {
         toast.success(success);
       }
     }
-  }, [transition.state, transition.type, errors]);
+  }, [transition.state, transition.type, errors, success]);
 
   const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
   const [warningVal, setWarningVal] = useState(+userSettings.warning);
