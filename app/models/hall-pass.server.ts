@@ -78,6 +78,12 @@ export function deleteStudent({
   });
 }
 
+export function deleteAllStudents({ userId }: { userId: User["id"] }) {
+  return prisma.student.deleteMany({
+    where: { userId },
+  });
+}
+
 export function getHallPass({
   id,
   userId,
