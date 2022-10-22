@@ -2,9 +2,10 @@ import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
-import { format, intervalToDuration } from "date-fns";
+import { add, format, intervalToDuration } from "date-fns";
 import type { Pass } from "@prisma/client";
 import type { UserSettings } from "~/hooks/useUserSettings";
+import { SerializeFrom } from "@remix-run/server-runtime";
 
 const DEFAULT_REDIRECT = "/";
 export const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
@@ -138,6 +139,59 @@ export const getPassStatus = (pass: Pass, userSettings: UserSettings) => {
       end: pass.endAt ? new Date(pass.endAt) : new Date(),
     }),
     userSettings
+  );
+};
+
+export type StatKeys = "total" | "personal" | "official";
+export interface PassStats {
+  counts: Record<StatKeys, number>;
+  last: Record<StatKeys, null | Date>;
+  durations: Record<StatKeys, Duration>;
+  times: Record<StatKeys, Date>;
+}
+export const getPassStats = (passes: SerializeFrom<Pass>[]): PassStats => {
+  const now = new Date();
+  const emptyDuration = intervalToDuration({ start: now, end: now });
+  return passes.reduce(
+    (accum, pass) => {
+      const startDate = new Date(pass.startAt);
+      const passDuration = intervalToDuration({
+        start: startDate,
+        end: pass.endAt ? new Date(pass.endAt) : now,
+      });
+
+      const updateStat = (key: StatKeys, duration: Duration) => {
+        accum.times[key] = add(accum.times[key], duration);
+        accum.durations[key] = intervalToDuration({
+          start: now,
+          end: accum.times[key],
+        });
+        accum.last[key] = accum.last[key]
+          ? new Date(
+              Math.max(accum.last[key]?.valueOf() || 0, startDate.valueOf())
+            )
+          : startDate;
+        accum.counts[key]++;
+      };
+
+      updateStat("total", passDuration);
+      updateStat(pass.isPersonal ? "personal" : "official", passDuration);
+      return accum;
+    },
+    {
+      times: { total: now, personal: now, official: now },
+      counts: { total: 0, personal: 0, official: 0 },
+      last: {
+        total: null,
+        personal: null,
+        official: null,
+      },
+      durations: {
+        total: emptyDuration,
+        personal: emptyDuration,
+        official: emptyDuration,
+      },
+    } as PassStats
   );
 };
 
