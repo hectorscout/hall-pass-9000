@@ -10,7 +10,7 @@ export default function ReportsRoute() {
         <NavLink
           to="cadets"
           className={({ isActive }) =>
-            `mr-10 border-blue-600 text-3xl ${isActive ? "border-b-2" : ""}`
+            `mr-10 border-blue-300 text-3xl ${isActive ? "border-b-2" : ""}`
           }
         >
           Cadets
@@ -18,7 +18,7 @@ export default function ReportsRoute() {
         <NavLink
           to="walks"
           className={({ isActive }) =>
-            `mr-10 border-blue-600 text-3xl ${isActive ? "border-b-2" : ""}`
+            `mr-10 border-blue-300 text-3xl ${isActive ? "border-b-2" : ""}`
           }
         >
           Space Walks

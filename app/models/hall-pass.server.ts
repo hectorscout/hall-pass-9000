@@ -10,6 +10,19 @@ export function getStudent({
   });
 }
 
+export function getStudentsAndPasses({ userId }: { userId: User["id"] }) {
+  return prisma.student.findMany({
+    select: {
+      firstName: true,
+      lastName: true,
+      period: true,
+      passes: true,
+    },
+    where: { userId },
+    orderBy: { firstName: "asc" },
+  });
+}
+
 export function getStudentsAndOpenPasses({ userId }: { userId: User["id"] }) {
   return prisma.student.findMany({
     where: { userId },
@@ -130,13 +143,6 @@ export function endHallPass({
 
 export function getHallPassesForStudent(studentId: Student["id"]) {
   return prisma.pass.findMany({
-    select: {
-      id: true,
-      startAt: true,
-      endAt: true,
-      reason: true,
-      isPersonal: true,
-    },
     where: { studentId },
     orderBy: { startAt: "desc" },
   });
