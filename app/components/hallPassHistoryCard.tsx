@@ -8,17 +8,15 @@ import {
 import type { Pass } from "@prisma/client";
 import { add, intervalToDuration } from "date-fns";
 import type { Duration } from "date-fns";
-import { formatDate, formatDurationDigital } from "~/utils/utils";
+import { formatDate, formatDurationDigital, getPassStats } from "~/utils/utils";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 import { useUserSettings } from "~/hooks/useUserSettings";
+import { SerializeFrom } from "@remix-run/server-runtime";
 
 export type StatKeys = "total" | "personal" | "official";
 
 interface HallPassHistoryCardProps {
-  passes: (Pick<Pass, "id" | "isPersonal" | "reason"> & {
-    startAt: string;
-    endAt: string | null;
-  })[];
+  passes: SerializeFrom<Pass>[];
 }
 
 const getStatString = (count: number, duration: Duration) => {
@@ -39,49 +37,7 @@ export const HallPassHistoryCard = ({ passes }: HallPassHistoryCardProps) => {
     );
   }
 
-  const now = new Date();
-  const emptyDuration = intervalToDuration({ start: now, end: now });
-  const stats = passes.reduce(
-    (accum, pass) => {
-      const startDate = new Date(pass.startAt);
-      const passDuration = intervalToDuration({
-        start: startDate,
-        end: pass.endAt ? new Date(pass.endAt) : now,
-      });
-
-      const updateStat = (key: StatKeys, duration: Duration) => {
-        accum.times[key] = add(accum.times[key], duration);
-        accum.durations[key] = intervalToDuration({
-          start: now,
-          end: accum.times[key],
-        });
-        accum.last[key] = accum.last[key]
-          ? new Date(
-              Math.max(accum.last[key]?.valueOf() || 0, startDate.valueOf())
-            )
-          : startDate;
-        accum.counts[key]++;
-      };
-
-      updateStat("total", passDuration);
-      updateStat(pass.isPersonal ? "personal" : "official", passDuration);
-      return accum;
-    },
-    {
-      times: { total: now, personal: now, official: now },
-      counts: { total: 0, personal: 0, official: 0 },
-      last: {
-        total: null,
-        personal: null,
-        official: null,
-      } as Record<StatKeys, null | Date>,
-      durations: {
-        total: emptyDuration,
-        personal: emptyDuration,
-        official: emptyDuration,
-      } as Record<StatKeys, Duration>,
-    }
-  );
+  const stats = getPassStats(passes);
 
   return (
     <div className="rounded-2xl bg-gray-800/80 p-5 text-gray-300">

@@ -5,14 +5,12 @@ import React from "react";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
 import { formatDurationDigital } from "~/utils/utils";
 import type { StatKeys } from "~/components/hallPassHistoryCard";
+import { SerializeFrom } from "@remix-run/server-runtime";
 
 interface HallPassLogProps {
   counts: Record<StatKeys, number>;
   durations: Record<StatKeys, Duration>;
-  passes: (Pick<Pass, "id" | "isPersonal" | "reason"> & {
-    startAt: string;
-    endAt: string | null;
-  })[];
+  passes: SerializeFrom<Pass>[];
 }
 
 const renderStats = (count: number, duration: Duration) => {
