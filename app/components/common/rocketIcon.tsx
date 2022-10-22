@@ -1,5 +1,5 @@
 // For some reason RocketLaunchIcon isn't showing up in heroicons....
-export const RocketIcon = () => {
+export const RocketIcon = ({ className }: { className?: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,7 +7,7 @@ export const RocketIcon = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-12 w-12"
+      className={`h-12 w-12 ${className}`}
     >
       <path
         strokeLinecap="round"
