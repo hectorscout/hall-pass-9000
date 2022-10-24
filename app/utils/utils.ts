@@ -110,6 +110,18 @@ export const formatDurationDigital = (duration: Duration) => {
   ).padStart(2, "0")}`;
 };
 
+export const compareDurations = (a: Duration, b: Duration) => {
+  const diff =
+    (a.years ?? 0) - (b.years ?? 0) ||
+    (a.months ?? 0) - (b.months ?? 0) ||
+    (a.weeks ?? 0) - (b.weeks ?? 0) ||
+    (a.days ?? 0) - (b.days ?? 0) ||
+    (a.hours ?? 0) - (b.hours ?? 0) ||
+    (a.minutes ?? 0) - (b.minutes ?? 0) ||
+    (a.seconds ?? 0) - (b.seconds ?? 0);
+  return diff;
+};
+
 export type DurationStatus = "good" | "warning" | "critical";
 
 export const getDurationStatus = (

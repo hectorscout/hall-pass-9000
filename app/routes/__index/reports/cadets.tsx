@@ -1,7 +1,12 @@
 import { json, LoaderFunction } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import { getStudentsAndPasses } from "~/models/hall-pass.server";
-import { formatDurationDigital, getPassStats, PassStats } from "~/utils/utils";
+import {
+  compareDurations,
+  formatDurationDigital,
+  getPassStats,
+  PassStats,
+} from "~/utils/utils";
 import { useLoaderData } from "@remix-run/react";
 import { RocketIcon } from "~/components/common/rocketIcon";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
@@ -59,6 +64,41 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         a.passStats.counts.total - b.passStats.counts.total * directionFactor
     );
   } else if (sortKey === "recDuration") {
+    students.sort((a, b) => {
+      return direction === "asc"
+        ? compareDurations(
+            a.passStats.durations.personal,
+            b.passStats.durations.personal
+          )
+        : compareDurations(
+            b.passStats.durations.personal,
+            a.passStats.durations.personal
+          );
+    });
+  } else if (sortKey === "officialDuration") {
+    students.sort((a, b) => {
+      return direction === "asc"
+        ? compareDurations(
+            a.passStats.durations.official,
+            b.passStats.durations.official
+          )
+        : compareDurations(
+            b.passStats.durations.official,
+            a.passStats.durations.official
+          );
+    });
+  } else if (sortKey === "totalDuration") {
+    students.sort((a, b) => {
+      return direction === "asc"
+        ? compareDurations(
+            a.passStats.durations.total,
+            b.passStats.durations.total
+          )
+        : compareDurations(
+            b.passStats.durations.total,
+            a.passStats.durations.total
+          );
+    });
   }
 
   if (["recCount", "officialCount", "totalCount"].includes(sortKey)) {
