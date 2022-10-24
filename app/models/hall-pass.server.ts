@@ -13,6 +13,7 @@ export function getStudent({
 export function getStudentsAndPasses({ userId }: { userId: User["id"] }) {
   return prisma.student.findMany({
     select: {
+      id: true,
       firstName: true,
       lastName: true,
       period: true,

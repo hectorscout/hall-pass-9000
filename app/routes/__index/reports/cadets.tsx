@@ -7,6 +7,7 @@ import { RocketIcon } from "~/components/common/rocketIcon";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
 interface StudentStat {
+  id: string;
   firstName: string;
   lastName: string;
   period: string;
@@ -19,8 +20,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const studentsRaw = await getStudentsAndPasses({ userId });
 
   const students = studentsRaw.map(
-    ({ firstName, lastName, period, passes }) => {
+    ({ firstName, id, lastName, period, passes }) => {
       return {
+        id,
         firstName,
         lastName,
         period,
@@ -54,7 +56,10 @@ export default function CadetsRoute() {
       </div>
       {students.map((student) => {
         return (
-          <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-y-1 gap-x-2">
+          <div
+            key={student.id}
+            className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-y-1 gap-x-2"
+          >
             <div>{`${student.firstName} ${student.lastName}`}</div>
             <div>{student.period}</div>
             <div>{student.passStats.counts.personal}</div>
