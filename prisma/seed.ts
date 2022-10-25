@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { PERIODS } from "~/utils/utils";
 // import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -25,6 +26,8 @@ interface IStudent {
   userId: string;
 }
 
+const firstNames = ["Bobby", "Alice", "Lincoln", "Brittney"];
+const lastNames = ["A", "B", "C", "D", "E", "F"];
 const reasons = [
   "Drink",
   "Swig Run",
@@ -34,6 +37,18 @@ const reasons = [
   "",
   "",
 ];
+
+const generateRandomStudent = (userId: string) => {
+  return {
+    firstName: firstNames[Math.floor(Math.random() * firstNames.length)],
+    lastName: lastNames[Math.floor(Math.random() * lastNames.length)],
+    period: PERIODS[Math.floor(Math.random() * PERIODS.length)],
+    notes: "",
+    passes: [],
+    randomPasses: Math.floor(Math.random() * 4),
+    userId,
+  };
+};
 
 const generateRandomPass = () => {
   const startAt = new Date();
@@ -174,6 +189,10 @@ async function seed() {
       userId: user.id,
     },
   ];
+
+  for (let i = 0; i < 40; i++) {
+    students.push(generateRandomStudent(user.id));
+  }
 
   students.map(createStudent);
 
