@@ -2,7 +2,7 @@ import { NavLink, Outlet } from "@remix-run/react";
 
 export default function ReportsRoute() {
   return (
-    <div className="flex-1">
+    <div className="flex flex-1 flex-col">
       <h1 className="z-10 mt-10 ml-10 flex-grow-0 text-6xl font-extrabold">
         Reports
       </h1>
@@ -24,7 +24,7 @@ export default function ReportsRoute() {
           Space Walks
         </NavLink>
       </div>
-      <div className="p-10">
+      <div className="overflow-auto p-10">
         <Outlet />
       </div>
     </div>
