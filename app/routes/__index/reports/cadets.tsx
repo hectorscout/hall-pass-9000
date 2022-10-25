@@ -20,24 +20,43 @@ interface StudentStat {
   passStats: PassStats;
 }
 
+const nameCmp = (a: StudentStat, b: StudentStat) => {
+  return (
+    a.firstName.toLowerCase().localeCompare(b.firstName.toLowerCase()) ||
+    a.lastName.toLowerCase().localeCompare(b.lastName.toLowerCase())
+  );
+};
+
+const countCmp = (
+  a: StudentStat,
+  b: StudentStat,
+  key: "personal" | "official" | "total",
+  directionFactor: number
+) => {
+  const diff =
+    (a.passStats.counts[key] - b.passStats.counts[key]) * directionFactor;
+  return diff || nameCmp(a, b);
+};
+
+const durationCmp = (
+  a: StudentStat,
+  b: StudentStat,
+  key: "personal" | "official" | "total",
+  directionFactor: number
+) => {
+  const diff =
+    compareDurations(a.passStats.durations[key], b.passStats.durations[key]) *
+    directionFactor;
+  return diff || nameCmp(a, b);
+};
+
 export const loader: LoaderFunction = async ({ params, request }) => {
   const userId = await requireUserId(request);
   const url = new URL(request.url);
   const sortKey = url.searchParams.get("sort-key") ?? "";
-  const direction = url.searchParams.get("desc") ? "desc" : "asc";
+  const directionFactor = url.searchParams.get("desc") ? -1 : 1;
 
-  let orderBy = undefined;
-  if (sortKey === "firstName") {
-    orderBy = [{ firstName: direction }, { lastName: direction }];
-  } else if (sortKey === "period") {
-    orderBy = [
-      { period: direction },
-      { firstName: "asc" },
-      { lastName: "asc" },
-    ];
-  }
-
-  const studentsRaw = await getStudentsAndPasses({ userId, orderBy });
+  const studentsRaw = await getStudentsAndPasses({ userId });
 
   const students = studentsRaw.map(
     ({ firstName, id, lastName, period, passes }) => {
@@ -51,63 +70,26 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     }
   );
 
-  const directionFactor = direction === "asc" ? 1 : -1;
-  if (sortKey === "recCount") {
-    students.sort(
-      (a, b) =>
-        (a.passStats.counts.personal - b.passStats.counts.personal) *
-        directionFactor
-    );
+  if (sortKey === "firstName") {
+    students.sort((a, b) => nameCmp(a, b) * directionFactor);
+  } else if (sortKey === "period") {
+    students.sort((a, b) => {
+      return (
+        a.period.localeCompare(b.period) * directionFactor || nameCmp(a, b)
+      );
+    });
+  } else if (sortKey === "recCount") {
+    students.sort((a, b) => countCmp(a, b, "personal", directionFactor));
   } else if (sortKey === "officialCount") {
-    students.sort(
-      (a, b) =>
-        (a.passStats.counts.official - b.passStats.counts.official) *
-        directionFactor
-    );
+    students.sort((a, b) => countCmp(a, b, "official", directionFactor));
   } else if (sortKey === "totalCount") {
-    students.sort(
-      (a, b) =>
-        (a.passStats.counts.total - b.passStats.counts.total) * directionFactor
-    );
+    students.sort((a, b) => countCmp(a, b, "total", directionFactor));
   } else if (sortKey === "recDuration") {
-    students.sort((a, b) => {
-      return direction === "asc"
-        ? compareDurations(
-            a.passStats.durations.personal,
-            b.passStats.durations.personal
-          )
-        : compareDurations(
-            b.passStats.durations.personal,
-            a.passStats.durations.personal
-          );
-    });
+    students.sort((a, b) => durationCmp(a, b, "personal", directionFactor));
   } else if (sortKey === "officialDuration") {
-    students.sort((a, b) => {
-      return direction === "asc"
-        ? compareDurations(
-            a.passStats.durations.official,
-            b.passStats.durations.official
-          )
-        : compareDurations(
-            b.passStats.durations.official,
-            a.passStats.durations.official
-          );
-    });
+    students.sort((a, b) => durationCmp(a, b, "official", directionFactor));
   } else if (sortKey === "totalDuration") {
-    students.sort((a, b) => {
-      return direction === "asc"
-        ? compareDurations(
-            a.passStats.durations.total,
-            b.passStats.durations.total
-          )
-        : compareDurations(
-            b.passStats.durations.total,
-            a.passStats.durations.total
-          );
-    });
-  }
-
-  if (["recCount", "officialCount", "totalCount"].includes(sortKey)) {
+    students.sort((a, b) => durationCmp(a, b, "total", directionFactor));
   }
 
   return json({ students });
