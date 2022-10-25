@@ -27,8 +27,14 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const direction = url.searchParams.get("desc") ? "desc" : "asc";
 
   let orderBy = undefined;
-  if (["firstName", "period"].includes(sortKey)) {
-    orderBy = { [sortKey]: direction };
+  if (sortKey === "firstName") {
+    orderBy = [{ firstName: direction }, { lastName: direction }];
+  } else if (sortKey === "period") {
+    orderBy = [
+      { period: direction },
+      { firstName: "asc" },
+      { lastName: "asc" },
+    ];
   }
 
   const studentsRaw = await getStudentsAndPasses({ userId, orderBy });
@@ -49,19 +55,19 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   if (sortKey === "recCount") {
     students.sort(
       (a, b) =>
-        a.passStats.counts.personal -
-        b.passStats.counts.personal * directionFactor
+        (a.passStats.counts.personal - b.passStats.counts.personal) *
+        directionFactor
     );
   } else if (sortKey === "officialCount") {
     students.sort(
       (a, b) =>
-        a.passStats.counts.official -
-        b.passStats.counts.official * directionFactor
+        (a.passStats.counts.official - b.passStats.counts.official) *
+        directionFactor
     );
   } else if (sortKey === "totalCount") {
     students.sort(
       (a, b) =>
-        a.passStats.counts.total - b.passStats.counts.total * directionFactor
+        (a.passStats.counts.total - b.passStats.counts.total) * directionFactor
     );
   } else if (sortKey === "recDuration") {
     students.sort((a, b) => {
