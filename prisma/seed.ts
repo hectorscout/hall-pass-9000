@@ -26,8 +26,8 @@ interface IStudent {
   userId: string;
 }
 
-const firstNames = ["Bobby", "Alice", "Lincoln", "Brittney"];
-const lastNames = ["A", "B", "C", "D", "E", "F"];
+const firstNames = ["Bobby", "Alice", "Lincoln", "Brittney", "bobby"];
+const lastNames = ["A", "B", "C", "D", "E", "F", "a", "b", "c"];
 const reasons = [
   "Drink",
   "Swig Run",
