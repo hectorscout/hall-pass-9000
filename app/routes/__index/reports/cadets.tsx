@@ -8,7 +8,7 @@ import {
   getPassStats,
 } from "~/utils/utils";
 import type { PassStats } from "~/utils/utils";
-import { Link, useLoaderData, useTransition } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { RocketIcon } from "~/components/common/rocketIcon";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import SortableHeader from "~/components/common/sortableHeader";
@@ -100,11 +100,7 @@ export default function CadetsRoute() {
   const { students }: { students: StudentStat[] } =
     useLoaderData<typeof loader>();
 
-  const transition = useTransition();
-
-  return transition.state === "loading" ? (
-    <div>Loading...</div>
-  ) : (
+  return (
     <>
       <div className="mb-3 grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-x-2 border-b text-2xl">
         <SortableHeader title="Cadet" sortKey="cadet" />
