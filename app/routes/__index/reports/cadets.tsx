@@ -7,7 +7,7 @@ import {
   getPassStats,
   PassStats,
 } from "~/utils/utils";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { RocketIcon } from "~/components/common/rocketIcon";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import SortableHeader from "~/components/common/sortableHeader";
@@ -121,9 +121,10 @@ export default function CadetsRoute() {
       </div>
       {students.map((student) => {
         return (
-          <div
+          <Link
+            to={`/${student.id}`}
             key={student.id}
-            className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-y-1 gap-x-2"
+            className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-y-1 gap-x-2 hover:bg-gray-200"
           >
             <div>{`${student.firstName} ${student.lastName}`}</div>
             <div>{student.period}</div>
@@ -139,7 +140,7 @@ export default function CadetsRoute() {
             <div>
               {formatDurationDigital(student.passStats.durations.total)}
             </div>
-          </div>
+          </Link>
         );
       })}
     </>
