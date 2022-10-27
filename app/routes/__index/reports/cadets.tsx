@@ -53,7 +53,7 @@ const durationCmp = (
 export const loader: LoaderFunction = async ({ params, request }) => {
   const userId = await requireUserId(request);
   const url = new URL(request.url);
-  const sortKey = url.searchParams.get("sort-key") ?? "";
+  const sortKey = url.searchParams.get("sort-key") ?? "cadet";
   const directionFactor = url.searchParams.get("desc") ? -1 : 1;
 
   const studentsRaw = await getStudentsAndPasses({ userId });
@@ -70,7 +70,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     }
   );
 
-  if (sortKey === "firstName") {
+  if (sortKey === "cadet") {
     students.sort((a, b) => nameCmp(a, b) * directionFactor);
   } else if (sortKey === "period") {
     students.sort((a, b) => {
@@ -102,7 +102,7 @@ export default function CadetsRoute() {
   return (
     <>
       <div className="mb-3 grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-x-2 border-b text-2xl">
-        <SortableHeader title="Cadet" sortKey="firstName" />
+        <SortableHeader title="Cadet" sortKey="cadet" />
         <SortableHeader title="Period" sortKey="period" />
         <SortableHeader sortKey="recCount">
           <div className="flex gap-3" title="Recreational">
