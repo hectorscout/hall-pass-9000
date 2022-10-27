@@ -9,6 +9,19 @@ import { useUserSettings } from "~/hooks/useUserSettings";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Toggle } from "~/components/common/toggle";
+import { DeleteAllStudentsModal } from "~/components/deleteAllStudentsModal";
+import { deleteAllStudents } from "~/models/hall-pass.server";
+
+type ActionData =
+  | {
+      errors:
+        | {
+            warning: null | string;
+            critical: null | string;
+          }
+        | undefined;
+    }
+  | { success: string };
 
 const getWarningError = (warning: number) => {
   if (!warning) return "Warning is required";
@@ -25,17 +38,17 @@ const getCriticalError = (critical: number, warning: number) => {
   return null;
 };
 
-type ActionData =
-  | {
-      warning: null | string;
-      critical: null | string;
-    }
-  | undefined;
-
 export const action: ActionFunction = async ({ params, request }) => {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
+  const deleteAllStudentsValue = formData.get("delete-all-students") === "true";
+
+  if (deleteAllStudentsValue) {
+    await deleteAllStudents({ userId });
+    return { success: "All cadets have been retired" };
+  }
+
   const warning = +(formData.get("warning") ?? "");
   const critical = +(formData.get("critical") ?? "");
   const expandPassLog = formData.get("expand-pass-log") === "true";
@@ -47,14 +60,14 @@ export const action: ActionFunction = async ({ params, request }) => {
     "expandPassLog must be a boolean"
   );
 
-  const errors: ActionData = {
+  const errors = {
     warning: getWarningError(warning),
     critical: getCriticalError(critical, warning),
   };
 
   const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
   if (hasErrors) {
-    return json<ActionData>(errors);
+    return json<ActionData>({ errors });
   }
 
   await upsertSetting({
@@ -62,26 +75,33 @@ export const action: ActionFunction = async ({ params, request }) => {
     value: { warning, critical, expandPassLog },
   });
 
-  return null;
+  return { success: "Settings successfully updated." };
 };
 
 const bgUrl =
   "https://images.unsplash.com/photo-1504541095505-011bf592c055?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjI2OTExODE&ixlib=rb-1.2.1&q=80";
 
-export default function SettingsRoute() {
+export default function AdminRoute() {
   const userSettings = useUserSettings();
-  const errors = useActionData();
+  const { errors, success } = useActionData() ?? {};
   const transition = useTransition();
+
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+
+  const isUpdatingSettings = !!transition.submission?.formData.get("warning");
+  const isDeletingAllStudents =
+    transition.submission?.formData.get("delete-all-students") === "true";
 
   useEffect(() => {
     if (transition.state === "loading" && transition.type === "actionReload") {
       if (errors) {
         toast.error("Please correct any errors and try again.");
       } else {
-        toast.success("Successfully updated settings.");
+        setConfirmDeleteAll(false);
+        toast.success(success);
       }
     }
-  }, [transition.state, transition.type, errors]);
+  }, [transition.state, transition.type, errors, success]);
 
   const [criticalVal, setCriticalVal] = useState(+userSettings.critical);
   const [warningVal, setWarningVal] = useState(+userSettings.warning);
@@ -94,7 +114,7 @@ export default function SettingsRoute() {
         src={bgUrl}
       />
       <h1 className="z-10 mt-10 ml-10 flex-grow-0 text-6xl font-extrabold">
-        Settings
+        Administration
       </h1>
       <div className="relative z-10 flex w-1/2 flex-1 items-center justify-center">
         <Form method="post">
@@ -151,13 +171,24 @@ export default function SettingsRoute() {
           </Toggle>
           <div className="flex justify-end gap-4">
             <Button type="submit" disabled={transition.state !== "idle"}>
-              {transition.state !== "idle"
-                ? "Updating Settings..."
-                : "Update Settings"}
+              {isUpdatingSettings ? "Updating Settings..." : "Update Settings"}
             </Button>
           </div>
         </Form>
       </div>
+      <Button
+        kind="critical"
+        className="absolute right-0 bottom-0 m-10"
+        onClick={() => setConfirmDeleteAll(true)}
+        disabled={transition.state !== "idle"}
+      >
+        {isDeletingAllStudents
+          ? "Reitiring All Cadets..."
+          : "Retire All Cadets"}
+      </Button>
+      {confirmDeleteAll ? (
+        <DeleteAllStudentsModal onClose={() => setConfirmDeleteAll(false)} />
+      ) : null}
     </div>
   );
 }
