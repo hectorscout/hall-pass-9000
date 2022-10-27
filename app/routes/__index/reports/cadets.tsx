@@ -1,12 +1,13 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { requireUserId } from "~/utils/session.server";
 import { getStudentsAndPasses } from "~/models/hall-pass.server";
 import {
   compareDurations,
   formatDurationDigital,
   getPassStats,
-  PassStats,
 } from "~/utils/utils";
+import type { PassStats } from "~/utils/utils";
 import { Link, useLoaderData } from "@remix-run/react";
 import { RocketIcon } from "~/components/common/rocketIcon";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";

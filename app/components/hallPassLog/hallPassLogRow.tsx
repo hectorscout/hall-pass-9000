@@ -12,7 +12,7 @@ import {
 import type { DurationStatus } from "~/utils/utils";
 import { useUserSettings } from "~/hooks/useUserSettings";
 import { Pass } from "@prisma/client";
-import { SerializeFrom } from "@remix-run/server-runtime";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 
 interface HallPassLogRowProps {
   pass: SerializeFrom<Pass>;

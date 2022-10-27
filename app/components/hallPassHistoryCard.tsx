@@ -6,12 +6,11 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/20/solid";
 import type { Pass } from "@prisma/client";
-import { add, intervalToDuration } from "date-fns";
 import type { Duration } from "date-fns";
 import { formatDate, formatDurationDigital, getPassStats } from "~/utils/utils";
 import { HallPassLog } from "~/components/hallPassLog/hallPassLog";
 import { useUserSettings } from "~/hooks/useUserSettings";
-import { SerializeFrom } from "@remix-run/server-runtime";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 
 export type StatKeys = "total" | "personal" | "official";
 

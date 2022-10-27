@@ -5,7 +5,7 @@ import React from "react";
 import { HallPassLogRow } from "~/components/hallPassLog/hallPassLogRow";
 import { formatDurationDigital } from "~/utils/utils";
 import type { StatKeys } from "~/components/hallPassHistoryCard";
-import { SerializeFrom } from "@remix-run/server-runtime";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 
 interface HallPassLogProps {
   counts: Record<StatKeys, number>;
