@@ -5,7 +5,7 @@ import type { User } from "~/models/user.server";
 import { add, format, intervalToDuration } from "date-fns";
 import type { Pass } from "@prisma/client";
 import type { UserSettings } from "~/hooks/useUserSettings";
-import { SerializeFrom } from "@remix-run/server-runtime";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 
 const DEFAULT_REDIRECT = "/";
 export const PERIODS = ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "B8"];
