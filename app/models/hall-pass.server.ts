@@ -116,6 +116,20 @@ export function getHallPass({
   });
 }
 
+export function getAllHallPasses(userId: User["id"]) {
+  return prisma.pass.findMany({
+    select: {
+      student: true,
+      startAt: true,
+      endAt: true,
+      id: true,
+    },
+    where: {
+      userId,
+    },
+  });
+}
+
 export function createHallPass({
   studentId,
   userId,
