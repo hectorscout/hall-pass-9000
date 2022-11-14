@@ -125,7 +125,7 @@ export default function CadetsRoute() {
           <Link
             to={`/${student.id}`}
             key={student.id}
-            className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-y-1 gap-x-2 hover:bg-gray-200"
+            className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-y-1 gap-x-2 odd:bg-gray-100  hover:bg-gray-200"
           >
             <div>{`${student.firstName} ${student.lastName}`}</div>
             <div>{student.period}</div>

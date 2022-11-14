@@ -1,6 +1,9 @@
-import { NavLink, Outlet } from "@remix-run/react";
+import { NavLink, Outlet, useTransition } from "@remix-run/react";
+import Loader from "~/components/common/loader";
 
 export default function ReportsRoute() {
+  const transition = useTransition();
+
   return (
     <div className="flex flex-1 flex-col">
       <h1 className="z-10 mt-10 ml-10 flex-grow-0 text-6xl font-extrabold">
@@ -24,7 +27,8 @@ export default function ReportsRoute() {
           Space Walks
         </NavLink>
       </div>
-      <div className="overflow-auto p-10">
+      <div className="relative flex flex-1 flex-col overflow-auto p-10">
+        {transition.state === "loading" ? <Loader /> : null}
         <Outlet />
       </div>
     </div>
