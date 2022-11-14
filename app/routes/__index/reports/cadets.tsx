@@ -21,6 +21,7 @@ interface StudentStat {
   passStats: PassStats;
 }
 
+// TODO: put in utilss
 const nameCmp = (a: StudentStat, b: StudentStat) => {
   return (
     a.firstName.toLowerCase().localeCompare(b.firstName.toLowerCase()) ||
